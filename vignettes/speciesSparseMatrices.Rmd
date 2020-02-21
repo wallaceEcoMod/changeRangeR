@@ -1,0 +1,63 @@
+---
+title: "speciesSparseMatrices"
+author: "Cory"
+date: "2/20/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r}
+library(changeRangeR)
+```
+
+```{r}
+mc.cores=2
+
+env=stack(system.file("extdata/DemoData/Env/AllEnv.tif",package='changeRangeR'))
+
+#==============================================================
+# set up sparse matrices
+runName='DemoChangeRanger'
+
+# scenarios (e.g., transfer)
+scenarios = 'Present'
+
+# determine where you want outputs
+summaryBaseDir=paste0('~/Desktop/', runName,'_Summaries')
+if(!file.exists(summaryBaseDir)) dir.create(summaryBaseDir)
+sumDirs=setupSummaryDirectories(summaryBaseDir)
+sumDirs
+```
+
+```{r}
+spRasterDir=system.file("extdata/DemoData/BinaryMaps",package='changeRangeR')
+allSpeciesMaps=list(rasterFiles=c(list.files(spRasterDir,
+                                             recursive=T,full.names=T,pattern='__noBias')))
+allSpeciesMaps$sp.names=getSpNamesFromDirs(allSpeciesMaps$rasterFiles)
+
+# make sparse matrices
+setupSparseSpeciesMatrixStuff(sumDirs,scenario='Present', env,
+                              allSpeciesMaps, 
+                              myTempPath='~/Desktop',
+                              nCellChunks=10,mc.cores=mc.cores)
+```
+
+# Richness
+```{r}																			
+r=richnessFromCBS(cbsDir=sumDirs$cbsDir,scenario='Present',env,mc.cores)
+writeRaster(r,file=paste0(sumDirs$richDir,'/Richness_',scenario,'.tif'), overwrite=T)
+plot(r)
+```
+
+
+
+
+
+
+
+
+
