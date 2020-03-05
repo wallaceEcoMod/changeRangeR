@@ -15,7 +15,7 @@ library(changeRangeR)
 ```
 
 ```{r}
-mc.cores=2
+mc.cores=4
 
 env=stack(system.file("extdata/DemoData/Env/AllEnv.tif",package='changeRangeR'))
 
@@ -47,10 +47,20 @@ setupSparseSpeciesMatrixStuff(sumDirs,scenario='Present', env,
 ```
 
 # Richness
-```{r}																			
-r=richnessFromCBS(cbsDir=sumDirs$cbsDir,scenario='Present',env,mc.cores)
-writeRaster(r,file=paste0(sumDirs$richDir,'/Richness_',scenario,'.tif'), overwrite=T)
+```{r}												
+scenario='Present'
+r=richnessFromCBS(cbsDir=sumDirs$cbsDir,scenario=scenario,env=env,mc.cores=mc.cores)
+writeRaster(r,file=paste0(sumDirs$richDir,'/Richness_',scenario,'.tif'),
+            overwrite=T)
 plot(r)
+```
+# Range Area
+```{r}
+sp.ind=read.csv(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.csv'),stringsAsFactors=F)
+ra=rangeArea(cbsDir=sumDirs$cbsDir,outDir=sumDirs$rangeSizeDir,
+             scenario='Present',sp.ind=sp.ind)
+str(ra)
+hist(ra$rangeSize)
 ```
 
 

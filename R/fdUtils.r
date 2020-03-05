@@ -3,7 +3,7 @@
 cm.cols.dif2=function(x,bias=1){ colorRampPalette(c('steelblue4','steelblue1','steelblue1', 'white', 'red1','red1','red4'))(x)
 }
 
-# general
+# general 
 cm.cols.dif3=function(x,bias=1){ colorRampPalette(c('navyblue','steelblue4','steelblue1', 'white', 'red1','red3','darkred'))(x)
 }
 
@@ -16,7 +16,7 @@ setupSummaryDirectories=function(summaryBaseDir){
 	if(!file.exists(attrDir)) dir.create(attrDir)
 	cbsDir=paste0(summaryBaseDir,'/CellSpeciesLists')
 	if(!file.exists(cbsDir)) dir.create(cbsDir)
-	rangeSizeDir=paste0(summaryBaseDir,'/RangeSizeDir')
+	rangeSizeDir=paste0(summaryBaseDir,'/RangeSize')
 	if(!file.exists(rangeSizeDir)) dir.create(rangeSizeDir)
 	richDir=paste0(summaryBaseDir,'/SpeciesRichness/')
 	if(!file.exists(richDir)) dir.create(richDir)

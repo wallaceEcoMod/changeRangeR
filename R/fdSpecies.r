@@ -14,23 +14,6 @@ speciesIndexTable=function(allSpeciesMaps,sumDirs){
 	sp.ind
 }
 
-#===================================================================
-#===================================================================
-#===================================================================
-#' @export
-# cell Index Table
-	# columns: long, lat, cellid
-cellIndexTable=function(env,nCellChunks,sumDirs){
-	co=coordinates(env)
-	keep=apply(values(env),1,function(x) any(!is.na(x)))
-	co=co[keep,]
-	co=apply(co,2,as.integer)
-	# chunks can be based on regions (e.g. if cell values depend on one another) or just random 
-	chunks=cut(1:nrow(co), nCellChunks, labels = FALSE)
-	cell.ind=data.frame(co,cellID=as.integer(cellFromXY(env,co)), chunkID=as.integer(chunks))
-	write.csv(cell.ind,file=paste0(sumDirs$sumBaseDir, '/cellIndexTable.csv'),row.names=F)
-	cell.ind
-}
 
 #===================================================================
 #===================================================================
@@ -38,16 +21,18 @@ cellIndexTable=function(env,nCellChunks,sumDirs){
 #' @export
 speciesByCellLongFormat=function(scenario,
 																 f,
+																 env,
 																 nChunks,
 																 sp.names,
 																 mc.cores,
 																 outDir,
 																 sp.ind,
 																 myTempPath,
+																 reprojectToEnv=F,
 																 verbose=T){
 
 	#  for testing
-	#  nChunks=max(cell.ind$chunkID)
+	#  f=allSpeciesMaps$rasterFiles; nChunks=max(cell.ind$chunkID); sp.names=allSpeciesMaps$sp.names
 	
 	print(paste0(length(f),' species'))
 	#outDir2=paste0(outDir,gsub('BinaryMaps','Present', basename(scenarioDirs[i])))
@@ -70,6 +55,7 @@ speciesByCellLongFormat=function(scenario,
 		if(!file.exists(myRasterTmpDir)) dir.create(myRasterTmpDir)
 		suppressMessages(rasterOptions(tmpdir=myRasterTmpDir))
 		out=mclapply(seq_along(tasks[[x]]),function(ii){
+		#for(ii in seq_along(tasks[[x]])){ # for testing
 			if(verbose) cat(ii,' ')
 			#if(length(grep('concensus',basename(tasks[[x]][ii])))>0){
 			#sp.name=strsplit(basename(tasks[[x]][ii]),'__')[[1]][1]
@@ -85,30 +71,48 @@ speciesByCellLongFormat=function(scenario,
 			this.sp.ind=sp.ind$index[which(sp.ind$species %in% sp.name)]
 		
 			if(length(this.sp.ind)==0) {
-				print(sp.name)
+				print(paste0(sp.name,' ',x,' ',ii,' does not have a species index '))
 				sink(problem.f,append=T)
 				cat(sp.name, 'speciesName', sep=',')
 				cat('\n')
 				sink()
 				return(NULL)
 			}
+			
 			map=try(raster(tasks[[x]][ii]))
 			if(class(map)=='try-error'){
-				print(sp.name)
+				print(paste0(sp.name,' ',x,' ',ii,' cannot be read by raster '))
 				sink(problem.f,append=T)
 				cat(sp.name, 'speciesName', sep=',')
 				cat('\n')
 				sink()
 				return(NULL)
 			}
-			map2=raster::extend(map,extent(env))
+			
+			if(maxValue(map)==0){
+				print(paste0(sp.name,' ',x,' ',ii,' map is all zeroes '))
+				sink(problem.f,append=T)
+				cat(sp.name, 'speciesName', sep=',')
+				cat('\n')
+				sink()
+				return(NULL)
+			}
+			
+			if(reprojectToEnv){
+				map2=raster::projectRaster(map,env)
+				# For some reason, ngb doesn't work for small rasters and just sets the values to zero. so using bilinear to get nonzero values, but than choosing the top N cells to set to 1 so range size doesn't change
+				originalRangeSize=sum(values(map)==1,na.rm=T)
+				fuck=sort(values(map2),decreasing=T)
+				keep=min(originalRangeSize,length(fuck))
+				map2=map2>=fuck[keep]
+			} else {
+					# this extend doesn't guarantee the same extent, hence the code above
+				map2=raster::extend(map,extent(env))
+			
+			}
+
 			cellID=which(values(map2)>0)
-			# cellStats(map,sum,na.rm=T)
-# 			cellStats(map2,sum,na.rm=T)
-# 			length(cellID)
-# 			temp=env[[1]]
-# 			values(temp)=NA
-# 			values(temp)[cc[,2]]= 1
+
 			if(length(cellID)==0) {
 				print(sp.name); 
 				sink(problem.f,append=T)
@@ -149,15 +153,17 @@ cellBySpeciesMatrices=function(outDir,
 														   scenario,
 														   sp.ind,
 														   cell.ind,
+														   env,
 														   nCellChunks,
 														   removeTempFiles=FALSE,
 														   mc.cores=mc.cores,
 														   overwrite=FALSE,
 														   myTempPath=rasterOptions()$tmpdir,
+														   reprojectToEnv=F,
 														   verbose=T){
 
 	#  for testing
-	#  scenario='Present'; outDir=sumDirs$cbsDir; myTempPath='~/Desktop'; overwrite=F; removeTempFiles=F; verbose=T
+	#  scenario='Present'; outDir=sumDirs$cbsDir; myTempPath='~/Desktop'; overwrite=F; removeTempFiles=F; verbose=T; nCellChunks=6
 
 	# intermediate step of long format
 	scenDir=paste0(outDir,'/',scenario)
@@ -172,7 +178,7 @@ cellBySpeciesMatrices=function(outDir,
 		# testing for ordering of names
 			# 		f.sp=unlist(lapply(seq_along(f),function(x) strsplit(basename(f[x]),'__')[[1]][2]))
 			# 		f.ind=which(sp.ind$species %in% f.sp)
-		speciesByCellLongFormat(scenario,f=allSpeciesMaps$rasterFiles, nChunks=max(cell.ind$chunkID), sp.names=allSpeciesMaps$sp.names,mc.cores=mc.cores,outDir=outDir,sp.ind=sp.ind,myTempPath=myTempPath, verbose=verbose)
+		speciesByCellLongFormat(scenario,f=allSpeciesMaps$rasterFiles, nChunks=max(cell.ind$chunkID), env=env, sp.names=allSpeciesMaps$sp.names,mc.cores=mc.cores,outDir=outDir,sp.ind=sp.ind,myTempPath=myTempPath, reprojectToEnv=reprojectToEnv, verbose=verbose)
 		gc()
 	}
 	
@@ -220,8 +226,9 @@ cellBySpeciesMatrices=function(outDir,
 			fuck=data.frame(tmp.dat1, cellIndex=do.call(c,lapply(tmp.dat1[,2],function(x) which(x==cellsThisChunk))))
 			spIDs=unique(fuck[,1])
 			for(ii in spIDs){
+				print(ii)
 				tmp10=fuck[fuck[,1]==ii,]
-				cellBySp[tmp10$cellIndex,ii]=1
+				cellBySp[tmp10$cellIndex,as.numeric(ii)]=1
 			}
 		}
 		cbs=Matrix(cellBySp, sparse = TRUE) 
@@ -229,7 +236,7 @@ cellBySpeciesMatrices=function(outDir,
 		message(paste0('chunk ',x,' done'))
 	}, mc.cores=mc.cores)
 	if(removeTempFiles) file.remove(chunk.f)
-	
+	#chunk 2 has an error!
 }
 
 
@@ -245,8 +252,8 @@ richnessFromCBS=function(cbsDir,scenario,env,mc.cores){
 	richByCell=parallel::mclapply(seq_along(cbs.f), function(x){
 		message(x)
 		cbs=readRDS(cbs.f[x])
-		data.frame(cellID=as.numeric(rownames(cbs)),
-		           rich=textTinyR:: sparse_Sums(cbs, rowSums = T))
+		a=data.frame(cellID=as.numeric(rownames(cbs)),
+		           rich=textTinyR::sparse_Sums(cbs, rowSums = T))
 	},mc.cores=mc.cores)
 	rich.vec=do.call('rbind',richByCell)
 	rich.r=raster(env[[1]])
@@ -291,5 +298,38 @@ richnessFromCBSAttr=function(cbsDir,
 	stack(out)
 }
 
-#ongspeciesInPolygon=function(cbs,myPolygon)
+#===================================================================
+#===================================================================
+#===================================================================
+#' @notes Units of range area are number of pixels
+#' @export
+rangeArea=function(cbsDir,outDir,scenario,sp.ind){
+	cbs.f=list.files(paste0(cbsDir,'/',scenario),full.names=T)
+	toss=grep('temp_',cbs.f)
+	cbs.f=cbs.f[-toss]
+	rangeSize.tmp=mclapply(seq_along(cbs.f),function(x){
+		message(x)
+		cbs=readRDS(cbs.f[x])
+		data.frame(rich=textTinyR::sparse_Sums(cbs, rowSums = F))
+	},mc.cores=mc.cores)
+		# assumes the columns line up perfectly
+	rangeSize=data.frame(sp.ind,rangeSize=apply(do.call('cbind', rangeSize.tmp), 1,sum))
 
+	saveRDS(rangeSize,file=paste0(outDir,'/RangeSize_',scenario, '.rds'))
+	# check against base range maps (leaving this here in case we find a need)
+	# checkVsRangeMaps=F
+	# 	if(scenario=='Present' & checkVsRangeMaps){
+	# 		range.f=list.files( '/Users/ctg/Documents/SDMs/BIEN41/NWPlants_BinaryOnly/BIEN41_outputs/PPM/BinaryMaps',full.names=T,recursive=T,pattern='TP05')
+	# 		keep=sample(seq_along(range.f),50)
+	# 		out=mclapply(seq_along(keep),function(x){
+	# 			r=raster(range.f[keep[x]])
+	# 			true=cellStats(r,sum,na.rm=T)
+	# 			sp=strsplit(tools::file_path_sans_ext(basename(range.f[keep[x]])), '__')[[1]][2]
+	# 			keep1=grep(sp, rangeSize$species)
+	# 			print(x)
+	# 			data.frame(sp=sp,true=true,cbsRangesize=rangeSize[keep1,3])
+	# 		},mc.cores=5)
+	# 		(out1=do.call(rbind,out))
+	# 	}
+	rangeSize
+}
