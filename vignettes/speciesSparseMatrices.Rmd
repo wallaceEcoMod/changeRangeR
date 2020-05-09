@@ -7,11 +7,12 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(cache = T)
 ```
 
-```{r}
+```{r,message=FALSE}
 library(changeRangeR)
+library(tidyverse)
 ```
 
 ```{r}
@@ -20,8 +21,8 @@ mc.cores=4
 env=stack(system.file("extdata/DemoData/Env/AllEnv.tif",package='changeRangeR'))
 
 #==============================================================
-# set up sparse matrices
-runName='DemoChangeRanger'
+# set up directories
+runName='DemoChangeRanger2'
 
 # scenarios (e.g., transfer)
 scenarios = 'Present'
@@ -34,16 +35,16 @@ sumDirs
 ```
 
 ```{r}
+# set up sparse matrices
 spRasterDir=system.file("extdata/DemoData/BinaryMaps",package='changeRangeR')
 allSpeciesMaps=list(rasterFiles=c(list.files(spRasterDir,
-                                             recursive=T,full.names=T,pattern='__noBias')))
+										recursive=T,full.names=T,pattern='__noBias')))
 allSpeciesMaps$sp.names=getSpNamesFromDirs(allSpeciesMaps$rasterFiles)
 
-# make sparse matrices
 setupSparseSpeciesMatrixStuff(sumDirs,scenario='Present', env,
                               allSpeciesMaps, 
                               myTempPath='~/Desktop',
-                              nCellChunks=10,mc.cores=mc.cores)
+                              nCellChunks=1,mc.cores=mc.cores,overwrite=TRUE)
 ```
 
 # Richness
@@ -52,16 +53,50 @@ scenario='Present'
 r=richnessFromCBS(cbsDir=sumDirs$cbsDir,scenario=scenario,env=env,mc.cores=mc.cores)
 writeRaster(r,file=paste0(sumDirs$richDir,'/Richness_',scenario,'.tif'),
             overwrite=T)
-plot(r)
+plot(r,col=cm.cols1(100))
 ```
+
+## Richness based on species attributes
+
+Each species can be assigned one (or more) binary attributes which are used to subset the species and calculate the richness of the species with the given attribute. An attribute might be 'genus', so convert genera into a bunch of binary dummy variables
+
+```{r}		
+sp.ind=read.csv(paste0(sumDirs$sumBaseDir,'/speciesIndexTable.csv'),
+                stringsAsFactors=F)
+genus=data.frame(genus= sapply(strsplit(allSpeciesMaps$sp.names,'_'),
+                               function(x) x[[1]]))
+	# let's just use the common genera
+genusAttr=sp.ind %>% bind_cols(pr=fastDummies::dummy_cols(genus)) %>%
+  select(species, index, genus_Leucadendron,genus_Leucospermum,
+         genus_Protea, genus_Serruria) 
+rg=richnessFromCBSAttr(sumDirs$cbsDir,scenario,env,mc.cores, attrTable=genusAttr)
+writeRaster(rg,file=paste0(sumDirs$richDir,'/Richness_',scenario, 
+                           '_byGenus.tif'), overwrite=T)
+plot(rg,col=cm.cols1(100))
+```
+
+
 # Range Area
 ```{r}
 sp.ind=read.csv(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.csv'),stringsAsFactors=F)
 ra=rangeArea(cbsDir=sumDirs$cbsDir,outDir=sumDirs$rangeSizeDir,
              scenario='Present',sp.ind=sp.ind)
 str(ra)
-hist(ra$rangeSize)
+head(ra)
+hist(ra$rangeArea)
 ```
+
+```{r}
+# Richness / total cells of all species present
+# rangeSize = 	# vector
+# cbs = 		# cels x species 
+# 
+# richness=colSum(cbs)
+# cumRSInCell=cbs %*% rangeSize 
+# 
+# end=richness/ cumRSInCell
+```
+
 
 
 
