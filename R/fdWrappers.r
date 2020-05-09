@@ -46,11 +46,11 @@ setupSparseSpeciesMatrixStuff=function(sumDirs,
 																			 nCellChunks=10,
 																			 mc.cores=1,
 																			 reprojectToEnv=FALSE,
-																			 myTempPath=rasterOptions()$tmpdir){
+																			 myTempPath=rasterOptions()$tmpdir,
+																			 overwrite=F){
 
 	#  for testing
-	#  scenario='Present'; nCellChunks=10; myTempPath=rasterOptions()$tmpdir
-	
+	#  scenario='Present'; nCellChunks=10; myTempPath=rasterOptions()$tmpdir; overwrite=F
 	# make summaryBaseDir inside? no, because you may use that without running the cellBySpeciesMatrics
 	
 	#=============================================================
@@ -66,25 +66,33 @@ setupSparseSpeciesMatrixStuff=function(sumDirs,
 	#================================================================
 	# cell by species list	
 		# generate cell by species matrices, to make everything downstream faster
-	# # write a single file for each cell NOPE
-	# 	# write out cell ids for each species as an intermediate product
-	# 	# list, with each element containing the indices of species occurring there
-	# 	# all cells on the grid have a list element, even those that are NA, to make the indexing easeier
-	# try a looooong table with columns of species index and cell index
+	# # write out cell ids for each species as an intermediate product
+	# make a looooong table with columns of species index and cell index
 		# make multiple in chunks and concatenate them later
 
-
-	#mapDir=paste0(summaryBaseDir,'/SpeciesConcensusMaps')
-	#scenarioDirs=c(list.files(mapDir,full.names=T),'/Users/ctg/Documents/SDMs/BIEN41/NWPlants/BinaryMaps/Present/BinaryMaps')
-
-	#for(i in 1:length(inputsFromSDMWorkflow$scenarios)){
-		#scenario=inputsFromSDMWorkflow$scenarios[i]
-		#print(scenario)
-		#if(length(inputsFromSDMWorkflow$binaryMapDirs[[scenario]])>0){
-		message('writing cell by species matrices; this can be slow...')
-
-		cellBySpeciesMatrices(outDir=sumDirs$cbsDir, allSpeciesMaps=allSpeciesMaps,scenario=scenario,env=env, sp.ind=sp.ind,cell.ind=cell.ind, nCellChunks= nCellChunks, removeTempFiles=FALSE, mc.cores=mc.cores, verbose=F, myTempPath=myTempPath,overwrite=F)
-		#}
-	#}
-
+	message('writing cell by species matrices; this can be slow...')
+	cellBySpeciesMatrices(outDir=sumDirs$cbsDir, allSpeciesMaps=allSpeciesMaps,scenario=scenario,env=env, sp.ind=sp.ind,cell.ind=cell.ind, nCellChunks=nCellChunks, removeTempFiles=FALSE, mc.cores=mc.cores, verbose=F, myTempPath=myTempPath,overwrite=overwrite)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

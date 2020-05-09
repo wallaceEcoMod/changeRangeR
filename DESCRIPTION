@@ -13,3 +13,8 @@ Depends:
   parallel,
   raster,
   textTinyR
+Suggests: 
+  parallelsugar,
+  fastDummies,
+  tidyverse
+RoxygenNote: 7.0.2
