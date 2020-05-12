@@ -1,4 +1,11 @@
+#' @title Minimum Convex Hull Polygon
+#' @param xy Matrix or Data frame of occurrence coordinates
+#' @param crs Character of coordinate reference system for minimum convex hull
+#' @description Generates a minimum convex polygon (MCP; i.e., convex hull) that
+#' is delineated from occurrence locality coordinates.
+#' This function is a wrapper for `chull()` that makes a SpatialPolygons object.
 #' @export
+
 
 # make a minimum convex polygon as SpatialPolygons object
 mcp <- function(xy, crs = NULL) {
