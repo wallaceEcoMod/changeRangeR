@@ -4,12 +4,14 @@
 \alias{aooArea}
 \title{Calculate land cover overlapping with thresholded prediction in sq km}
 \usage{
-aooArea(r, proj)
+aooArea(r, proj, locs = NULL)
 }
 \arguments{
-\item{r}{Binary Raster object}
+\item{r}{Raster layer of a binary SDM}
 
-\item{proj}{Projected coordinate system as CRS string}
+\item{proj}{Character string of r's projected coordinate system proj4string}
+
+\item{locs}{data.frame of occurrence records: Longitude and latitude}
 }
 \description{
 Calculate area of land cover of choice for thresholded prediction

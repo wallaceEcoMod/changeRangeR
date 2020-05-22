@@ -2,12 +2,22 @@
 % Please edit documentation in R/mcpSDM.R
 \name{mcpSDM}
 \alias{mcpSDM}
-\title{SDM-based Minimum Convex Polygon}
+\title{SDM-based Minimum Convex Hull Polygon}
 \usage{
 mcpSDM(p, xy, ch.orig, thr)
 }
+\arguments{
+\item{p}{Raster* object of species distribution model prediction to base hull calculation on}
+
+\item{xy}{Matrix or Data frame of occurrence coordinates}
+
+\item{ch.orig}{SpatialPolygons object of original minimum convex hull based on occurrence locality coordinates}
+
+\item{thr}{Numeric threshold used to convert the continuous SDM prediction to a binary range map;
+this is then used to delineate the hull}
+}
 \description{
-Generates a minimum convex polygon (MCP; i.e., convex hull) that is delineated from a thresholded SDM. 
+Generates a minimum convex polygon (MCP; i.e., convex hull) that is delineated from a thresholded SDM.
 For each increment of 0.01 between a user-specified threshold and the maximum SDM prediction value, the prediction is
 thresholded to this value to make a binary raster. This raster is then converted to points, which are used to delineate
 a trial MCP. Each trial MCP is spatially intersected with the original MCP (based on the occurrence coordinates) and
