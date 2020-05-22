@@ -28,8 +28,8 @@ mcpSDM <- function(p, xy, ch.orig, thr) {
     p.i[p.i == 0] <- NA
     p.i.xy <- rasterToPoints(p.i)
     if(nrow(p.i.xy) > 1) {
-      ch.i <- mcp(p.i.xy[,1:2], crs = wgs)
-      ov.xy <- rgeos::gIntersection(ch.i, SpatialPoints(xy, proj4string = CRS(wgs)))
+      ch.i <- mcp(p.i.xy[,1:2], crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+      ov.xy <- rgeos::gIntersection(ch.i, SpatialPoints(xy, proj4string = crs(ch.i)))
       if(!is.null(ov.xy)) ov.pts.vec[i] <- nrow(ov.xy@coords)
       ch.vec[[i]] <- ch.i
       ov <- rgeos::gIntersection(ch.i, ch.orig)
