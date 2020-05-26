@@ -12,6 +12,7 @@
 # p.pts <- rasterToPoints(p)
 # eooSDM <- mcp(p.pts[,1:2])
 # aeoosdm <- area(eooSDM)
+#
 # ### AOO prethreshold
 # locs <- read.csv("C:/Users/pgalante/OneDrive - AMNH/NASA-Wallace/changeRangeR/singleSpecies/Olinguito_data/Olinguito_RS_data/Occurrence_data/thinned_records/10KM_thin_2017.csv")
 # locs <-locs[,1:2]
