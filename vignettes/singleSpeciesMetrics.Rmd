@@ -1,0 +1,89 @@
+---
+title: "SingleSpeciesVignette"
+author: "P Galante"
+date: "5/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Single species range change metrics
+
+Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can reduce an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in maskRangeR). From these reduced models, IUCN metrics regarding area of occupancy (upper bounds of AOO) and extent of occurrence (EOO) can be calculated in order to inform assessment of a species’ conservation status.  In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform redlisting and forward-thinking conservation planning. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest such as richness, spatial and temporal turnover, endemism, and phylogenetic diversity, to understand complementarity across space and to further aid planning and decision-making.
+
+
+```{r}
+library(changeRangeR)
+library(raster)
+library(rgdal)
+```
+# EOO
+
+## EOO Occurrences
+
+Calculate the extent of occupancy around occurrence localities
+
+```{r EOO occs}
+locs <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
+head(locs)
+eoo <- mcp(locs[,1:2])
+area <- area(eoo)
+## area is measured in meters^2
+paste0(area, " meters ^2")
+```
+
+## EOO SDM
+
+Calculate the extent of occupancy from a thresholded SDM
+
+```{r}
+p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
+# Threshold of the minimum training presence
+thr <- 0.3380209
+p[p<thr] <- NA
+p.pts <- rasterToPoints(p)
+eooSDM <- mcp(p.pts[,1:2])
+aeoosdm <- area(eooSDM)
+paste0(aeoosdm, " meters ^2")
+```
+
+# AOO
+
+Calculating the areas of occupancy measured in gridcells where the resolution is 2km
+
+## AOO pre-threshold
+
+Calculate the area of occupancy 
+
+```{r}
+
+```
+
+## AOO occurrence points
+
+Calculate the area of occupancy 
+
+```{r}
+p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
+locs <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
+locs <- locs[,1:2]
+p[!is.na(p)] <- 1
+AOOlocs<-aooArea(r = p,proj = crs(p), locs = locs)
+
+print(AOOlocs)
+```
+
+## AOO thresholded SDM
+```{r}
+p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
+# Convert to binary
+p[!is.na(p)] <- 1
+AOO<-aooArea(r = p,proj = crs(p))
+print(AOO)
+```
+
+
+
+
