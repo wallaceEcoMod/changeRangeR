@@ -84,6 +84,22 @@ AOO<-aooArea(r = p,proj = crs(p))
 print(AOO)
 ```
 
+# Optimized Model Threshold
+
+Determining the best threshold and area for the SDM. For each increment of 0.01 between a user-specified threshold and the maximum SDM 
+prediction value, the prediction is thresholded to this value to make a binary raster. This raster is then converted to points, which 
+are used to delineate a trial MCP. Each trial MCP is spatially intersected with the original MCP (based on the occurrence coordinates) and
+the original occurrence points. The Jaccard similarity index is calculated to determine geographic similarity between the trial and 
+observed MCP. The trial MCP is also spatially intersected with the original occurrence points to determine how many were omitted. The 
+"best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
+
+```{r, warning=F}
+p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
+xy <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
+ch.orig <- mcp(xy[,1:2])
+thr <- 0.3380209
+SDMeoo <- mcpSDM(p = p, xy = xy[,1:2], ch.orig = ch.orig, thr = thr)
+```
 
 
 

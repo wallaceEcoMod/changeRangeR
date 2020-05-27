@@ -16,6 +16,7 @@
 #'
 
 mcpSDM <- function(p, xy, ch.orig, thr) {
+  options(warn=-1)
   vals.p <- getValues(p)
   x <- seq(thr, max(vals.p, na.rm=TRUE), 0.01)
   jsi.vec <- numeric(length(x))
@@ -46,5 +47,6 @@ mcpSDM <- function(p, xy, ch.orig, thr) {
   i.bestfit <- which(jsi.vec.allPts == max(jsi.vec.allPts))
   ch.bestfit <- ch.vec[[i.bestfit]]
 
+  options(warn=0)
   return(list(jsi = jsi.vec, thr = x, ov.pts = ov.pts.vec, best.fit = ch.bestfit, best.fit.ind = i.bestfit))
 }
