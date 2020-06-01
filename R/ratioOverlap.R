@@ -11,6 +11,10 @@
 #'
 #'
 
+### FIX RESOLUTION AND PROJECTION STUFF . Beth projected shapefile to the raster
+## if one is projected in utm, project other to utm
+
+
 ratioOverlap <- function(r, shp, field, category){
   setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
   require(sf)

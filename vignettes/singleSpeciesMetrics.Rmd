@@ -19,6 +19,23 @@ library(changeRangeR)
 library(raster)
 library(rgdal)
 ```
+# Range size
+
+Calculating range size is as simple as multiplying the number of cells in a binary raster by the resolution (in km) squared.
+This method is especially useful when your raster is projected. For unprojected rasters, see ?raster::area
+
+```{r}
+p <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
+# find the number of cells that are not NA
+pCells <- ncell(p[!is.na(p)])
+# Convert the raster resolution to km^s
+Resolution <- (res(p)/1000)^2
+# Multiply the two
+area <- pCells * Resolution
+
+paste0("area = ", area[1], " km^2")
+```
+
 # EOO
 
 ## EOO Occurrences
@@ -39,9 +56,9 @@ paste0(area, " meters ^2")
 Calculate the extent of occupancy from a thresholded SDM
 
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
+p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
 # Threshold of the minimum training presence
-thr <- 0.3380209
+thr <- min(values(p), na.rm=T)
 p[p<thr] <- NA
 p.pts <- rasterToPoints(p)
 eooSDM <- mcp(p.pts[,1:2])
@@ -63,11 +80,12 @@ Calculate the area of occupancy
 
 ## AOO occurrence points
 
-Calculate the area of occupancy 
+Calculate the area of occupancy that contains occurrence records
 
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
-locs <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
+p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
+# Using unfiltered records
+locs <- read.csv("inst/extdata/DemoData/locs/All_localities_30n.csv")
 locs <- locs[,1:2]
 p[!is.na(p)] <- 1
 AOOlocs<-aooArea(r = p,proj = crs(p), locs = locs)
@@ -94,12 +112,12 @@ observed MCP. The trial MCP is also spatially intersected with the original occu
 "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
 
 ```{r, warning=F}
-p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
+p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
 xy <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
 ch.orig <- mcp(xy[,1:2])
 thr <- 0.3380209
 SDMeoo <- mcpSDM(p = p, xy = xy[,1:2], ch.orig = ch.orig, thr = thr)
 ```
 
-
+# Ratio overlap
 
