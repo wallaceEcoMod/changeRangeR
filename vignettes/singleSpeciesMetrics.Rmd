@@ -18,6 +18,8 @@ Translating a species’ current distribution into meaningful conservation metri
 library(changeRangeR)
 library(raster)
 library(rgdal)
+library(sf)
+library(dplyr)
 ```
 # Range size
 
@@ -70,7 +72,7 @@ paste0(aeoosdm, " meters ^2")
 
 Calculating the areas of occupancy measured in gridcells where the resolution is 2km
 
-## AOO pre-threshold
+## AOO pre-mask
 
 Calculate the area of occupancy 
 
@@ -93,9 +95,18 @@ AOOlocs<-aooArea(r = p,proj = crs(p), locs = locs)
 print(AOOlocs)
 ```
 
-## AOO thresholded SDM
+## AOO pre-masked SDM
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/olinguito_sdm.tif")
+p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
+# Convert to binary
+p[!is.na(p)] <- 1
+AOO<-aooArea(r = p,proj = crs(p))
+print(AOO)
+```
+
+## AOO masked SDM
+```{r}
+p <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO<-aooArea(r = p,proj = crs(p))
@@ -112,12 +123,25 @@ observed MCP. The trial MCP is also spatially intersected with the original occu
 "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
 
 ```{r, warning=F}
-p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
+p <- raster("inst/extdata/DemoData/SDM/olinguitoSDM.tif")
 xy <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
 ch.orig <- mcp(xy[,1:2])
 thr <- 0.3380209
 SDMeoo <- mcpSDM(p = p, xy = xy[,1:2], ch.orig = ch.orig, thr = thr)
+# Check the output
+SDMeoo
 ```
 
 # Ratio overlap
 
+```{r}
+r <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
+shp <- readOGR("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
+field <- "DESIG_ENG"
+category <- "All"
+ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category)
+# Look at the range that is protected
+plot(ratio.Overlap@maskedRange)
+# The proportion of the range that is protected
+ratio.Overlap@ratio
+```

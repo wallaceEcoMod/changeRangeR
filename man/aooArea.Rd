@@ -2,7 +2,7 @@
 % Please edit documentation in R/aooArea.R
 \name{aooArea}
 \alias{aooArea}
-\title{Calculate land cover overlapping with thresholded prediction in sq km}
+\title{Calculate AOO}
 \usage{
 aooArea(r, proj, locs = NULL)
 }
@@ -11,8 +11,9 @@ aooArea(r, proj, locs = NULL)
 
 \item{proj}{Character string of r's projected coordinate system proj4string}
 
-\item{locs}{data.frame of occurrence records: Longitude and latitude}
+\item{locs}{(optional) data.frame of occurrence records: Longitude and latitude. If provided, AOO of cells containing occurrence points
+is returned. If NULL, AOO of SDM is returned.}
 }
 \description{
-Calculate area of land cover of choice for thresholded prediction
+Calculate area of occupancy measured in 2km resolution using a binary SDM
 }

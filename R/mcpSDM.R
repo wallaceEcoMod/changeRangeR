@@ -1,6 +1,6 @@
 #' @name mcpSDM
 #' @title SDM-based Minimum Convex Hull Polygon
-#' @param p Raster* object of species distribution model prediction to base hull calculation on
+#' @param p Raster* object of a continuous species distribution model prediction to base hull calculation on
 #' @param xy Matrix or Data frame of occurrence coordinates
 #' @param ch.orig SpatialPolygons object of original minimum convex hull based on occurrence locality coordinates
 #' @param thr Numeric threshold used to convert the continuous SDM prediction to a binary range map;

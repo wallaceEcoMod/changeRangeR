@@ -7,7 +7,7 @@
 mcpSDM(p, xy, ch.orig, thr)
 }
 \arguments{
-\item{p}{Raster* object of species distribution model prediction to base hull calculation on}
+\item{p}{Raster* object of a continuous species distribution model prediction to base hull calculation on}
 
 \item{xy}{Matrix or Data frame of occurrence coordinates}
 
