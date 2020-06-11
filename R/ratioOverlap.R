@@ -16,35 +16,37 @@
 
 
 ratioOverlap <- function(r, shp, field, category){
-  setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
+  #setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
   require(sf)
   require(rgdal)
   require(raster)
   require(dplyr)
 
   if (category == "All"){
-    shp <- st_as_sf(shp)
-    r <- projectRaster(r, crs = crs(shp))
-    maskedRange <- mask(r, shp)
+    shp <- sf::st_as_sf(shp)
+    r <- raster::projectRaster(r, crs = crs(shp))
+    maskedRange <- raster::mask(r, shp)
   }
   else {
-    shp <- st_as_sf(shp)
+    shp <- sf::st_as_sf(shp)
     # if (crs == NULL){
     #   fc <- filter(shp, grepl(category, field))
     #   out<- mask(r, fc)
     # } else {
-    r <- projectRaster(r, crs = crs(shp))
-    fc <- lapply(category, function(x) filter(shp, shp[[field]]==x))
+    r <- raster::projectRaster(r, crs = crs(shp))
+    fc <- lapply(category, function(x) dplyr::filter(shp, shp[[field]]==x))
     fc <- do.call("rbind", fc)
     #fc <- filter(shp, shp[[field]]==category)
-    maskedRange <- mask(r, fc)
+    maskedRange <- raster::mask(r, fc)
     #  }
     #  return(out)
   }
-  ratio <- ncell(maskedRange[!is.na(maskedRange)]) / ncell(r[!is.na(r)]) * 100
+  ratio <- raster::ncell(maskedRange[!is.na(maskedRange)]) / raster::ncell(r[!is.na(r)]) * 100
   ratio <- paste0("Percentage of range within shape is ", ratio, "%")
 
-  out <- new("ratioOverlap", maskedRange = maskedRange, ratio = ratio)
+  #out <- new("ratioOverlap", maskedRange = maskedRange, ratio = ratio)
+  return(list(maskedRange = maskedRange, ratio = ratio))
+
 }
 
 # r <- raster('C:/Users/pgalante/Projects/NASA/maskRangeR/dataDriven/olinguito/olinguito_sdm.tif')

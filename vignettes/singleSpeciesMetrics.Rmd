@@ -134,14 +134,43 @@ SDMeoo
 
 # Ratio overlap
 
-```{r}
+## Current 
+
+```{r, warning = F}
 r <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
 shp <- readOGR("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
 field <- "DESIG_ENG"
 category <- "All"
 ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category)
 # Look at the range that is protected
-plot(ratio.Overlap@maskedRange)
+plot(ratio.Overlap$maskedRange)
 # The proportion of the range that is protected
-ratio.Overlap@ratio
+ratio.Overlap$ratio
+```
+
+
+## Future 
+
+```{r}
+# create list of shapefiles
+shp1 <- readOGR("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
+shp2 <- shp1
+shp3 <- shp1
+shp4 <- shp1
+futures <- list(shp1,shp2, shp3, shp4)
+# load raster
+r <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
+r <- list(r,r,r,r)
+field <- "DESIG_ENG"
+category <- "All"
+# supply names for r and futures
+r.names <- c("r1", "r2", "r3", "r4")
+futures.names <- c("f1", "f2", "f3", "f4")
+# Calculate the overlap for each time period
+future.ratios <- futureOverlap(r = r, futures = futures, field = field, category = category, futures.names, r.names)
+## Plot
+# Create list of years from which landcover comes
+years <- c(2000, 2001, 2002, 2003)
+# Plot
+plot(x = future.ratios, y = years, type = "b", main = "Percent of SDM predicted to be protected")
 ```
