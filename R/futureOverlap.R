@@ -46,6 +46,7 @@ futureOverlap <- function(r, futures, field, category, r.names, futures.names){
   #ratio <- ncell(maskedRange[!is.na(maskedRange)]) / ncell(r[!is.na(r)]) * 100
   #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
   ratioValues <- mapply(function(x,y,z){paste0("Overlap between ", x, " and ", y, " is ", z)}, x=r.names, y=futures.names, z=rat.io.s)
-  return(ratioValues)
+  ratioValues <- data.frame(strsplit(ratioValues, "is "))
+  return(t(ratioValues))
   # out <- new("ratioOverlap", maskedRange = maskedRange, ratio = ratio)
 }

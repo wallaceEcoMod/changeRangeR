@@ -17,6 +17,7 @@ Translating a species’ current distribution into meaningful conservation metri
 ```{r}
 library(changeRangeR)
 library(raster)
+library(rgeos)
 library(rgdal)
 library(sf)
 library(dplyr)
@@ -48,9 +49,10 @@ Calculate the extent of occupancy around occurrence localities
 locs <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
 head(locs)
 eoo <- mcp(locs[,1:2])
-area <- area(eoo)
+# crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+area <- area(eoo)/1000000
 ## area is measured in meters^2
-paste0(area, " meters ^2")
+paste0(area, " km ^2")
 ```
 
 ## EOO SDM
@@ -64,7 +66,7 @@ thr <- min(values(p), na.rm=T)
 p[p<thr] <- NA
 p.pts <- rasterToPoints(p)
 eooSDM <- mcp(p.pts[,1:2])
-aeoosdm <- area(eooSDM)
+aeoosdm <- area(eooSDM)/1000000
 paste0(aeoosdm, " meters ^2")
 ```
 
@@ -85,7 +87,7 @@ Calculate the area of occupancy
 Calculate the area of occupancy that contains occurrence records
 
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
+p <- raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
 # Using unfiltered records
 locs <- read.csv("inst/extdata/DemoData/locs/All_localities_30n.csv")
 locs <- locs[,1:2]
@@ -172,5 +174,8 @@ future.ratios <- futureOverlap(r = r, futures = futures, field = field, category
 # Create list of years from which landcover comes
 years <- c(2000, 2001, 2002, 2003)
 # Plot
-plot(x = future.ratios, y = years, type = "b", main = "Percent of SDM predicted to be protected")
+plot(x = future.ratios[,2], y = years, type = "b", main = "Percent of SDM predicted to be protected")
 ```
+
+
+
