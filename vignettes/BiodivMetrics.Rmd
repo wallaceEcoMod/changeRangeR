@@ -1,0 +1,13 @@
+---
+title: "BiodiversityMetrics"
+author: "P Galante, A Paz"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Biodiversity metrics
+Using multiple species for landscape-level species metrics
