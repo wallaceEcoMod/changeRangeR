@@ -11,3 +11,92 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Biodiversity metrics
 Using multiple species for landscape-level species metrics
+
+## Species Richness
+### Load and manage spatial data
+Loading the SDM data and ensuring the names match the phylogeny
+
+Data are from: Henao-Díaz, F. et al. (2020). Atlas de la biodiversidad de Colombia. Primates. Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. Bogotá D. C., Colombia. 51 pp.
+
+```{r}
+# Load binary maps/SDMs
+primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
+# Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
+names(primRas) <- gsub("*_veg", "", names(primRas))
+# Drop models that are resolved into one group; Cebus_albifrons
+primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
+oldnames <- names(primRas)
+namesToChange <- c("Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
+newNames <- c("Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
+oldnames[oldnames %in% namesToChange] <- newNames
+names(primRas) <- oldnames
+```
+ 
+Calculate species richness by summing the raster values 
+```{r}
+SR <- sum(primRas, na.rm = T)
+plot(SR)
+```
+
+
+## Phylogenetic diversity
+Phylogenetic diversity can be calculated from binary range-maps, or as here, thresholded SDMs. We combine these maps with phylogenetic trees to calculate this measure of diversity.
+
+It is important to note that species-experts can edit binary SDMs, such as is done in the R package [*maskRangeR*](https://cmerow.github.io/maskRangeR/) to add or remove areas.
+
+Load packages that will be useful for these analyses
+```{r}
+library(picante)
+library(raster)
+```
+### Load and manage spatial data
+Loading the SDM data and ensuring the names match the phylogeny
+```{r}
+# Load binary maps/SDMs
+primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
+# Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
+names(primRas) <- gsub("*_veg", "", names(primRas))
+# Drop models that are resolved into one group; Cebus_albifrons
+primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
+oldnames <- names(primRas)
+namesToChange <- c("Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
+newNames <- c("Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
+oldnames[oldnames %in% namesToChange] <- newNames
+names(primRas) <- oldnames
+```
+
+Here, we are only interested in the areas relating to Colombia. To mask the SDMs by Colombia, we can download spatial data and use that as a mask.
+```{r}
+# First, download altitude data for Colombia using the raster package
+col <- raster::getData(name = "alt", country = "COL")
+col <- crop(col, primRas)
+primRas <- crop(primRas, col)
+```
+
+### Load phylogenetic tree
+```{r}
+primTree <- read.nexus("inst/extdata/DemoData/phyloTree/output.nex")
+```
+
+Convert NA values to 0
+```{r}
+# set all cells that have NA values to 0
+for (i in 1:nlayers(primRas)){
+  primRas[[i]][is.na(primRas[[i]])] <- 0
+}
+```
+
+Convert the rasterStack to a data.frame
+```{r}
+# convert raster to dataframe
+commDat <- as.data.frame(primRas)
+# remove rows that are NA
+commDat <- na.omit(commDat)
+```
+
+Calculate phylogenetic diversity, here using the 500th tree as an example
+```{r}
+phydiv <- pd(commDat[,2:ncol(commDat)], primTree[[1]], include.root = TRUE)
+```
+
+

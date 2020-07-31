@@ -6,12 +6,12 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
 ```
 
 ## Single species range change metrics
 
-Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can reduce an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in maskRangeR). From these reduced models, IUCN metrics regarding area of occupancy (upper bounds of AOO) and extent of occurrence (EOO) can be calculated in order to inform assessment of a species’ conservation status.  In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform redlisting and forward-thinking conservation planning. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest such as richness, spatial and temporal turnover, endemism, and phylogenetic diversity, to understand complementarity across space and to further aid planning and decision-making.
+Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in maskRangeR). From these reduced model outputs, IUCN metrics regarding area of occupancy (upper bounds of AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status.  In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing and forward-thinking conservation planning. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest such as richness, spatial and temporal turnover, endemism, and phylogenetic diversity, to understand complementarity across space and to further aid planning and decision-making.
 
 
 ```{r}
@@ -28,7 +28,9 @@ Calculating range size is as simple as multiplying the number of cells in a bina
 This method is especially useful when your raster is projected. For unprojected rasters, see ?raster::area
 
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
+p <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
+# Check that your raster is projected in meters
+crs(p)
 # find the number of cells that are not NA
 pCells <- ncell(p[!is.na(p)])
 # Convert the raster resolution to km^s
@@ -47,9 +49,12 @@ Calculate the extent of occupancy around occurrence localities
 
 ```{r EOO occs}
 locs <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
+# Look at the first 5 rows. Not that there are three columns: Species, Longitude, Latitude
 head(locs)
-eoo <- mcp(locs[,1:2])
-# crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+# Create a minimum convex polygon around the occurrences
+eoo <- mcp(locs[,2:3])
+# Define the coordinate reference system as unprojected
+crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 area <- area(eoo)/1000000
 ## area is measured in meters^2
 paste0(area, " km ^2")
@@ -60,7 +65,7 @@ paste0(area, " km ^2")
 Calculate the extent of occupancy from a thresholded SDM
 
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
+p <-raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
 # Threshold of the minimum training presence
 thr <- min(values(p), na.rm=T)
 p[p<thr] <- NA
@@ -74,20 +79,12 @@ paste0(aeoosdm, " meters ^2")
 
 Calculating the areas of occupancy measured in gridcells where the resolution is 2km
 
-## AOO pre-mask
-
-Calculate the area of occupancy 
-
-```{r}
-
-```
-
 ## AOO occurrence points
 
 Calculate the area of occupancy that contains occurrence records
 
 ```{r}
-p <- raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
+p <- raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
 # Using unfiltered records
 locs <- read.csv("inst/extdata/DemoData/locs/All_localities_30n.csv")
 locs <- locs[,1:2]
@@ -99,7 +96,7 @@ print(AOOlocs)
 
 ## AOO pre-masked SDM
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected1.tif")
+p <-raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO<-aooArea(r = p,proj = crs(p))
@@ -108,7 +105,7 @@ print(AOO)
 
 ## AOO masked SDM
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
+p <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO<-aooArea(r = p,proj = crs(p))
@@ -124,12 +121,12 @@ the original occurrence points. The Jaccard similarity index is calculated to de
 observed MCP. The trial MCP is also spatially intersected with the original occurrence points to determine how many were omitted. The 
 "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
 
-```{r, warning=F}
-p <- raster("inst/extdata/DemoData/SDM/olinguitoSDM.tif")
+```{r}
+p <- raster("inst/extdata/DemoData/SDM/olinguito/olinguitoSDM.tif")
 xy <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
-ch.orig <- mcp(xy[,1:2])
+ch.orig <- mcp(xy[,2:3])
 thr <- 0.3380209
-SDMeoo <- mcpSDM(p = p, xy = xy[,1:2], ch.orig = ch.orig, thr = thr)
+SDMeoo <- mcpSDM(p = p, xy = xy[,2:3], ch.orig = ch.orig, thr = thr)
 # Check the output
 SDMeoo
 ```
@@ -139,8 +136,11 @@ SDMeoo
 ## Current 
 
 ```{r, warning = F}
-r <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
+r <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
 shp <- readOGR("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
+# View the fields
+colnames(shp@data)
+# Pick the field you are interested in
 field <- "DESIG_ENG"
 category <- "All"
 ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category)
@@ -161,7 +161,7 @@ shp3 <- shp1
 shp4 <- shp1
 futures <- list(shp1,shp2, shp3, shp4)
 # load raster
-r <-raster("inst/extdata/DemoData/SDM/Forest_suitable_projected1.tif")
+r <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
 r <- list(r,r,r,r)
 field <- "DESIG_ENG"
 category <- "All"

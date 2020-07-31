@@ -49,9 +49,3 @@ ratioOverlap <- function(r, shp, field, category){
 
 }
 
-# r <- raster('C:/Users/pgalante/Projects/NASA/maskRangeR/dataDriven/olinguito/olinguito_sdm.tif')
-# # shp <- readOGR("C:/Users/pgalante/OneDrive - AMNH/NASA-Wallace/changeRangeR/singleSpecies/Olinguito_data/Olinguito_RS_data/WDPA_protected_areas/WDPA_May2020_COL-shapefile", "WDPA_May2020_COL-shapefile-polygons")
-# shp <- readOGR("C:/Users/pgalante/OneDrive - AMNH/NASA-Wallace/changeRangeR/singleSpecies/Olinguito_data/Olinguito_RS_data/WDPA_protected_areas/WDPA_May2020_Ecuador-shapefile", "WDPA_May2020_Ecuador-polygons")
-# field <- "DESIG_ENG"
-# category <- "All"
-# test <- ratioOverlap(r = r, shp = shp, field = field, category = category)
