@@ -12,6 +12,12 @@ knitr::opts_chunk$set(echo = TRUE)
 # Biodiversity metrics
 Using multiple species for landscape-level species metrics
 
+Load packages that will be useful for these analyses
+```{r}
+library(picante)
+library(raster)
+```
+
 ## Species Richness
 ### Load and manage spatial data
 Loading the SDM data and ensuring the names match the phylogeny
@@ -26,8 +32,8 @@ names(primRas) <- gsub("*_veg", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
-namesToChange <- c("Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
-newNames <- c("Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
+namesToChange <- c("Cebus_all_albifrons", "Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
+newNames <- c("Cebus_albifrons", "Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
 oldnames[oldnames %in% namesToChange] <- newNames
 names(primRas) <- oldnames
 ```
@@ -38,17 +44,11 @@ SR <- sum(primRas, na.rm = T)
 plot(SR)
 ```
 
-
 ## Phylogenetic diversity
 Phylogenetic diversity can be calculated from binary range-maps, or as here, thresholded SDMs. We combine these maps with phylogenetic trees to calculate this measure of diversity.
 
 It is important to note that species-experts can edit binary SDMs, such as is done in the R package [*maskRangeR*](https://cmerow.github.io/maskRangeR/) to add or remove areas.
 
-Load packages that will be useful for these analyses
-```{r}
-library(picante)
-library(raster)
-```
 ### Load and manage spatial data
 Loading the SDM data and ensuring the names match the phylogeny
 ```{r}
@@ -59,12 +59,19 @@ names(primRas) <- gsub("*_veg", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
-namesToChange <- c("Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
-newNames <- c("Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
+namesToChange <- c("Cebus_all_albifrons", "Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
+newNames <- c("Cebus_albifrons", "Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
 oldnames[oldnames %in% namesToChange] <- newNames
 names(primRas) <- oldnames
 ```
 
+To save time in this vignette, let's crop down the primate rasters to a much smaller extent
+```{r}
+e <- extent(c(-75, -70, 0, 2.5))
+primRas <- crop(primRas, e)
+```
+
+<!--
 Here, we are only interested in the areas relating to Colombia. To mask the SDMs by Colombia, we can download spatial data and use that as a mask.
 ```{r}
 # First, download altitude data for Colombia using the raster package
@@ -72,6 +79,7 @@ col <- raster::getData(name = "alt", country = "COL")
 col <- crop(col, primRas)
 primRas <- crop(primRas, col)
 ```
+-->
 
 ### Load phylogenetic tree
 ```{r}
@@ -92,11 +100,26 @@ Convert the rasterStack to a data.frame
 commDat <- as.data.frame(primRas)
 # remove rows that are NA
 commDat <- na.omit(commDat)
+row.names(commDat) <- 1:nrow(commDat)
 ```
 
 Calculate phylogenetic diversity, here using the 500th tree as an example
 ```{r}
-phydiv <- pd(commDat[,2:ncol(commDat)], primTree[[1]], include.root = TRUE)
+user_phylogeny <- primTree[1]$tree_6532
+phydiv <- pd(samp = commDat, tree = user_phylogeny, include.root = TRUE)
+```
+
+Add the phylogenetic diversity pixel values to the community data data.frame
+```{r}
+commDat$pd <- phydiv$PD
+```
+
+To create a raster of phylogenetic diversity, start with an empty raster. Add the primate raster values from the primRas rasterstack to get a single raster showing every pixel for which we have a PD value.
+```{r}
+pd_ras <- sum(primRas, na.rm=T)
+pd_ras[!is.na(pd_ras)] <- commDat$pd
+pd_ras[pd_ras == 0] <- NA
+plot(pd_ras)
 ```
 
 
