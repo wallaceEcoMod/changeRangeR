@@ -16,6 +16,9 @@ Load packages that will be useful for these analyses
 ```{r}
 library(picante)
 library(raster)
+library(phylobase)
+#library(sf)
+library(dplyr)
 ```
 
 ## Species Richness
@@ -27,6 +30,7 @@ Data are from: Henao-Díaz, F. et al. (2020). Atlas de la biodiversidad de Colom
 ```{r}
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
+primRas[primRas == 0] <- NA
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
 names(primRas) <- gsub("*_veg", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
@@ -121,5 +125,185 @@ pd_ras[!is.na(pd_ras)] <- commDat$pd
 pd_ras[pd_ras == 0] <- NA
 plot(pd_ras)
 ```
+## Phylogenetic endemism
+Phylogenetic endemism combines phylogenetic trees with spatial data. PE is calculated by dividing each branch lenght over the total number of locations where the species that descend from that branch are found (Rosauer et al., 2009).
+
+Here, we can calculate PE from a function written by, and hosted by Dan Rosauer on [Github](https://github.com/DanRosauer/phylospatial)
+
+To begin, load and manage the spatial data to make sure the names match those in the phylogeny
+```{r}
+# Load binary maps/SDMs
+primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
+primRas[primRas == 0] <- NA
+# Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
+names(primRas) <- gsub("*_veg", "", names(primRas))
+# Drop models that are resolved into one group; Cebus_albifrons
+primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
+oldnames <- names(primRas)
+namesToChange <- c("Cebus_all_albifrons", "Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
+newNames <- c("Cebus_albifrons", "Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
+oldnames[oldnames %in% namesToChange] <- newNames
+names(primRas) <- oldnames
+```
+
+As before, let's crop the rasters for processing speed.
+```{r}
+e <- extent(c(-75, -70, 0, 2.5))
+primRas <- crop(primRas, e)
+```
+
+Load in the phylogenetic trees
+```{r}
+primTree <- read.nexus("inst/extdata/DemoData/phyloTree/output.nex")
+```
+
+The function, provided, on github, by Dan Rosauer (https://github.com/DanRosauer/phylospatial), needs to be defined:
+```{r}
+##################################################
+##  A script to calculate phylogenetic endemism ##
+##  Dan Rosauer                                 ##
+##  dan.rosauer@anu.edu.au                      ##
+##  revised March 2015                          ##
+##################################################
+
+## the calc_PE() function in this script calculates phylogenetic endemism from a
+## tree and a sites by tips (species) matrix.
+  
+##   tree                 - the names on tree's tip labels need to match the column names on the matrix
+##   sites x tips matrix  - the sites should represent equal areas (presumably grid cells).   There is no need to include unoccupied grid cells.  One easy way to get this, is to simply round the coordinates to the appropriate grid resolution, and then group occurrences at the same rounded location together using aggregate or dplyr
+##   presence             - specifies what the values in the matrix cells mean, and how to calculate PE
+##                             presence uses 0 or 1 for presence / absence.  This is PE exactly as in Rosauer et al 2009
+##                             abundance is an amount (could be number of individuals, proportion of cell occupied etc).  With abundance, PE is equivalent to Caddotte & Davies BED)
+##                             probability is a value from 0 to 1, for example from an SDM.  Probability then propagates to internal branches at the probability that any of the descendent branches are present.  This method is described in a paper of mine in, which is being pending minor revisions.
+
+library(phylobase)
+
+calc_PE <- function(tree, sites_x_tips,presence=c("presence","abundance","probability")) {
+  
+  # add code to check that the values are correct for the presence type:
+  # 0 or 1 for presence - this calculates PE (Rosauer et al 2009)
+  # from 0 to 1 for probability - this calculates model weighted PE (Rosauer, in prep)
+  # any value for abundance - this calculation is equivalent to BED (Cadotte & Davies 2010)
+  
+  #default value for presence
+  if (is.na(presence)) {presence="presence"}
+  
+  # change to a phylobase phylo4 object
+  if (class(tree) == "phylo") {tree <- phylo4(tree)}
+  
+  sites_x_branches <- data.frame(cbind(rep(0,nrow(sites_x_tips))))
+  
+  for (i in 1:nTips(tree)) {
+    sites_x_branches[,i] <- sites_x_tips[,which(labels(tree)[i]==names(sites_x_tips))]
+    names( sites_x_branches)[i] <- labels(tree)[i]
+  }
+  
+  rm(sites_x_tips); gc()
+  branch.labels <- as.character(labels(tree))
+  branch.count <- length(labels(tree))
+  
+  # add names and occupancy columns for internal branches
+  for (i in (nTips(tree)+1):branch.count) {
+    branch.labels[i] <- paste("b",i,sep="")
+    desc <- as.integer(descendants(tree,i, type="tips"))
+    if (presence=="abundance") {
+      branch_col <- as.numeric(apply(sites_x_branches[,desc],MARGIN=1,FUN=sum))
+    } else if (presence=="presence") {
+      branch_col <- as.numeric(apply(sites_x_branches[,desc],MARGIN=1,FUN=max))
+    } else if (presence=="probability") {
+      branch_col <- as.numeric(apply(sites_x_branches[,desc],MARGIN=1,FUN=parent.prob))
+    }
+    sites_x_branches[,i] <- branch_col
+    names(sites_x_branches[i]) <- branch.labels[i]
+    #cat(i,branch.labels[i],length(desc),"\n")
+    gc(verbose=F)
+  }
+  
+  #scale columns (branches) to sum to 1
+  sites_x_branches <- apply(sites_x_branches,MARGIN=2,FUN=scale.to,1)
+  
+  #now scale branches to sum to their length
+  branch.lengths <- as.numeric(edgeLength(tree,1:branch.count))
+  branch.lengths[is.na(branch.lengths)] <- 0
+  for (i in 1:length(branch.lengths)) {
+    sites_x_branches[,i] <- sites_x_branches[,i] * branch.lengths[i]
+  }
+  
+  PE.vec <- apply(sites_x_branches,MARGIN=1,FUN=sum,na.rm=T)
+  PE <- data.frame(cbind(1:nrow(sites_x_branches),PE.vec))
+  names(PE) <- c("site","PE")
+  return(PE)
+}
 
 
+parent.prob <- function(probabilities) {
+  # probabilities is a vector of values between 0 and 1
+  # add code to check values are of correct type!
+  parent.prob <- 1 - prod(1-probabilities)
+  return(parent.prob)
+}
+
+scale.to <- function(vec,vec.sum) {
+  #mat is a vector
+  #this function rescales each the vector values to sum to 'vec.sum'
+  vec.tot <- sum(vec,na.rm=TRUE)
+  if (vec.tot > 0) {
+    vec.out <- vec.sum*vec/vec.tot
+  } else {
+    vec.out <- rep(0,times=length(vec))  #should columns for tips / branches with no occurrences be removed?
+  }
+  return(vec.out)
+}
+```
+
+Next, prepare the raster data for the function 'calc_PE'
+```{r}
+## Convert the binary primate SDMs to a point data.frame, removing the X and Y data. 
+Allxy <- rasterToPoints(primRas)
+sites <- as.data.frame(Allxy[,1:ncol(Allxy)])
+## Change all NA values to 0
+sites[is.na(sites)] <- 0
+```
+
+Calculate PE
+```{r}
+pEprimates <- calc_PE(tree = primTree[[1]], sites_x_tips = sites, presence = "presence")
+```
+
+Next, transform the pixel-wise PE values back into a raster
+```{r}
+## cbind the pixel centroids with PE values and convert to a raster
+PExyz <- cbind(Allxy[,1:2], pEprimates$PE)
+PE.ras <- rasterFromXYZ(PExyz)
+PE.ras[PE.ras == 0] <- NA
+plot(PE.ras)
+```
+## Species Endemism
+Here, species endemism is defined as a value for each cell equal to the number of species found in that cell divided by the total number of cells in which they are found
+
+Load and manage spatial data
+```{r}
+# Load binary maps/SDMs
+primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
+# Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
+names(primRas) <- gsub("*_veg", "", names(primRas))
+# Drop models that are resolved into one group; Cebus_albifrons
+primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
+oldnames <- names(primRas)
+namesToChange <- c("Cebus_all_albifrons", "Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
+newNames <- c("Cebus_albifrons", "Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
+oldnames[oldnames %in% namesToChange] <- newNames
+names(primRas) <- oldnames
+```
+
+Again, let's crop the rasters for processing speed.
+```{r}
+e <- extent(c(-75, -70, 0, 2.5))
+primRas <- crop(primRas, e)
+```
+
+Calculate species endemism
+```{r}
+sp.End <- SE(primRas)
+plot(sp.End)
+```
