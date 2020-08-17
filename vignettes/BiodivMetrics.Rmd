@@ -2,7 +2,9 @@
 title: "BiodiversityMetrics"
 author: "P Galante, A Paz"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -19,6 +21,7 @@ library(raster)
 library(phylobase)
 #library(sf)
 library(dplyr)
+library(changeRangeR)
 ```
 
 ## Species Richness
@@ -30,7 +33,6 @@ Data are from: Henao-Díaz, F. et al. (2020). Atlas de la biodiversidad de Colom
 ```{r}
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
-primRas[primRas == 0] <- NA
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
 names(primRas) <- gsub("*_veg", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
@@ -86,6 +88,7 @@ primRas <- crop(primRas, col)
 -->
 
 ### Load phylogenetic tree
+THIS NEEDS A CITATION (ANDREA?)
 ```{r}
 primTree <- read.nexus("inst/extdata/DemoData/phyloTree/output.nex")
 ```
@@ -134,7 +137,6 @@ To begin, load and manage the spatial data to make sure the names match those in
 ```{r}
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
-primRas[primRas == 0] <- NA
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
 names(primRas) <- gsub("*_veg", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
