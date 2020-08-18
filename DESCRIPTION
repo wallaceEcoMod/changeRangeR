@@ -10,11 +10,15 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Depends:
+  Matrix.utils,
   parallel,
   raster,
   textTinyR
 Suggests: 
-  parallelsugar,
+  ape,
   fastDummies,
+  parallelsugar,
+  PhyloMeasures,
+  tictoc,
   tidyverse
 RoxygenNote: 7.1.1

@@ -15,10 +15,9 @@ library(changeRangeR)
 library(tidyverse)
 ```
 
+Set up some directories to store outputs
 ```{r}
 mc.cores=4
-
-env=stack(system.file("extdata/DemoData/Env/AllEnv.tif",package='changeRangeR'))
 
 #==============================================================
 # set up directories
@@ -33,10 +32,15 @@ if(!file.exists(summaryBaseDir)) dir.create(summaryBaseDir)
 sumDirs=setupSummaryDirectories(summaryBaseDir)
 sumDirs
 ```
+Specify the inputs. In the simplest case, you only need a raster grid defining the entire landscape and a directory of binary rasters (on a subset of the same grid) of species ranges.
+
+```{r}
+env=stack(system.file("extdata/DemoData/Env/AllEnv.tif",package='changeRangeR'))
+spRasterDir=system.file("extdata/DemoData/BinaryMaps",package='changeRangeR')
+```
 
 ```{r}
 # set up sparse matrices
-spRasterDir=system.file("extdata/DemoData/BinaryMaps",package='changeRangeR')
 allSpeciesMaps=list(rasterFiles=c(list.files(spRasterDir,
 										recursive=T,full.names=T,pattern='__noBias')))
 allSpeciesMaps$sp.names=getSpNamesFromDirs(allSpeciesMaps$rasterFiles)
