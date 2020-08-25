@@ -18,8 +18,9 @@ futureOverlap <- function(r, futures, field, category, r.names, futures.names){
   #rat.io <- lapply(futures, function(shp){
   if (category == "All"){
     shp <- lapply(futures, sf::st_as_sf)
-    r <- lapply(r, function(x) raster::projectRaster(x, crs = crs(shp[[1]])))
-    maskedRange <- mapply(mask, r, futures)
+    #r <- lapply(r, function(x) raster::projectRaster(x, crs = crs(shp[[1]]), method = "ngb"))
+    shp <- lapply(shp, function(x) sf::st_transform(x, crs = crs(r[[1]])))
+    maskedRange <- mapply(mask, r, shp)
     # maskedRange <- lapply(r, function(x) lapply(futures, function(y) raster::mask(x ,y)))
   } else {
     shp <- lapply(futures, sf::st_as_sf)
@@ -27,7 +28,8 @@ futureOverlap <- function(r, futures, field, category, r.names, futures.names){
     #   fc <- filter(shp, grepl(category, field))
     #   out<- mask(r, fc)
     # } else {
-    r <- lapply(raster::projectRaster(r, crs = crs(shp)))
+    #r <- lapply(raster::projectRaster(r, crs = crs(shp)))
+    shp <- lapply(shp, function(x) sf::st_transform(x, crs = crs(r[[1]])))
     fc <- lapply(category, function(x) dplyr::filter(shp, shp[[field]]==x))
     fc <- do.call("rbind", fc)
     #fc <- filter(shp, shp[[field]]==category)

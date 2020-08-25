@@ -1,5 +1,5 @@
 ---
-title: "BiodiversityMetrics"
+title: "Biodiversity Metrics"
 author: "P Galante, A Paz"
 date: "`r Sys.Date()`"
 output:
@@ -10,6 +10,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+To aid conservation planning and decision-making, for example by understanding species’ representativeness and complementarity across conservation areas, we can combine species’ range estimates across multiple species groups to calculate community-level metrics of conservation interest that reflect different dimensions of biological diversity such as species richness, spatial and temporal turnover, endemism, and phylogenetic diversity. We provide an example below to calculate these metrics for a dataset of Colombian primates (Henao-Díaz et al. 2020) using the changeRangeR package. For information on single species range change metrics, see changeRangeR's single-species [vignette]() .
 
 # Biodiversity metrics
 Using multiple species for landscape-level species metrics
@@ -129,7 +131,7 @@ pd_ras[pd_ras == 0] <- NA
 plot(pd_ras)
 ```
 ## Phylogenetic endemism
-Phylogenetic endemism combines phylogenetic trees with spatial data. PE is calculated by dividing each branch lenght over the total number of locations where the species that descend from that branch are found (Rosauer et al., 2009).
+Phylogenetic endemism combines phylogenetic trees with spatial data. PE is calculated by dividing each branch length over the total number of locations where the species that descend from that branch are found (Rosauer et al., 2009).
 
 Here, we can calculate PE from a function written by, and hosted by Dan Rosauer on [Github](https://github.com/DanRosauer/phylospatial)
 
@@ -280,7 +282,9 @@ PE.ras <- rasterFromXYZ(PExyz)
 PE.ras[PE.ras == 0] <- NA
 plot(PE.ras)
 ```
+
 ## Species Endemism
+
 Here, species endemism is defined as a value for each cell equal to the number of species found in that cell divided by the total number of cells in which they are found
 
 Load and manage spatial data
