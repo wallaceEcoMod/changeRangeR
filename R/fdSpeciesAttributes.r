@@ -1,19 +1,19 @@
 
-#' @title 
+#' @title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -33,17 +33,17 @@ speciesAttributeByCell=function(cbsDir,
 																outDir=NULL,
 																richnessRaster=NULL,
 																verbose=F){
-	
+
 	t1=proc.time()
-	cbs.f=.getCBS(cbsDir,scenario)
+	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
 	attrNames=names(attrTable)
 	# if species and index were included, toss them
 	toss=unlist(mapply(function(x){grep(x,attrNames)}, c('species','index')))
 	if(length(toss) > 0 ) attrNames=attrNames[-toss]
-	
+
 	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
 	if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply
-	
+
 	out=lapply(seq_along(attrNames),function(y){
 		if(verbose) message(attrNames[y])
 		#keep=attrTable$index[attrTable[attrNames[y]]==1]
@@ -60,7 +60,7 @@ speciesAttributeByCell=function(cbsDir,
 			stop('sorry, only mean values supported at this point')
 				# Var(X) = Σ ( Xi - X_mean )2 / N
 		}
-		
+
 		attr.vec=do.call('rbind',attrByCell)
 		attr.r=raster(env[[1]])
 		values(attr.r)[attr.vec$cellID]= attr.vec$thisAttr
@@ -69,7 +69,7 @@ speciesAttributeByCell=function(cbsDir,
 	})
 	out1=stack(out)
 	names(out1)=attrNames
-	
+
 	t2=proc.time()-t1
 	message(paste0(round(t2[3],2),' s'))
   out1

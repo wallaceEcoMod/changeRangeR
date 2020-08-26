@@ -1,18 +1,18 @@
-#' @title 
+#' @title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -39,11 +39,11 @@ metricFromCBS=function(cbsDir,
 											 FUN=phyloDiv,
 											 outputFUNnames ,
 											 ...){
-  
+
   t1=proc.time()
   message(scenario)
-	
-	cbs.f=.getCBS(cbsDir,scenario)
+
+	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
 	if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
   if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
 
@@ -77,12 +77,12 @@ metricFromCBS=function(cbsDir,
 #     	uc.cbs.matrix = try ({as.matrix (uc.cbs)},silent=T)
 # 			gc()
 #     	#if memory holds, go directly to function
-#     	#if (!class(uc.cbs.matrix)=='try-error') 
+#     	#if (!class(uc.cbs.matrix)=='try-error')
 #     	outMetric = try(FUN(uc.cbs.matrix,...))
 #     	#outMetric = try(FUN(uc.cbs.matrix,fullMatch=F,tree=phyloTree)) # for testing
 #     } else {uc.cbs.matrix=outMetric=NULL}
 # 		#=== End CM Edit ====================================
-# 		
+#
 # 		# CM: also getting memory errors when running FUN even after the matrix works
 #     #fuck loop across if too much memory (this should be lapply not a for)
 #     if (class(uc.cbs.matrix)=='try-error' | class(outMetric)=='try-error' | mat.size >= memSizeGb){
@@ -134,7 +134,7 @@ metricFromCBS=function(cbsDir,
   	out=applyFUNtoDenseMatrixComm(inputCBSlist[[x]],fullMatch=F,tree=phyloTree) # for testing
   	gc()
   	out
-  }) 
+  })
   pdByCell=do.call('rbind',kk)
   #this is not elegant
   nvar = ncol (pdByCell)-2
@@ -145,7 +145,7 @@ metricFromCBS=function(cbsDir,
   })
   ras = do.call(stack,listRas)
   names (ras) = outputFUNnames
-  
+
   t2=proc.time()-t1
 	message(paste0(round(t2[3],2),' s'))
   return(ras)

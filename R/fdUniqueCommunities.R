@@ -1,18 +1,18 @@
-#' @title 
+#' @title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -30,7 +30,7 @@
 
 makeUniqueCommunities <- function (cbsDir,scenario,mc.cores,overwrite=F){
   #list cbs rds files
-	cbs.f=.getCBS(cbsDir,scenario)
+	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
   if (length(cbs.f)==0) stop ('No cellBySpecies.RDS files found, cannot compute unique communities')
 
   #check corresponding cbs unique communities
@@ -82,8 +82,8 @@ makeUniqueCommunities <- function (cbsDir,scenario,mc.cores,overwrite=F){
     uniques <- unique (RowLst)
     dupsIdx <- match (RowLst,uniques)
     list (dupsLogical,dupsIdx)
-    
-    
+
+
   } else if (MARGIN == 2L) {
     ## check duplicated columns
     names(x) <- I
@@ -96,10 +96,10 @@ makeUniqueCommunities <- function (cbsDir,scenario,mc.cores,overwrite=F){
     uniques <- unique (RowLst)
     dupsIdx <- match (RowLst,uniques)
     list (dupsLogical,dupsIdx)
-    
+
   } else {
     stop("invalid MARGIN; return NULL")
     return(NULL)
   }
-  
+
 }

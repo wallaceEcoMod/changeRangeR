@@ -5,21 +5,21 @@
 #' Plot a raster to a pdf
 
 
-#' @title 
+#' @title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -31,19 +31,20 @@
 
 
 #' @param r a raster
-#' @param plotFile optiona; path to for writing pdf 
+#' @param plotFile optiona; path to for writing pdf
 #' @param shp optional shapefile to plot
 #' @param legend.args see `plot.raster`
 #' @param 									 axis.args=list(cex.axis=1.1),
 #' @param  ... arguments to be passed to plot
 #' @export
 fdMapPlot=function(r,
-									 plotFile=NULL, 
-								   shp=NULL, 
+									 plotFile=NULL,
+								   shp=NULL,
 									 legend.args=list(text='# species',line=1,side=3,cex=1),
 									 axis.args=list(cex.axis=1.1),
+									 open=F,
 									 ...){
-									 
+
 	if(!is.null(plotFile)) pdf(plotFile,h=4*nlayers(r),w=8)
 	par(mfrow=c(nlayers(r),1),mar=c(0,0,2,0),oma=c(0,0,0,0))
 
@@ -55,7 +56,7 @@ fdMapPlot=function(r,
 	}
 	if(!is.null(plotFile)){
 		dev.off()
-		system(paste0('open ',plotFile))
+		if(open) system(paste0('open ',plotFile))
 	}
 }
 
@@ -64,19 +65,19 @@ fdMapPlot=function(r,
 #============================================================
 #' @title Map a species based on cbs
 #' @description Quickly map species stored in sparse matrices
-#' @param 
+#' @param
 #' @param species a vector of species names or integers refering to species indices
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -86,17 +87,17 @@ fdMapPlot=function(r,
 #' @export
 
 mapSpecies=function(cbsDir,species,scenario,sp.ind,cell.ind,envGrid,shp,...){
-	#  for testing 
+	#  for testing
 	#  cbsDir=sumDirs$cbsDir; species=1:3; shp=world.shp
 	if(length(species)>12) warning("probably shouldn't try to plot more than 12 species at once")
 	if(!is.numeric(species)) species = which(sp.ind$species %in% species)
 	sp.names=sp.ind$species[species]
-	
-	cbs.f=.getCBS(cbsDir,scenario)
-	
+
+	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
+
 	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
 	if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply
-	
+
 	spMaps=mclapply(seq_along(cbs.f), function(x){
 		readRDS(cbs.f[x])[,species]
 	},mc.cores=mc.cores)
@@ -108,7 +109,7 @@ mapSpecies=function(cbsDir,species,scenario,sp.ind,cell.ind,envGrid,shp,...){
 		r
 	},mc.cores=mc.cores) %>% stack
 	names(sp.r)=sp.names
-	
+
 	plot(sp.r)
 	sp.r
 }
@@ -120,21 +121,21 @@ mapSpecies=function(cbsDir,species,scenario,sp.ind,cell.ind,envGrid,shp,...){
 #============================================================
 #' FUNCTIONS TO COMPARE SCENARIOS
 
-#' @title 
+#' @title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -143,7 +144,7 @@ mapSpecies=function(cbsDir,species,scenario,sp.ind,cell.ind,envGrid,shp,...){
 # @family - a family name. All functions that have the same family tag will be linked in the docum
 #' @export
 
-#' @param 
+#' @param
 #' @export
 
 #compare richness rasters
@@ -182,21 +183,21 @@ compareRichness = function (sumDirs,scn1, scn2,plotFig=T){
 #' FUNCTIONS TO COMPARE SCENARIOS
 
 
-#' @title 
+#' @title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
