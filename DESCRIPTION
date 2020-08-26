@@ -13,12 +13,15 @@ Depends:
   Matrix.utils,
   parallel,
   raster,
-  textTinyR
+  R.utils,
+  textTinyR,
+  tools
 Suggests: 
   ape,
   fastDummies,
   parallelsugar,
   PhyloMeasures,
+  rgdal,
   tictoc,
   tidyverse
 RoxygenNote: 7.1.1

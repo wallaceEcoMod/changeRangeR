@@ -2,10 +2,10 @@
 #===================================================================
 #===================================================================
 #===================================================================
+#' Create a table linking cell IDs with their longitude and latitude which can optoionally be used as a template for a	`cellAttributeTable`.
+#' @notes Columns are long, lat, cellid
 #' @export
-# cell Index Table
-	# columns: long, lat, cellid
-cellIndexTable=function(env,nCellChunks,sumDirs,toInteger=T){
+.cellIndexTable=function(env,nCellChunks,sumDirs,toInteger=T){
 	co=coordinates(env)
 	#keep=apply(values(env),1,function(x) any(!is.na(x))) # not sure why i did this 
 	keep=complete.cases(values(env))
@@ -15,15 +15,17 @@ cellIndexTable=function(env,nCellChunks,sumDirs,toInteger=T){
 	if(nCellChunks>1) { chunks=cut(1:nrow(co), nCellChunks, labels = FALSE) 
 	} else { chunks=rep(1,nrow(co)) }
 	cell.ind=data.frame(co,cellID=as.integer(cellFromXY(env,co)), chunkID=as.integer(chunks))
-	write.csv(cell.ind,file=paste0(sumDirs$sumBaseDir, '/cellIndexTable.csv'),row.names=F)
+	cell.ind=sapply(cell.ind,as.integer)
+	saveRDS(cell.ind,file=paste0(sumDirs$sumBaseDir, '/cellIndexTable.rds'))
 	cell.ind
 }
 
 #===================================================================
 #===================================================================
 #===================================================================
+# used internally to read in only the necessary chunks for a given analysis
 #' @export
-chunkFinder=function(someRaster,cell.ind,chunkFiles){
+.chunkFinder=function(someRaster,cell.ind,chunkFiles){
 	notNAs=which(!is.na(values(someRaster)))
 	keep=which(cell.ind$cellID %in% notNAs )
 	chunks=unique(cell.ind[keep,'chunkID'])
@@ -31,6 +33,3 @@ chunkFinder=function(someRaster,cell.ind,chunkFiles){
 	chunkFiles[keep]
 }
 
-#===================================================================
-#===================================================================
-#===================================================================
