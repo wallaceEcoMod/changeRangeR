@@ -63,6 +63,7 @@ richnessFromCBS=function(cbsDir,
 		rich.vec=do.call('rbind',richByCell)
 		rich.r=raster(env[[1]])
 		values(rich.r)[rich.vec$cellID]= rich.vec$rich
+		
 		if(!is.null(outDir)) writeRaster(rich.r,file=paste0(outDir,'/richness_', scenario,'.tif'), overwrite=T)
 		t2=proc.time()-t1
 		message( paste0(round(t2[3],2),' s') )
@@ -87,6 +88,7 @@ richnessFromCBS=function(cbsDir,
 			rich.vec=do.call('rbind',richByCell)
 			rich.r=raster(env[[1]])
 			values(rich.r)[rich.vec$cellID]= rich.vec$rich
+			
 			if(!is.null(outDir))	writeRaster(rich.r,file=paste0(outDir,'/', attrNames[y],'.tif'), overwrite=T)
 			rich.r
 		})
@@ -175,7 +177,6 @@ richnessFromCBS=function(cbsDir,
 rangeArea=function(cbsDir,outDir=NULL,scenario,sp.ind,mc.cores=1,verbose=F){
 	t1=proc.time()
 	message(paste0('starting ',scenario))
-
 	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
 	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
 	if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply

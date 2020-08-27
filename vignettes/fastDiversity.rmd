@@ -245,17 +245,17 @@ plot(m)
 
 ```{r,cache=FALSE}
 # Step 1: get the total number of cells in each species range in each ecoregion
-rar=rangeAreaCategoricalRaster(someRaster=ecoAus2,cbsDir=sumDirs$cbsDir,scenario='present',
-                               sp.ind=sp.ind,cell.ind=cell.ind,mc.cores=mc.cores)
-# Step 2: divide these counts by the total range size to get the proportion of each species range in each ecoregion. 
-rap=rangeArea(cbsDir=sumDirs$cbsDir,scenario='present',sp.ind=sp.ind,mc.cores=mc.cores)
-# #rap[35,]
-# Step 3: join the data frames and calculate proportions
-rpbc=rap %>%
-  full_join(rar,by=c('species','index')) %>%  
-  mutate_at(vars(X53:X783), funs(round(./rangeArea,2)))
- 
-head(rpbc[27:31,])
+# rar=rangeAreaCategoricalRaster(someRaster=ecoAus2,cbsDir=sumDirs$cbsDir,scenario='present',
+#                                sp.ind=sp.ind,cell.ind=cell.ind,mc.cores=mc.cores)
+# # Step 2: divide these counts by the total range size to get the proportion of each species range in each ecoregion. 
+# rap=rangeArea(cbsDir=sumDirs$cbsDir,scenario='present',sp.ind=sp.ind,mc.cores=mc.cores)
+# # #rap[35,]
+# # Step 3: join the data frames and calculate proportions
+# rpbc=rap %>%
+#   full_join(rar,by=c('species','index')) %>%  
+#   mutate_at(vars(X53:X783), funs(round(./rangeArea,2)))
+#  
+# head(rpbc[27:31,])
 ```
 
 ### Overlay with ecoregions 

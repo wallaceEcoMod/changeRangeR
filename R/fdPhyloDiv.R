@@ -24,8 +24,10 @@
 
 #### SMALLER FUNCTION applied to
 phyloDiv  <- function (uniqueCom,tree,fullMatch=T,verbose=T,...){
-  require(ape)
-  require(PhyloMeasures)
+  # for testing
+  #  uniqueCom; tree; fullMatch=T; verbose=T
+  #require(ape)
+  #require(PhyloMeasures)
   #check that tips of the tree and species name match
   percMatch = (sum (colnames(uniqueCom)%in%tree$tip.label) / length(colnames(uniqueCom))) *100
 
