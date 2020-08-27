@@ -255,7 +255,8 @@ plot(m)
 #   full_join(rar,by=c('species','index')) %>%  
 #   mutate_at(vars(X53:X783), funs(round(./rangeArea,2)))
 #  
-# head(rpbc[27:31,])
+# head(rpbc[27:31,])  
+
 ```
 
 ### Overlay with ecoregions 
