@@ -21,6 +21,11 @@ if(Sys.info()["sysname"]== "Windows") library (parallelsugar)
 mc.cores=6
 ```
 
+## Background
+
+>>  Details on computations will be stored in text blocks like this. They can safely be ignored if you're just getting started.
+
+---------------------------------------------------------------
 
 ## Set up
 
@@ -131,7 +136,7 @@ rich=lapply(allScen,function(scn){
 
 ```
 
-**Calculation**: This is calculated based on column sums of the CBS matrix
+>>  **Calculation>>  **: This is calculated based on column sums of the CBS matrix
 
 
 ### Range Size
@@ -140,7 +145,7 @@ rich=lapply(allScen,function(scn){
 Range size can be defined in a variety of ways; we define it here as area of occurrence at the native resolution of the SDMS (here ~10km)
 
 ```{r}
-sp.ind=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))
+sp.ind=readRDS(paste0(sumDirs$sumBaseDir,'/speciesIndexTable.rds'))
 ra=lapply(allScen,function(scn){
 	    rangeArea(cbsDir=sumDirs$cbsDir,scenario=scn,
 	              sp.ind=sp.ind,outDir=sumDirs$rangeSizeDir,mc.cores=mc.cores)
@@ -149,7 +154,7 @@ str(ra)
 hist(ra[[1]]$rangeArea)
 ```
 
-**Calculation**: row sums over CBS matrices.
+>>  **Calculation>>  **: row sums over CBS matrices.
 
 ### Rarity
 
@@ -177,7 +182,7 @@ rar=lapply(allScen,function(scn){
 rar.st=stack(rar)
 ```
 
-**Calculation**: Define a 1/range size as a species attribute. Use matrix multiplication of the CBS matrix and species attribute vector.
+>>  **Calculation>>  **: Define a 1/range size as a species attribute. Use matrix multiplication of the CBS matrix and species attribute vector.
 
 ### Richness by species attributes
 
@@ -222,15 +227,15 @@ eco2=projectRaster(eco,envGrid,method='ngb')
 	# ecoAus=raster::mask(eco,aa)
 	# writeRaster(ecoAUS,paste0(sumDirs$miscDir,'/aus.tif'),overwrite=T)
 ecoAus=raster(system.file('extdata/treeDemo/Misc/aus.tif',package='changeRangeR'))			
-# don't need this, i think
-# # make a cell attribute table
-# cell.ind=readRDS(paste0(sumDirs$myBaseDir,'/cellIndexTable.rds'))
-# cellEcoAttr=cell.ind %>% 
-#             bind_cols(pr=fastDummies::dummy_cols(ecoAus[cell.ind$cellID])) %>% 
-#             select(-'.data',-'.data_NA')
-# 	
-# saveRDS(cellEcoAttr,paste0(sumDirs$attrDir,'cellEcoregionAus.rds'))
 ```
+<!-- # don't need this, i think -->
+<!-- # # make a cell attribute table -->
+<!-- # cell.ind=readRDS(paste0(sumDirs$myBaseDir,'/cellIndexTable.rds')) -->
+<!-- # cellEcoAttr=cell.ind %>%  -->
+<!-- #             bind_cols(pr=fastDummies::dummy_cols(ecoAus[cell.ind$cellID])) %>%  -->
+<!-- #             select(-'.data',-'.data_NA') -->
+<!-- # 	 -->
+<!-- # saveRDS(cellEcoAttr,paste0(sumDirs$attrDir,'cellEcoregionAus.rds')) -->
 
 As an example of (1) we find the proportion of each species range in each ecoregion.
 
@@ -244,19 +249,19 @@ plot(m)
 
 
 ```{r,cache=FALSE}
+# TEMP: for some resaon the package doesn't see the correct function
+source('/Users/ctg/Dropbox/Projects/Wallace/changeRangeR/R/fdSpecies.r')
 # Step 1: get the total number of cells in each species range in each ecoregion
-# rar=rangeAreaCategoricalRaster(someRaster=ecoAus2,cbsDir=sumDirs$cbsDir,scenario='present',
-#                                sp.ind=sp.ind,cell.ind=cell.ind,mc.cores=mc.cores)
-# # Step 2: divide these counts by the total range size to get the proportion of each species range in each ecoregion. 
-# rap=rangeArea(cbsDir=sumDirs$cbsDir,scenario='present',sp.ind=sp.ind,mc.cores=mc.cores)
-# # #rap[35,]
-# # Step 3: join the data frames and calculate proportions
-# rpbc=rap %>%
-#   full_join(rar,by=c('species','index')) %>%  
-#   mutate_at(vars(X53:X783), funs(round(./rangeArea,2)))
-#  
-# head(rpbc[27:31,])  
+rar=rangeAreaCategoricalRaster(someRaster=ecoAus2,cbsDir=sumDirs$cbsDir,scenario='present',
+                               sp.ind=sp.ind,cell.ind=cell.ind,mc.cores=mc.cores)
+# Step 2: divide these counts by the total range size to get the proportion of each species range in each ecoregion. 
+rap=rangeArea(cbsDir=sumDirs$cbsDir,scenario='present',sp.ind=sp.ind,mc.cores=mc.cores)
+# Step 3: join the data frames and calculate proportions
+rpbc=rap %>%
+  full_join(rar,by=c('species','index')) %>%
+  mutate_at(vars(X53:X783), funs(round(./rangeArea,2)))
 
+head(rpbc[27:31,])
 ```
 
 ### Overlay with ecoregions 
@@ -267,33 +272,48 @@ As an example of (2) we find the species richness in each ecoregion.
 
 <!-- ## Function to make dictionaries between rasters -->
 
-<!-- There might be a moment when we might want to use rasters of different characteristics as the one where we created the database, in that case, we might need to generate dictionaries between the cellIDs of two rasters.  -->
+Sometimes we might want to use rasters based on different characteristics than that the one used for modeling distributions. In that case, we can generate dictionaries between the cellIDs of two rasters, as long as the coordinates of both rasters are compatible.
 
-<!-- ```{r} -->
-<!-- Dictionary <- function(x, y){ -->
-<!--   Coords <- as.data.frame(raster::xyFromCell(x, 1:ncell(x))) -->
-<!--   Coords$CellID <- 1:ncell(x) -->
-<!--   Coords$ID2 <- raster::cellFromXY(y, as.matrix(Coords[,1:2])) -->
-<!--   Coords <- Coords[!is.na(Coords$ID2),] -->
-<!--   Coords <- Coords[!is.na(Coords$CellID),] -->
-<!--   return(Coords) -->
-<!-- } -->
-<!-- ``` -->
+```{r}
+rasterDictionary <- function(r1, r2){
+  # This finds the cell where the center of each cell is located. Is that guaranteed to be the cell where the majority of a cell is? 
+
+  coords <- as.data.frame(raster::xyFromCell(r1, 1:ncell(r1)))
+  coords$cellID_r1 <- 1:ncell(r1)
+  coords$cellID_r2 <- raster::cellFromXY(r2, as.matrix(coords[,1:2]))
+  coords[complete.cases(coords),]
+}
+```
+
+```{r}
+dict1 <- rasterDictionary(envGrid, eco)
+dict2 <- rasterDictionary(eco, envGrid)
+dim(dict1)
+length(unique(dict1$cellID_r1))
+length(unique(dict1$cellID_r2))
+dim(dict2)
+length(unique(dict2$cellID_r1))
+length(unique(dict2$cellID_r2))
+```
+```{r}
+# Determine which CBS cells are in each group (here, ecoregion)
 
 
-<!-- This function will create it as long as the coordinates of both rasters are compatible, here is an example use: -->
+# Calc richness by group
+richnessByFactor=function(cbsDir,cellAttr){
+  # 1. split CBS factor
+  # 2. colSums within factor
+  # 3. convert to binary with vals > 0
+  # 4. combine across cbs
+  # 5. row sums for richness (or any other operation on these reduced factor by species (FBS) matrices)
+  
+}
+```
 
-<!-- ```{r} -->
-<!-- Env <- raster("envGrid.tif") -->
-<!-- richness100 <- raster("richness100km.tif") -->
-
-<!-- Dict1 <- Dictionary(x = Env, y = richness100) -->
-<!-- Dict2 <- Dictionary(x = richness100, y = Env) -->
-<!-- ``` -->
 
 
 
-**Calculation**:
+>>  **Calculation>>  **:
 
 ---------------------------------------------------------------
 
@@ -306,12 +326,12 @@ Some species attributes depend on which species cooccur with them.
 TODO what is spCellOcc?
 
 ```{r}
-lapply(allScen, function(scn){
+uc=lapply(allScen, function(scn){
 	makeUniqueCommunities(cbsDir=sumDirs$cbsDir, scenario=scn, mc.cores = mc.cores,overwrite=T)
 })
 ```
 
-**Calculation**: find unique rows of CBS matrices.
+>>  **Calculation>>  **: find unique rows of CBS matrices.
 
 ### Phylogenetic Diversity 
 
@@ -333,22 +353,20 @@ sp.ind=readRDS(paste0(sumDirs$sumBaseDir,'/speciesIndexTable.rds'))
 #CM: hey pep - why am i getting this warning? 
 #  Warning: the input matrix has fewer columns than the number of species in the tree. 
 
-#new potential developments (do it for every scenario automatically?)
-#new potential developments (write a Raster by default?)
-# todo: print the scen internally
-# BROKE
-# pd=lapply(allScen, function(scn){
-#   metricFromCBS(cbsDir=sumDirs$cbsDir,scenario = scn,env = env ,
-#   	spIndTable=sp.ind, mc.cores = mc.cores,
-#     #SPECIFY FUCNTION ==> condition, 1st argument of FUNC must be the cellBySp matrix
-#   	FUN = phyloDiv,outputFUNnames = 'PD',
-#   	#SPECIFY other arguments of the function
-#   	fullMatch=F,tree=phyloTree) 
-# })
-# 
-# pd = raster::stack(pd)
-# names(pd) = allScen
-# plot(pd)
+pd=lapply(allScen, function(scn){
+  pd1=metricFromCBS(cbsDir=sumDirs$cbsDir,scenario = scn,env = envGrid ,
+  	spIndTable=sp.ind, mc.cores = mc.cores,
+    #SPECIFY FUCNTION ==> condition, 1st argument of FUNC must be the cellBySp matrix
+  	FUN = phyloDiv,outputFUNnames = 'PD',
+  	#specify other arguments to pass to FUN
+  	fullMatch=F,tree=phyloTree)
+  writeRaster(pd1,file=paste0(sumDirs$phyloDivDir,'/PD_',scn,'.tif'),overwrite=T)
+  pd1
+})
+
+pd = raster::stack(pd)
+names(pd) = allScen
+plot(pd)
 ```
 
 ### Functional Diversity 
@@ -369,31 +387,27 @@ sp.ind=readRDS(paste0(sumDirs$sumBaseDir,'/speciesIndexTable.rds'))
 traitTable=readRDS(system.file('/extdata/treeDemo/speciesAttributes.rds',
                    package='changeRangeR'))
 #create a tree of traits based on trait distances (euclidean)
-#the user can explores this function in more depth
 #the fucntion is set up to write the trees and set up rules for the PCA (e.g. how many PC you retain, etc.)
 #with writeOut=T it automatically creates the funcDivFolder and writes the "functional tree" there.
 trait.phy=buildFuncDivTree(sumDirs = sumDirs,
-												#note here that the func will look for speciesAttributes.rds if NULL
-												#CM: I think the user should have to specify this
+												   #note here that the func will look for speciesAttributes.rds if NULL
+												   #CM: I think the user should have to specify this
 													 speciesAttributeTable =traitTable,
 													 colFuncTraits = 2:9)
 
-#note that the function is aware that unique communities have been computed
-# 
-# BROKE
-# fd=lapply(allScen, function(scn){
-#   metricFromCBS(cbsDir=sumDirs$cbsDir,scenario=scn,env=env, 
-# 								spIndTable=sp.ind,
-# 								mc.cores = mc.cores,
-# 						#SPECIFY FUCNTION ==> condition, 1st argument of FUNC must be the cellBySp matrix
-# 								FUN = phyloDiv,outputFUNnames = 'FD',
-# 								#SPECIFY other arguments of the function
-# 								fullMatch=F,tree=trait.phy) 
-# })
-# 
-# fd=raster::stack (fd)
-# names(fd) =  allScen
-# plot(fd)
+fd=lapply(allScen, function(scn){
+  fd1=metricFromCBS(cbsDir=sumDirs$cbsDir,scenario=scn,env=envGrid,
+                    spIndTable=sp.ind,
+                    mc.cores = mc.cores,
+                    #specify function, here `phyloDiv`; 1st argument must be the cellBySp matrix
+                    FUN = phyloDiv,outputFUNnames = 'FD',
+                    #specify other arguments to pass to FUN
+                    fullMatch=F,tree=trait.phy)
+})
+
+fd=raster::stack (fd)
+names(fd) =  allScen
+plot(fd)
 ```
 
 -------------------------------------------------------------------------
@@ -413,7 +427,16 @@ sumDirs=convertSummaryBaseDir(sumDirs, newBaseDir='someDir')
 sumDirs=convertSummaryBaseDir(sumDirs, summaryBaseDir) # convert back
 ```
 
+```{r}
+m=mapSpecies(cbsDir=sumDirs$cbsDir,27:30,scenario='present',sp.ind,cell.ind,envGrid)
+```
 
+
+<!-- Ideas
+- spatial operations: could use unique communities and just calc comparisons between unique communities that are within a given distance from one another and store that as a sparse matrix. 
+
+
+-->
 
 
 

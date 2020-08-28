@@ -32,12 +32,14 @@ metricFromCBS=function(cbsDir,
 											 scenario,
 											 env,
 											 spIndTable,
-											 cellAttributeTable=NULL, speciesAttributeTable=NULL,# I think we need to add this when wanting to subset or give weights
+											 cellAttributeTable=NULL,
+											 speciesAttributeTable=NULL,# I think we need to add this when wanting to subset or give weights
 											 mc.cores=1,
 											 #specify the function that takes dense regular matrix of locationBySpecies for computation
 											 #bear in mind that the first argument of this function should be the matrix
 											 FUN=phyloDiv,
 											 outputFUNnames ,
+											 verbose=F,
 											 ...){
 
   t1=proc.time()
@@ -51,6 +53,7 @@ metricFromCBS=function(cbsDir,
   #check if unique communities files exists otherwise compute them.
   #CM: i think we have users explicitly make these, as in the demo
   #uc.f =makeUniqueCommunities(cbsDir =paste0(cbsDir,'/',scenario),mc.cores = mc.cores )
+	uc.f=.getUCom(cbsDir,scenario)
 
   #create list of pairs of uc and cbs
   inputCBSlist = lapply(seq_along(cbs.f), function (x) c(cbs.f[x],uc.f[x]))
@@ -61,7 +64,7 @@ metricFromCBS=function(cbsDir,
 
   #the aim of this function is to extract unique communities, pass them into a dense matrix and then compute the metricFunction FUN
   applyFUNtoDenseMatrixComm = function(x,spind=spIndTable$species, ...){ #uniqueCom = uc.cbs.matrix,fullMatch = F
-    message(basename(x[1]))
+    if(verbose) message(basename(x[1]))
     cbs=readRDS(x[1])
     ucList=readRDS(x[2])
     colnames(cbs)=spind
@@ -99,7 +102,7 @@ metricFromCBS=function(cbsDir,
       #outMetric = vector('list',length(levelsRows))
       #for (g in seq_along(levelsRows)) {
       outMetric=mclapply(seq_along(levelsRows),function(g){
-        message(paste0('Computing group : ',g,'/',max(rowGroups)))
+        if(verbose) message(paste0('Computing group : ',g,'/',max(rowGroups)))
         uniqueComSubset = uc.cbs[which(rowGroups == g),]
         uc.cbs.matrix = as.matrix(uniqueComSubset)
         #out = FUN(uc.cbs.matrix,...) # comment for testing

@@ -63,7 +63,7 @@ richnessFromCBS=function(cbsDir,
 		rich.vec=do.call('rbind',richByCell)
 		rich.r=raster(env[[1]])
 		values(rich.r)[rich.vec$cellID]= rich.vec$rich
-		
+
 		if(!is.null(outDir)) writeRaster(rich.r,file=paste0(outDir,'/richness_', scenario,'.tif'), overwrite=T)
 		t2=proc.time()-t1
 		message( paste0(round(t2[3],2),' s') )
@@ -88,7 +88,7 @@ richnessFromCBS=function(cbsDir,
 			rich.vec=do.call('rbind',richByCell)
 			rich.r=raster(env[[1]])
 			values(rich.r)[rich.vec$cellID]= rich.vec$rich
-			
+
 			if(!is.null(outDir))	writeRaster(rich.r,file=paste0(outDir,'/', attrNames[y],'.tif'), overwrite=T)
 			rich.r
 		})
@@ -233,7 +233,7 @@ rangeAreaInBinaryStack=function(someStack,cbsDir,scenario,sp.ind,cell.ind,mc.cor
 		#matrix(values(someStack),ncol=1)[keep1,] # for 1 layer
 		someStack.mat[is.na(someStack.mat)]=0
 		out=t(cbs) %*% someStack.mat
-
+    out
 # 		fuck=data.frame(rich=textTinyR::sparse_Sums(cbs, rowSums = F))
 # 		fuck2=apply(out,1,sum)
 # 		cbind(fuck,fuck2)
@@ -310,10 +310,13 @@ rangeAreaInBinaryStack=function(someStack,cbsDir,scenario,sp.ind,cell.ind,mc.cor
 #' @export
 rangeAreaCategoricalRaster=function(someRaster,catNames=NULL,cbsDir,
                                     scenario,sp.ind,cell.ind, mc.cores=1){
-	#  someRaster=ecoAus2; cbsDir=sumDirs$cbsDir; catNames=NULL
+	#  for testing
+  #  someRaster=ecoAus2; cbsDir=sumDirs$cbsDir; catNames=NULL
 	t1=proc.time()
-  message(paste0('starting ',scenario))
 	cats=sort(na.omit(unique(values(someRaster))))
+  n.layers=length(unique(values(ecoAus2)))
+  if(n.layers > 50) message(paste0("Warning - you're asking to layerize ",
+                                   n.layers," which can be pretty slow."))
 	someRaster2=layerize(someRaster)
 	if(!is.null(catNames)) names(someRaster2)=catNames
 	out=rangeAreaInBinaryStack(someRaster2,cbsDir=cbsDir,scenario=scenario,

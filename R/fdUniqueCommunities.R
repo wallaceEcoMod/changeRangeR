@@ -30,11 +30,13 @@
 
 makeUniqueCommunities <- function (cbsDir,scenario,mc.cores,overwrite=F){
   #list cbs rds files
+  message(scenario)
+  t1=proc.time()
 	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
   if (length(cbs.f)==0) stop ('No cellBySpecies.RDS files found, cannot compute unique communities')
 
   #check corresponding cbs unique communities
-  uc.f=list.files(cbsDir,full.names=T,pattern = 'uniqueComm')
+  uc.f=list.files(paste0(cbsDir,'/',scenario),full.names=T,pattern = 'uniqueComm')
 
   #check whether they already exist
   if(length(uc.f) == length(cbs.f) & !overwrite) {
@@ -47,20 +49,21 @@ makeUniqueCommunities <- function (cbsDir,scenario,mc.cores,overwrite=F){
 	if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
 	if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
 
-	#message('Unique communities not found. Computing them')
 	mclapply(seq_along(cbs.f), function(x){
 		message(x)
 		cbs=readRDS(cbs.f[x])
 		uc.cbs = .duplicated.dgCMatrix(cbs,MARGIN = 1,include.all.zero.vectors = T)
 		uc.cbs$cellind = as.integer(rownames(cbs))
 		names (uc.cbs)=c('duplicated','comChunkID','cellind')
-		uc.filename = basename (cbs.f[x])
-		uc.filename = paste0(cbsDir,'/uniqueComm',strsplit (uc.filename,split = 'chunk')[[1]][2])
+		uc.filename = basename(cbs.f[x])
+		uc.filename = paste0(cbsDir,'/',scenario,'/uniqueComm',strsplit (uc.filename,split = 'chunk')[[1]][2])
 		saveRDS (uc.cbs,uc.filename)
 	},mc.cores =mc.cores)
   #}
 
-  uc.f=list.files(cbsDir,full.names=T,pattern = 'uniqueComm_')
+  uc.f=list.files(paste0(cbsDir,'/',scenario),full.names=T,pattern = 'uniqueComm_')
+  t2=proc.time()-t1
+  message(paste0(round(t2[3],2),' s'))
   uc.f
 }
 

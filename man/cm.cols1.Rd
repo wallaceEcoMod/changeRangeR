@@ -2,12 +2,12 @@
 % Please edit documentation in R/fdUtils.r
 \name{cm.cols1}
 \alias{cm.cols1}
-\title{Color palletes 
+\title{Color palletes
 Useful contrasts for plotting}
 \usage{
 cm.cols1(x, bias = 1)
 }
 \description{
-Color palletes 
+Color palletes
 Useful contrasts for plotting
 }
