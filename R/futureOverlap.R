@@ -21,7 +21,7 @@ futureOverlap <- function(r, futures, field, category, r.names, futures.names){
     shp <- lapply(futures, sf::st_as_sf)
     #r <- lapply(r, function(x) raster::projectRaster(x, crs = crs(shp[[1]]), method = "ngb"))
     # shp <- lapply(shp, function(x) sf::st_transform(x, crs = crs(r[[1]])))
-    maskedRange <- mapply(mask, r, shp)
+    maskedRange <- mapply(raster::mask, r, shp)
     # maskedRange <- lapply(r, function(x) lapply(futures, function(y) raster::mask(x ,y)))
   } else {
     shp <- lapply(futures, sf::st_as_sf)
