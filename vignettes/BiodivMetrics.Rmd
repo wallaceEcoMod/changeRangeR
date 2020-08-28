@@ -21,7 +21,7 @@ Load packages that will be useful for these analyses
 library(picante)
 library(raster)
 library(phylobase)
-#library(sf)
+library(sf)
 library(dplyr)
 library(changeRangeR)
 ```
@@ -312,4 +312,80 @@ Calculate species endemism
 ```{r}
 sp.End <- SE(primRas)
 plot(sp.End)
+```
+
+## Complementarity
+
+It is often useful to spatially quantify biodiversity data to assess geographically where patterns exist. For example, to find the areas that contain more than 50% of species richness, thresholding a raster by a statistical value can be important.
+
+Loading the SDM data and ensuring the names match the phylogeny
+```{r}
+# Load binary maps/SDMs
+primRas <- stack(list.files(path = "inst/extdata/DemoData/SDM/colPrimates_binary", pattern = "\\.tif$", full.names = T))
+# Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
+names(primRas) <- gsub("*_veg", "", names(primRas))
+# Drop models that are resolved into one group; Cebus_albifrons
+primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
+oldnames <- names(primRas)
+namesToChange <- c("Cebus_all_albifrons", "Cheracebus_lugens", "Cheracebus_medemi", "Lagothrix_lagothricha", "Leontocebus_fuscus", "Plecturocebus_caquetensis", "Plecturocebus_discolor", "Plecturocebus_ornatus", "Saimiri_cassiquiarensis")
+newNames <- c("Cebus_albifrons", "Callicebus_lugens", "Callicebus_medemi", "Lagothrix_lagotricha", "Leontocebus_fuscicollis", "Callicebus_caquetensis", "Callicebus_discolor", "Callicebus_ornatus", "Saimiri_sciureus")
+oldnames[oldnames %in% namesToChange] <- newNames
+names(primRas) <- oldnames
+```
+
+Calculate species richness again and convert zeros to NA
+```{r}
+SR <- sum(primRas, na.rm = T)
+SR[SR == 0] <- NA
+```
+
+Calculate the raster value at the 50th percentile
+```{r}
+thresholdValue <- quantile(SR, probs = 0.5)
+```
+
+Threshold the raster by the chosen value and plot
+```{r}
+SR[SR < thresholdValue] <- NA
+plot(SR)
+```
+
+Users can then calculate the overlap of this new raster with a shapefile. For example, a user can find the proportion of 50% of species richness that is protected.
+
+Load protected areas in Colombia and calculate the ratio of overlap
+```{r}
+PAs <- st_read("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
+# View the fields
+colnames(PAs)
+# Pick the field you are interested in
+field <- "DESIG_ENG"
+category <- "All"
+ratio.Overlap <- ratioOverlap(r = SR, shp = PAs, field = field, category = category)
+print(ratio.Overlap)
+```
+
+Users can also find the amount of species richness is currently protected.
+
+Calculate species richness again and convert zeros to NA
+```{r}
+SR <- sum(primRas, na.rm = T)
+SR[SR == 0] <- NA
+```
+
+Load protected areas in Colombia and calculate what percentage of species richness is currently protected.
+```{r}
+PAs <- st_read("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
+# View the fields
+colnames(PAs)
+# Pick the field you are interested in
+field <- "DESIG_ENG"
+category <- "All"
+# Mask species richness by protected areas to find richness within protected areas
+rmask <- mask(SR, PAs)
+# Take a look
+plot(SR)
+plot(PAs, add = T)
+
+comp <- complementarity(ras1 = SR, ras1mask = rmask)
+print(comp)
 ```

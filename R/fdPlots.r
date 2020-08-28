@@ -5,7 +5,7 @@
 #' Plot a raster to a pdf
 
 
-#' @title
+#' @title title
 #' @description
 #' @param
 #' @param
@@ -121,7 +121,7 @@ mapSpecies=function(cbsDir,species,scenario,sp.ind,cell.ind,envGrid,shp,...){
 #============================================================
 #' FUNCTIONS TO COMPARE SCENARIOS
 
-#' @title
+#' @title title
 #' @description
 #' @param
 #' @param
@@ -183,7 +183,7 @@ compareRichness = function (sumDirs,scn1, scn2,plotFig=T){
 #' FUNCTIONS TO COMPARE SCENARIOS
 
 
-#' @title
+#' @title title
 #' @description
 #' @param
 #' @param

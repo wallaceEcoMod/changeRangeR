@@ -28,7 +28,11 @@ cm.cols.dif2=function(x,bias=1){ colorRampPalette(c('steelblue4','steelblue1','s
 #============================================================
 #============================================================
 #============================================================
+<<<<<<< HEAD
 #' @title
+=======
+#' @title title
+>>>>>>> f844c8a487e5ed5b4b3c878a5ea65be608980558
 #' @description
 #' @param
 #' @param
@@ -150,8 +154,12 @@ aggregateCells=function(cell.ind,facts,mc.cores=mc.cores,outDir){
 #' @export
 .getCBS=function(cbsDir,scenario){
 	cbs.f=list.files(paste0(cbsDir,'/',scenario),full.names=T,pattern='chunk')
+<<<<<<< HEAD
 	fuck=cbs.f %>% basename %>% file_path_sans_ext %>% data.frame %>%
 	  separate('.',c('c','ind')) %>% dplyr::select(ind)
+=======
+	fuck=cbs.f %>% basename %>% file_path_sans_ext %>% data.frame %>% separate('.',c('c','ind')) %>% select(ind)
+>>>>>>> f844c8a487e5ed5b4b3c878a5ea65be608980558
 	ord=order(as.numeric(fuck$ind))
 	cbs.f[ord]
 }
