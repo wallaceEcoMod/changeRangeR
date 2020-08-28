@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdBuildFuncDendrogram.R
 \name{buildFuncDivTree}
 \alias{buildFuncDivTree}
-\title{}
+\title{title}
 \usage{
 buildFuncDivTree(
   sumDirs,
@@ -19,7 +19,7 @@ buildFuncDivTree(
 
 }
 \description{
-
+title
 }
 \note{
 

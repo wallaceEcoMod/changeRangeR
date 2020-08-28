@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdFilterCBS.R
 \name{filterCBS}
 \alias{filterCBS}
-\title{}
+\title{title}
 \usage{
 filterCBS(sumDir, sumDirOut, spSelec = NULL, cellIdSelec = NULL)
 }
@@ -10,7 +10,7 @@ filterCBS(sumDir, sumDirOut, spSelec = NULL, cellIdSelec = NULL)
 
 }
 \description{
-
+title
 }
 \note{
 

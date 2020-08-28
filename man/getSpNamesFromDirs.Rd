@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdUtils.r
 \name{getSpNamesFromDirs}
 \alias{getSpNamesFromDirs}
-\title{}
+\title{title}
 \usage{
 getSpNamesFromDirs(x)
 }
@@ -10,7 +10,7 @@ getSpNamesFromDirs(x)
 
 }
 \description{
-
+title
 }
 \note{
 

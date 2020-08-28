@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdPhyloDiv.R
 \name{phyloDiv}
 \alias{phyloDiv}
-\title{}
+\title{title}
 \usage{
 phyloDiv(uniqueCom, tree, fullMatch = T, verbose = T, ...)
 }
@@ -10,7 +10,7 @@ phyloDiv(uniqueCom, tree, fullMatch = T, verbose = T, ...)
 
 }
 \description{
-
+title
 }
 \note{
 

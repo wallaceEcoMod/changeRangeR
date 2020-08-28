@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdPlots.r
 \name{turnoverFromCBS}
 \alias{turnoverFromCBS}
-\title{}
+\title{title}
 \usage{
 turnoverFromCBS(
   cbsDir,
@@ -18,7 +18,7 @@ turnoverFromCBS(
 
 }
 \description{
-
+title
 }
 \details{
 FUNCTIONS TO COMPARE SCENARIOS

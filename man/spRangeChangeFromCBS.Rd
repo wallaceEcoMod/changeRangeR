@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdSpRangeChange.R
 \name{spRangeChangeFromCBS}
 \alias{spRangeChangeFromCBS}
-\title{}
+\title{title}
 \usage{
 spRangeChangeFromCBS(sumDirs, scn1, scn2, env, mc.cores)
 }
@@ -10,7 +10,7 @@ spRangeChangeFromCBS(sumDirs, scn1, scn2, env, mc.cores)
 
 }
 \description{
-
+title
 }
 \note{
 

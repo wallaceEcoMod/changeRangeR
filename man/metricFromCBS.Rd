@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdMetricCommMetafunc.R
 \name{metricFromCBS}
 \alias{metricFromCBS}
-\title{}
+\title{title}
 \usage{
 metricFromCBS(
   cbsDir,
@@ -28,7 +28,7 @@ metricFromCBS(
 
 }
 \description{
-
+title
 }
 \note{
 

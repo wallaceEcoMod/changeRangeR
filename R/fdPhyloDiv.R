@@ -1,19 +1,19 @@
 
-#' @title 
+#' @title title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdUniqueCommunities.R
 \name{makeUniqueCommunities}
 \alias{makeUniqueCommunities}
-\title{}
+\title{title}
 \usage{
 makeUniqueCommunities(cbsDir, scenario, mc.cores, overwrite = F)
 }
@@ -15,7 +15,7 @@ makeUniqueCommunities(cbsDir, scenario, mc.cores, overwrite = F)
 
 }
 \description{
-
+title
 }
 \note{
 

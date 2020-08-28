@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdPlots.r
 \name{fdMapPlot}
 \alias{fdMapPlot}
-\title{}
+\title{title}
 \usage{
 fdMapPlot(
   r,
@@ -31,7 +31,7 @@ fdMapPlot(
 
 }
 \description{
-
+title
 }
 \details{
 Plot a raster to a pdf

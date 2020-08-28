@@ -9,7 +9,7 @@
 #============================================================
 #============================================================
 
-#' Color palletes 
+#' Color palletes
 #' Useful contrasts for plotting
 
 #' @export
@@ -28,21 +28,21 @@ cm.cols.dif2=function(x,bias=1){ colorRampPalette(c('steelblue4','steelblue1','s
 #============================================================
 #============================================================
 #============================================================
-#' @title 
+#' @title title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -118,14 +118,14 @@ getSpNamesFromDirs=function(x){basename(dirname(x))}
 aggregateCells=function(cell.ind,facts,mc.cores=mc.cores,outDir){
 	#  for testing
 	#  outDir=sumDirs$envDir
-	
+
 	coordinates(cell.ind)=c('x','y')
 	if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
 	if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
 	coarser=mclapply(facts,function(x){
 		coarseEnv=raster::aggregate(env[[1]],fact=x)
 		if(!is.null(outDir)) writeRaster(coarseEnv,file=paste0(outDir,'/env_Agg',x,'.tif'),datatype = "INT2S",overwrite=T)
-		cellFromXY(coarseEnv,cell.ind)	
+		cellFromXY(coarseEnv,cell.ind)
 	},mc.cores=mc.cores)
 	# merge with cell.ind
 	c1=do.call(cbind,coarser) %>% data.frame
@@ -146,10 +146,10 @@ aggregateCells=function(cell.ind,facts,mc.cores=mc.cores,outDir){
 #============================================================
 #============================================================
 #============================================================
-#' @note gets them in the right order 
+#' @note gets them in the right order
 #' @export
 .getCBS=function(cbsDir,scenario){
-	cbs.f=list.files(paste0(cbsDir,'/',scenario),full.names=T,pattern='chunk')	
+	cbs.f=list.files(paste0(cbsDir,'/',scenario),full.names=T,pattern='chunk')
 	fuck=cbs.f %>% basename %>% file_path_sans_ext %>% data.frame %>% separate('.',c('c','ind')) %>% select(ind)
 	ord=order(as.numeric(fuck$ind))
 	cbs.f[ord]
@@ -166,8 +166,8 @@ aggregateCells=function(cell.ind,facts,mc.cores=mc.cores,outDir){
 #' @details
 #' See Examples.
 #'
-#' @param 
-#' @param 
+#' @param
+#' @param
 # @keywords
 #' @export
 #'

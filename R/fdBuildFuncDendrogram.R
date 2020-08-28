@@ -1,19 +1,19 @@
 
-#' @title 
+#' @title title
 #' @description
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
-#' @param 
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
 # @examples
 #
-#' @return 
+#' @return
 #' @author Cory Merow <cory.merow@@gmail.com>
-#' @note 
+#' @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -44,9 +44,9 @@ buildFuncDivTree=function(#GENERAL INPUTS
   #we want to read the attr table as part of the upper function
   #also, one consolidated speciesAttrTable (?) or serveral? I think the first
   # CM: I think there could be multiple attribute tables so we should automatically read one in. it would be clean to just have 1 master table for all species attributes, but that could be too prescriptive for some people
-  #what format for the table? I suggest one conslidated table and then user saves it as an RDSfile. 
+  #what format for the table? I suggest one conslidated table and then user saves it as an RDSfile.
   # CM: yes agree; and i've now fixed to save as an rds
-  
+
   #if(is.null(speciesAttributeTable)) speciesAttributeTable = paste0(sumDirs$attrDir, "/speciesAttributes.rds")
   if(is.character(speciesAttributeTable)) speciesAttributeTable = readRDS(file = speciesAttributeTable)
 

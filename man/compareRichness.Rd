@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdPlots.r
 \name{compareRichness}
 \alias{compareRichness}
-\title{}
+\title{title}
 \usage{
 compareRichness(sumDirs, scn1, scn2, plotFig = T)
 }
@@ -10,7 +10,7 @@ compareRichness(sumDirs, scn1, scn2, plotFig = T)
 
 }
 \description{
-
+title
 }
 \details{
 FUNCTIONS TO COMPARE SCENARIOS

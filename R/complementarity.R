@@ -9,13 +9,13 @@ complementarity <- function(ras1, ras1mask){
   ## calculate percentage of values protected
   prop <- cellStats(ras1mask, stat = "sum", na.rm = T) / cellStats(ras1, stat = "sum", na.rm = T) * 100
   ## Get percentage of values that fall in polygons
-  SRdf <- as.data.frame(table(as.matrix(ras1)))
-  df <- as.data.frame(table(as.matrix(ras1mask)))
+  SRdf <- as.data.frame(table(values(ras1)))
+  df <- as.data.frame(table(values(ras1mask)))
   # merge datafames
   dfMerged <- merge(SRdf, df, by = "Var1", all = T)
   dfMerged[is.na(dfMerged)] <- 0
   dfMerged$percent <- dfMerged$Freq.y / dfMerged$Freq.x * 100
-
+  # Combine outputs
   out <- list(Percent_of_Total = prop, Percent_per_Category = dfMerged)
   return(out)
 }

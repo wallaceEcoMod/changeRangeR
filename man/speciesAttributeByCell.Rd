@@ -2,7 +2,7 @@
 % Please edit documentation in R/fdSpeciesAttributes.r
 \name{speciesAttributeByCell}
 \alias{speciesAttributeByCell}
-\title{}
+\title{title}
 \usage{
 speciesAttributeByCell(
   cbsDir,
@@ -19,7 +19,7 @@ speciesAttributeByCell(
 
 }
 \description{
-
+title
 }
 \note{
 
