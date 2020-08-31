@@ -10,6 +10,16 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(cache=T)
 ```
 
+## Background
+
+>>  Details on computations will be stored in text blocks like this. They can safely be ignored if you're just getting started.
+
+---------------------------------------------------------------
+
+## Set up
+
+Pacakges you'll need.
+
 ```{r,message=FALSE}
 library(changeRangeR)
 library(raster)
@@ -20,14 +30,6 @@ library(tidyverse)
 if(Sys.info()["sysname"]== "Windows") library (parallelsugar)
 mc.cores=6
 ```
-
-## Background
-
->>  Details on computations will be stored in text blocks like this. They can safely be ignored if you're just getting started.
-
----------------------------------------------------------------
-
-## Set up
 
 <!-- # TMP -->
 <!-- # a=read.csv('/Volumes/cm2/changeRangerDemos/trees190/selec/cellIndexTable.csv') -->
@@ -69,8 +71,9 @@ str(sumDirs)
 
 ### Make Sparse Matrices
 
-Begin by converting the range rasters to a matrix with rows indexing cells and columns indexing species.
-```{r}
+Begin by converting the range rasters to a matrix with rows indexing cells and columns indexing species. With the `nCellChunks` argument, I'm specifying that the globe should be split up into 10 chunks; this is important when your cell x species matrix is large, because the whole thing can't be read into memory at once. 'Large' will depend on the number of species, the resolution and extent of your maps, and your computer's capabilities. 
+
+```{r message=F}
 allSpeciesMaps=tibble(rasterFiles=list.files(paste0(myDir,'/present'),
                                              recursive=T, full.names=T)) %>% 
   mutate(sp.names= rasterFiles %>% basename %>% file_path_sans_ext) %>%
@@ -87,7 +90,7 @@ for (scn in allScen){
     mutate(sp.names= rasterFiles %>% basename %>% file_path_sans_ext) %>%
     separate(sp.names,into=c('g','sp','t','s'),sep='_') %>% select(-t,-s) %>%
     unite(sp.names,g,sp)
-	cellBySpeciesMatrices(sumDirs$cbsDir,
+  cellBySpeciesMatrices(sumDirs$cbsDir,
 	                      allSpeciesMaps=allSpeciesMaps,
 	                      scenario=scn,
 	                      envGrid=envGrid,
@@ -97,17 +100,26 @@ for (scn in allScen){
 	                      mc.cores=mc.cores,
 	                      overwrite=T)
 }
-# temp solution
-# R.utils::copyDirectory(from=system.file('extdata/treeDemo',package='changeRangeR'),
-#                        to=sumDirs$sumBaseDir)
-
 ```
 
 This step can take a little time, but makes all the downstream steps fast. It converted all the ranges into sparse matrices and stored them in the folder 'CellSpeciesLists'. We refer to these as 'cell by species' matrices, or CBS matrices for short. Depending on file size, or your settings, CBS matrices can be stored in chunks to reduce the need to load in huge files in later operations where you may only need a subset of the chunks. Chunking is done based on rows; that is each contains a subset of cells, but all species. 
 
 Two key outputs are:
-  -   cellIndexTable.rds is a matrix where the row indices of the CBS matrices are stored along with the 
-  -   speciesIndexTable.rds 
+
+  -   cellIndexTable.rds is a data frame where the row indices of the CBS matrices are stored along with the coordinates and cellIDs of your environmental grid.
+  -   speciesIndexTable.rds is a data frame where the column indices of the CBS matrices are stored along with species names.
+
+As we develop more complex analyses with auxilary data, we'll add 'cell attributes' and 'species attributes' to these data frames, respectively, that will allow us to generate a wide range of summaries.
+
+```{r}
+cell.ind=readRDS(paste0(sumDirs$myBaseDir,'/cellIndexTable.rds'))
+head(cell.ind)
+```
+
+```{r}
+sp.ind=readRDS(paste0(sumDirs$myBaseDir,'/speciesIndexTable.rds'))
+head(sp.ind)
+```
 
 You can see how the globe is broken up into chunks. `sparseToRaster` is also useful to convert anything stored as a sparse matrix back to a raster for spatial operations.
 
@@ -136,7 +148,7 @@ rich=lapply(allScen,function(scn){
 
 ```
 
->>  **Calculation>>  **: This is calculated based on column sums of the CBS matrix
+>>  **Calculation**: This is calculated based on column sums of the CBS matrix
 
 
 ### Range Size
@@ -154,7 +166,7 @@ str(ra)
 hist(ra[[1]]$rangeArea)
 ```
 
->>  **Calculation>>  **: row sums over CBS matrices.
+>>  **Calculation**: row sums over CBS matrices.
 
 ### Rarity
 
@@ -167,11 +179,11 @@ if(!file.exists(sumDirs$rarityDir)) dir.create(sumDirs$rarityDir)
 
 rar=lapply(allScen,function(scn){
 	# generate the value of 1/range size for each species in an attribute table
-	raritySpAttr = sumDirs$rangeSizeDir %>% 
-								 list.files(full.names=T,pattern=scn) %>% 
-								 readRDS %>% 
-								 mutate(rarity=1/rangeArea) %>% 
-								 select(-rangeArea)
+	raritySpAttr=sumDirs$rangeSizeDir %>% 
+	  list.files(full.names=T,pattern=scn) %>% 
+	  readRDS %>% 
+	  mutate(rarity=1/rangeArea) %>% 
+	  select(-rangeArea)
 	r=speciesAttributeByCell(cbsDir=sumDirs$cbsDir,scenario=scn,
 	                         attrTable=raritySpAttr, method='mean', 
 	                         env=envGrid, outDir=sumDirs$rarityDir)	
@@ -182,7 +194,7 @@ rar=lapply(allScen,function(scn){
 rar.st=stack(rar)
 ```
 
->>  **Calculation>>  **: Define a 1/range size as a species attribute. Use matrix multiplication of the CBS matrix and species attribute vector.
+>>  **Calculation**: Define a 1/range size as a species attribute. Use matrix multiplication of the CBS matrix and species attribute vector.
 
 ### Richness by species attributes
 
@@ -197,9 +209,9 @@ Generate an binary indicator of the genus. Its important that the factors are co
 ```{r}
 gen=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))
 genusSpAttr = gen %>% select(species) %>%
-							separate(species,c("genus",NA),sep='_') %>%
-							fastDummies::dummy_cols() %>% 
-							bind_cols(gen) %>% select(-genus)
+  separate(species,c("genus",NA),sep='_') %>%
+  fastDummies::dummy_cols() %>% 
+  bind_cols(gen) %>% select(-genus)
 rar=lapply(allScen,function(scn){
 	r=richnessFromCBS(cbsDir=sumDirs$cbsDir,scenario=scn,
 	                  env=envGrid,mc.cores=mc.cores,
@@ -313,7 +325,7 @@ richnessByFactor=function(cbsDir,cellAttr){
 
 
 
->>  **Calculation>>  **:
+>>  **Calculation**:
 
 ---------------------------------------------------------------
 
@@ -331,7 +343,7 @@ uc=lapply(allScen, function(scn){
 })
 ```
 
->>  **Calculation>>  **: find unique rows of CBS matrices.
+>>  **Calculation**: find unique rows of CBS matrices.
 
 ### Phylogenetic Diversity 
 
@@ -355,11 +367,11 @@ sp.ind=readRDS(paste0(sumDirs$sumBaseDir,'/speciesIndexTable.rds'))
 
 pd=lapply(allScen, function(scn){
   pd1=metricFromCBS(cbsDir=sumDirs$cbsDir,scenario = scn,env = envGrid ,
-  	spIndTable=sp.ind, mc.cores = mc.cores,
-    #SPECIFY FUCNTION ==> condition, 1st argument of FUNC must be the cellBySp matrix
-  	FUN = phyloDiv,outputFUNnames = 'PD',
-  	#specify other arguments to pass to FUN
-  	fullMatch=F,tree=phyloTree)
+                    spIndTable=sp.ind, mc.cores = mc.cores,
+                    #specify function, here `phyloDiv`; 1st argument must be the CBS matrix
+                    FUN = phyloDiv,outputFUNnames = 'PD',
+                    #specify other arguments to pass to FUN
+                    fullMatch=F,tree=phyloTree)
   writeRaster(pd1,file=paste0(sumDirs$phyloDivDir,'/PD_',scn,'.tif'),overwrite=T)
   pd1
 })
@@ -368,6 +380,9 @@ pd = raster::stack(pd)
 names(pd) = allScen
 plot(pd)
 ```
+
+specify function, here `phyloDiv`; 1st argument must be the cellBySp matrix
+
 
 ### Functional Diversity 
 
@@ -390,8 +405,6 @@ traitTable=readRDS(system.file('/extdata/treeDemo/speciesAttributes.rds',
 #the fucntion is set up to write the trees and set up rules for the PCA (e.g. how many PC you retain, etc.)
 #with writeOut=T it automatically creates the funcDivFolder and writes the "functional tree" there.
 trait.phy=buildFuncDivTree(sumDirs = sumDirs,
-												   #note here that the func will look for speciesAttributes.rds if NULL
-												   #CM: I think the user should have to specify this
 													 speciesAttributeTable =traitTable,
 													 colFuncTraits = 2:9)
 
@@ -399,7 +412,7 @@ fd=lapply(allScen, function(scn){
   fd1=metricFromCBS(cbsDir=sumDirs$cbsDir,scenario=scn,env=envGrid,
                     spIndTable=sp.ind,
                     mc.cores = mc.cores,
-                    #specify function, here `phyloDiv`; 1st argument must be the cellBySp matrix
+                    #specify function, here `phyloDiv`; 1st argument must be the CBS matrix
                     FUN = phyloDiv,outputFUNnames = 'FD',
                     #specify other arguments to pass to FUN
                     fullMatch=F,tree=trait.phy)

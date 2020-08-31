@@ -177,7 +177,7 @@ cellBySpeciesMatrices=function(outDir,
                                overwrite=FALSE,
                                #myTempPath=rasterOptions()$tmpdir,
                                reprojectToEnv=F,
-                               verbose=T){
+                               verbose=F){
 
 	# Strategy
 		# internally maintain an easy and quick version when chunks aren't needed
