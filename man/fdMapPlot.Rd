@@ -4,9 +4,15 @@
 \alias{fdMapPlot}
 \title{title}
 \usage{
-fdMapPlot(r, plotFile = NULL, shp = NULL, legend.args = list(text =
-  "# species", line = 1, side = 3, cex = 1), axis.args = list(cex.axis =
-  1.1), open = F, ...)
+fdMapPlot(
+  r,
+  plotFile = NULL,
+  shp = NULL,
+  legend.args = list(text = "# species", line = 1, side = 3, cex = 1),
+  axis.args = list(cex.axis = 1.1),
+  open = F,
+  ...
+)
 }
 \arguments{
 \item{r}{a raster}
@@ -21,11 +27,17 @@ fdMapPlot(r, plotFile = NULL, shp = NULL, legend.args = list(text =
 
 \item{axis.args=list(cex.axis=1.1), }{}
 }
+\value{
+
+}
 \description{
 title
 }
 \details{
 Plot a raster to a pdf
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

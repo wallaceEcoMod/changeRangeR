@@ -25,5 +25,6 @@ envChange <- function(rStack, SDM, threshold){
   } else {
     areas <- lapply(masks, area)
   }
+  return(areas)
 }
 

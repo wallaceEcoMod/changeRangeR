@@ -166,8 +166,6 @@ ratio.Overlap$ratio
 
 ## Future 
 
-NOTE FOR REVIEWERS: CURRENTLY THESE DATA ARE THE SAME SHAPEFILE REPRESENTING MANY YEARS. I WILL CHANGE TO PAST TRENDS THROUGH CURRENT USING MODIS DATA TO SHOW EXAMPLE.
-
 For users that have information on past environmental conditions or future scenarios, they can calculate changes in metrics over time and view a line graph of those changes. For example, the change in percentage of forest within species' range over time.
 
 ```{r}
@@ -195,4 +193,20 @@ plot(x = years, y = future.ratios[,2], type = "b", main = "Percent of SDM predic
 ```
 
 
+## Environmental Change Through Time
 
+To see how SDM range size can change with suitable forest cover through time, supply environmental rasters and a suitability threshold as well as a binary SDM. The environmental rasters must be in the same coordinate reference system at the SDM.
+
+```{r}
+SDM <- raster::raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
+rStack <- raster::stack(list.files(path = "inst/extdata/DemoData/MODIS", pattern = "\\.tif$", full.names = T))
+rStack <- raster::projectRaster(rStack, SDM, method = 'bilinear')
+threshold <- 50.086735
+
+SDM.time <- envChange(rStack = rStack, SDM = SDM, threshold = threshold)
+
+years <- c("2005", "2006", "2008", "2009", "2010")
+
+plot(y = SDM.time, x = years, main = "SDM area change", ylab = "area (square m)")
+lines(y = SDM.time, x = years)
+```

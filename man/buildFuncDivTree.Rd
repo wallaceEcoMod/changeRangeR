@@ -4,12 +4,25 @@
 \alias{buildFuncDivTree}
 \title{title}
 \usage{
-buildFuncDivTree(sumDirs, speciesAttributeTable = NULL, colFuncTraits,
-  verbose = T, transformTraits = T, rulePCchoice = "cumulativeProp",
-  rulePCthreshold = 0.8, writeOut = F)
+buildFuncDivTree(
+  sumDirs,
+  speciesAttributeTable = NULL,
+  colFuncTraits,
+  verbose = T,
+  transformTraits = T,
+  rulePCchoice = "cumulativeProp",
+  rulePCthreshold = 0.8,
+  writeOut = F
+)
+}
+\value{
+
 }
 \description{
 title
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>
