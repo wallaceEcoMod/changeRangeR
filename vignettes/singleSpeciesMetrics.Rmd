@@ -172,21 +172,16 @@ For users that have information on past environmental conditions or future scena
 
 ```{r}
 # Load shapefile
-shp1 <- st_read("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
+PA <- st_read("C:/Users/pgalante/OneDrive - AMNH/SDM_special_Issue/PAs/VN_Protected_Areas", "VN_NRs")
 # load raster
-r <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
-# Reproject shapefile to CRS of projected raster
-shp1 <- st_transform(shp1, crs(r))
-# create list of shapefiles
-shp2 <- shp1
-shp3 <- shp1
-shp4 <- shp1
-futures <- list(shp1,shp2, shp3, shp4)
+r <- stack(list.files(path = "C:/Users/pgalante/OneDrive - AMNH/SDM_special_Issue/SpeciesRasters/Francois", pattern = "\\.tif$", full.names = T))
+# Assume PA's will not change, so make list of current protectes areas
+futures <- list(PA, PA)
 # create list of rasters for example
-r <- list(r,r,r,r)
+r <- raster::unstack(r[[c(1,4)]])
 # supply names for r and futures
-r.names <- c("r1", "r2", "r3", "r4")
-futures.names <- c("f1", "f2", "f3", "f4")
+r.names <- c("BCC.2040.ssp2", "BCC.2060.ssp2")
+futures.names <- c("PA1", "PA2")
 # Define shapefile field and category
 field <- "DESIG_ENG"
 category <- "All"
@@ -194,9 +189,9 @@ category <- "All"
 future.ratios <- futureOverlap(r = r, futures = futures, field = field, category = category, futures.names = futures.names, r.names = r.names)
 ## Plot
 # Create list of years from which landcover comes
-years <- c(2000, 2001, 2002, 2003)
+years <- c(2040, 2060)
 # Plot
-plot(x = future.ratios[,2], y = years, type = "b", main = "Percent of SDM predicted to be protected")
+plot(x = years, y = future.ratios[,2], type = "b", main = "Percent of SDM predicted to be protected")
 ```
 
 
