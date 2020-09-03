@@ -81,8 +81,6 @@ richnessFromCBS=function(cbsDir,
 				if(verbose) message(x)
 				cbs.tmp=readRDS(cbs.f[x])
 				cbs=cbs.tmp[,keep]
-				#fuck=data.frame(spID=as.numeric(colnames(cbs)),rich=textTinyR:: sparse_Sums(cbs, rowSums = F))
-				#print(fuck[fuck[,2]>0,])
 				data.frame(cellID=as.numeric(rownames(cbs)),rich=textTinyR::sparse_Sums(cbs, rowSums = T))
 			},mc.cores=mc.cores)
 			rich.vec=do.call('rbind',richByCell)
@@ -234,10 +232,6 @@ rangeAreaInBinaryStack=function(someStack,cbsDir,scenario,sp.ind,cell.ind,mc.cor
 		someStack.mat[is.na(someStack.mat)]=0
 		out=t(cbs) %*% someStack.mat
     out
-# 		fuck=data.frame(rich=textTinyR::sparse_Sums(cbs, rowSums = F))
-# 		fuck2=apply(out,1,sum)
-# 		cbind(fuck,fuck2)
-
 	},mc.cores=mc.cores)
 	out=Reduce('+',rangeSize.tmp) %>% as.matrix %>% as.data.frame
 	names(out)=names(someStack)

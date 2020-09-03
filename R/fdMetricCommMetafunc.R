@@ -44,7 +44,6 @@ metricFromCBS=function(cbsDir,
 
   t1=proc.time()
   message(scenario)
-
 	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
 	if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
   if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}

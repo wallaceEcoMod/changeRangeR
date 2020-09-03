@@ -6,15 +6,6 @@
 \usage{
 getSpNamesFromDirs(x)
 }
-\value{
-
-}
 \description{
 title
-}
-\note{
-
-}
-\author{
-Cory Merow <cory.merow@gmail.com>
 }

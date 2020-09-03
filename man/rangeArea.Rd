@@ -4,10 +4,8 @@
 \alias{rangeArea}
 \title{Calculate taxon range area}
 \usage{
-rangeArea(cbsDir, outDir = NULL, scenario, sp.ind, mc.cores = 1, verbose = F)
-}
-\value{
-
+rangeArea(cbsDir, outDir = NULL, scenario, sp.ind, mc.cores = 1,
+  verbose = F)
 }
 \description{
 Calculate taxon range area

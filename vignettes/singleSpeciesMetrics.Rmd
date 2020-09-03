@@ -6,7 +6,11 @@ output:
   word_document: default
   html_document: default
 ---
-
+<!-- CM: Need to add this text into the header above so that devtools::buildvignettes() will work -->
+<!-- vignette: > -->
+<!--   %\VignetteIndexEntry{changeRanger Single Species Examples} -->
+<!--   %\VignetteEngine{knitr::rmarkdown} -->
+<!--   %\VignetteEncoding{UTF-8} -->
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
 ```

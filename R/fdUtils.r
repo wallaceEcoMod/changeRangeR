@@ -29,20 +29,13 @@ cm.cols.dif2=function(x,bias=1){ colorRampPalette(c('steelblue4','steelblue1','s
 #============================================================
 #============================================================
 #' @title title
-#' @description
-#' @param
-#' @param
-#' @param
-#' @param
-#' @param
-#' @param
-#' @param
-#' @param
-# @examples
-#
-#' @return
-#' @author Cory Merow <cory.merow@@gmail.com>
-#' @note
+#'
+# @description
+# @param
+# @param
+# # @examples#@return
+# @author Cory Merow <cory.merow@@gmail.com>
+# @note
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to

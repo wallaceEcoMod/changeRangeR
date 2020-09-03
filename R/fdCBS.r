@@ -1,6 +1,7 @@
 #===================================================================
 #===================================================================
 #===================================================================
+#' @title Make dataframe of species ID and occupied cells
 #' @description Convert rasters to long format data frames. Optionally reproject rasters first.
 #' @note These long formats are needed before `.cellBySpeciesMatrices` because a matrix of cells (C) by species (S) may not fit into memory.The reason to reproject internally is that it may be inconvenient to store tons of maps in a different projection, so this just handles the reprojection internally
 #' @export
