@@ -21,6 +21,6 @@ SE <- function(rStack){
   SEvals <- spSum/ssp.PixSum
   # put back into raster
   stackTotal <- sum(rStack, na.rm = F)
-  values(stackTotal) <- SEvals
+  stackTotal[!is.na(stackTotal)] <- SEvals
   return(stackTotal)
 }
