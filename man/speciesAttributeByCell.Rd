@@ -4,11 +4,25 @@
 \alias{speciesAttributeByCell}
 \title{title}
 \usage{
-speciesAttributeByCell(cbsDir, attrTable, scenario, method = "mean", env,
-  outDir = NULL, richnessRaster = NULL, verbose = F)
+speciesAttributeByCell(
+  cbsDir,
+  attrTable,
+  scenario,
+  method = "mean",
+  env,
+  outDir = NULL,
+  richnessRaster = NULL,
+  verbose = F
+)
+}
+\value{
+
 }
 \description{
 title
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

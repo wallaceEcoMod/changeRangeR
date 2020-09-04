@@ -3,8 +3,11 @@ title: "SingleSpeciesVignette"
 author: "P Galante"
 date: "`r Sys.Date()`"
 output:
-  word_document: default
+  pdf_document: default
   html_document: default
+  word_document: default
+vignette: |
+  %\VignetteIndexEntry{changeRanger Single Species Metrics} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
 ---
 <!-- CM: Need to add this text into the header above so that devtools::buildvignettes() will work -->
 <!-- vignette: > -->
@@ -17,10 +20,13 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
 
 ## Single species range change metrics
 
-Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in maskRangeR). From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information [1]. In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing and forward-thinking conservation planning. We provide an example below to calculate these metrics for the olinguito (citationXXXX) using the changeRangeR package. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest to learn more about this see our multi-species vignettes (Here and Here).
+Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in [https://cmerow.github.io/maskRangeR/](maskRangeR). From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information [1]. In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing and forward-thinking conservation planning. We provide an example below to calculate these metrics for the olinguito [2] using the changeRangeR package. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest to learn more about this see our multi-species vignettes (Here and Here).
 
 [1]   IUCN Standards and Petitions Committee. 2019. Guidelines for Using the IUCN Red List Categories and Criteria. Version 14. Prepared by the Standards and Petitions Committee.
 
+[2]   Helgen, K.M., Miguel Pinto, C., Kays, R., Helgen, L.E., Tsuchiya, M. T. N., Quinn, A., Wilson, D.E., Maldonado, J.E. (2013) Taxonomic revision of the olingos (Bassaricyon), with description of a new species, the Olinguito. Zookeys, 324, 1-83. https://doi.org/10.3897/zookeys.324.5827.
+
+Load the packages you'll need
 ```{r}
 library(changeRangeR)
 library(raster)
@@ -29,13 +35,14 @@ library(rgdal)
 library(sf)
 library(dplyr)
 ```
+
 # Range size
 
 Calculating range size is as simple as multiplying the number of cells in a binary raster by the resolution (in km) squared.
 This method is useful when your raster is projected. For unprojected rasters, see ?raster::area
 
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
+p <-raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
 # Check that your raster is projected in meters
 crs(p)
 # find the number of cells that are not NA
@@ -58,7 +65,7 @@ In changeRangeR, users can calculate IUCN’s EOO via two options 1) MCP/convex 
 Calculate the extent of occupancy around occurrence localities
 
 ```{r EOO occs}
-locs <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
+locs <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/10KM_thin_2017.csv"))
 # Look at the first 5 rows. Not that there are three columns: Species, Longitude, Latitude
 head(locs)
 # Create a minimum convex polygon around the occurrences
@@ -75,7 +82,7 @@ paste0(area, " km ^2")
 Calculate the extent of occupancy from a thresholded SDM
 
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
 # Threshold of the minimum training presence
 thr <- min(values(p), na.rm=T)
 p[p<thr] <- NA
@@ -97,9 +104,9 @@ Calculating the areas of occupancy measured in gridcells where the resolution is
 Calculate the area of occupancy that contains occurrence records
 
 ```{r}
-p <- raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
+p <-raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
 # Using unfiltered records
-locs <- read.csv("inst/extdata/DemoData/locs/All_localities_30n.csv")
+locs <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/All_localities_30n.csv"))
 locs <- locs[,1:2]
 p[!is.na(p)] <- 1
 AOOlocs<-aooArea(r = p,proj = crs(p), locs = locs)
@@ -109,7 +116,7 @@ print(AOOlocs)
 
 ## AOO pre-masked SDM
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO<-aooArea(r = p,proj = crs(p))
@@ -118,7 +125,7 @@ print(AOO)
 
 ## AOO masked SDM
 ```{r}
-p <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO<-aooArea(r = p,proj = crs(p))
@@ -137,8 +144,8 @@ observed MCP. The trial MCP is also spatially intersected with the original occu
 "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
 
 ```{r}
-p <- raster("inst/extdata/DemoData/SDM/olinguito/olinguitoSDM.tif")
-xy <- read.csv("inst/extdata/DemoData/locs/10KM_thin_2017.csv")
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/olinguitoSDM.tif"))
+xy <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/10KM_thin_2017.csv"))
 ch.orig <- mcp(xy[,2:3])
 thr <- 0.3380209
 SDMeoo <- mcpSDM(p = p, xy = xy[,2:3], ch.orig = ch.orig, thr = thr)
@@ -153,8 +160,8 @@ The function ratioOverlap allows changeRangeR users to calculate the proportion 
 ## Current 
 
 ```{r, warning = F}
-r <-raster("inst/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif")
-shp <- readOGR("inst/extdata/DemoData/shapefiles", "WDPA_COL_olinguito")
+r <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
+shp <- readOGR(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
 # View the fields
 colnames(shp@data)
 # Pick the field you are interested in
@@ -174,13 +181,13 @@ For users that have information on past environmental conditions or future scena
 
 ```{r}
 # Load shapefile
-PA <- st_read("C:/Users/pgalante/OneDrive - AMNH/SDM_special_Issue/PAs/VN_Protected_Areas", "VN_NRs")
+PA <- st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs")
 # load raster
-r <- stack(list.files(path = "C:/Users/pgalante/OneDrive - AMNH/SDM_special_Issue/SpeciesRasters/Francois", pattern = "\\.tif$", full.names = T))
+r <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/franLang"), pattern = "\\.tif$", full.names = T))
 # Assume PA's will not change, so make list of current protectes areas
 futures <- list(PA, PA)
 # create list of rasters for example
-r <- raster::unstack(r[[c(1,4)]])
+r <- raster::unstack(r)
 # supply names for r and futures
 r.names <- c("BCC.2040.ssp2", "BCC.2060.ssp2")
 futures.names <- c("PA1", "PA2")
@@ -202,8 +209,8 @@ plot(x = years, y = future.ratios[,2], type = "b", main = "Percent of SDM predic
 To see how SDM range size can change with suitable forest cover through time, supply environmental rasters and a suitability threshold as well as a binary SDM. The environmental rasters must be in the same coordinate reference system at the SDM.
 
 ```{r}
-SDM <- raster::raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
-rStack <- raster::stack(list.files(path = "inst/extdata/DemoData/MODIS", pattern = "\\.tif$", full.names = T))
+SDM <- raster::raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
+rStack <- raster::stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/MODIS"), pattern = "\\.tif$", full.names = T))
 rStack <- raster::projectRaster(rStack, SDM, method = 'bilinear')
 threshold <- 50.086735
 
@@ -211,6 +218,6 @@ SDM.time <- envChange(rStack = rStack, SDM = SDM, threshold = threshold)
 
 years <- c("2005", "2006", "2008", "2009", "2010")
 
-plot(y = SDM.time, x = years, main = "SDM area change", ylab = "area (square m)")
-lines(y = SDM.time, x = years)
+plot(y = SDM.time$Area, x = years, main = "SDM area change", ylab = "area (square m)")
+lines(y = SDM.time$Area, x = years)
 ```
