@@ -7,6 +7,7 @@
 #' abundance is an amount (could be number of individuals, proportion of cell occupied etc).  With abundance, PE is equivalent to Caddotte & Davies BED)
 #' probability is a value from 0 to 1, for example from an SDM.  Probability then propagates to internal branches at the probability that any of the descendent branches are present.  This method is described in a paper of mine in, which is being pending minor revisions.
 #' @export
+#'
 
 
 ##################################################
@@ -42,13 +43,8 @@
 
 #####  Source below  #####
 
-calc_PE <- function(tree, sites_x_tips,presence=c("presence","abundance","probability")) {
-
-  require(phylobase)
-  # add code to check that the values are correct for the presence type:
-  # 0 or 1 for presence - this calculates PE (Rosauer et al 2009)
-  # from 0 to 1 for probability - this calculates model weighted PE (Rosauer, in prep)
-  # any value for abundance - this calculation is equivalent to BED (Cadotte & Davies 2010)
+calc_PE <- function(tree, sites_x_tips,presence=NULL) {
+# c("presence","abundance","probability")
 
   parent.prob <- function(probabilities) {
     # probabilities is a vector of values between 0 and 1
@@ -69,11 +65,17 @@ calc_PE <- function(tree, sites_x_tips,presence=c("presence","abundance","probab
     return(vec.out)
   }
 
+  # add code to check that the values are correct for the presence type:
+  # 0 or 1 for presence - this calculates PE (Rosauer et al 2009)
+  # from 0 to 1 for probability - this calculates model weighted PE (Rosauer, in prep)
+  # any value for abundance - this calculation is equivalent to BED (Cadotte & Davies 2010)
+
   #default value for presence
   if (is.na(presence)) {presence="presence"}
 
   # change to a phylobase phylo4 object
-  if (class(tree) == "phylo") {tree <- phylo4(tree)}
+  #if (class(tree) == "phylo") {tree <- phylo4(tree)}
+  tree <- phylo4(tree)
 
   sites_x_branches <- data.frame(cbind(rep(0,nrow(sites_x_tips))))
 
@@ -118,4 +120,3 @@ calc_PE <- function(tree, sites_x_tips,presence=c("presence","abundance","probab
   names(PE) <- c("site","PE")
   return(PE)
 }
-

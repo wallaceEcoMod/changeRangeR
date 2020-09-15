@@ -2,7 +2,7 @@
 #' @description Calculate the proportion of the species' range (e.g., a thresholded SDM) that is contained by landcover categories
 #' taken from a shapefile. Example shapefile categories include protected areas, threatened areas. ratioOverlap returns an s4 object
 #' containing the masked raster layer and the percent of the total range that lies within the shapefile polygons specified.
-#' @param r Binary Raster.
+#' @param r Binary Raster. Must be in same projection as shp parameter
 #' @param shp a shapefile of land cover features.
 #' @param field The shapefile field attribute containing the features to compare (i.e., the column name).
 #' @param category a list of the names of shapefile features to compare. If all features are to be used, input "All".
