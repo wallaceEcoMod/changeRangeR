@@ -75,11 +75,11 @@ calc_PE <- function(tree, sites_x_tips,presence=NULL) {
 
   # change to a phylobase phylo4 object
   #if (class(tree) == "phylo") {tree <- phylo4(tree)}
-  tree <- phylo4(tree)
+  tree <- phylobase::phylo4(tree)
 
   sites_x_branches <- data.frame(cbind(rep(0,nrow(sites_x_tips))))
 
-  for (i in 1:nTips(tree)) {
+  for (i in 1:phylobase::nTips(tree)) {
     sites_x_branches[,i] <- sites_x_tips[,which(labels(tree)[i]==names(sites_x_tips))]
     names( sites_x_branches)[i] <- labels(tree)[i]
   }
@@ -89,9 +89,9 @@ calc_PE <- function(tree, sites_x_tips,presence=NULL) {
   branch.count <- length(labels(tree))
 
   # add names and occupancy columns for internal branches
-  for (i in (nTips(tree)+1):branch.count) {
+  for (i in (phylobase::nTips(tree)+1):branch.count) {
     branch.labels[i] <- paste("b",i,sep="")
-    desc <- as.integer(descendants(tree,i, type="tips"))
+    desc <- as.integer(phylobase::descendants(tree,i, type="tips"))
     if (presence=="abundance") {
       branch_col <- as.numeric(apply(sites_x_branches[,desc],MARGIN=1,FUN=sum))
     } else if (presence=="presence") {
@@ -109,7 +109,7 @@ calc_PE <- function(tree, sites_x_tips,presence=NULL) {
   sites_x_branches <- apply(sites_x_branches,MARGIN=2,FUN=scale.to,1)
 
   #now scale branches to sum to their length
-  branch.lengths <- as.numeric(edgeLength(tree,1:branch.count))
+  branch.lengths <- as.numeric(phylobase::edgeLength(tree,1:branch.count))
   branch.lengths[is.na(branch.lengths)] <- 0
   for (i in 1:length(branch.lengths)) {
     sites_x_branches[,i] <- sites_x_branches[,i] * branch.lengths[i]
