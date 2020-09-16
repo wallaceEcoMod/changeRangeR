@@ -170,7 +170,14 @@ sites <- as.data.frame(Allxy[,1:ncol(Allxy)])
 sites[is.na(sites)] <- 0
 ```
 
+
+First, source the function.
+```{r}
+source("R/calc_PE.R")
+```
+
 Calculate PE
+
 ```{r}
 pEprimates <- calc_PE(tree = primTree[[1]], sites_x_tips = sites, presence = "presence")
 ```

@@ -4,12 +4,10 @@
 \alias{aooArea}
 \title{Calculate AOO}
 \usage{
-aooArea(r, proj, locs = NULL)
+aooArea(r, locs = NULL)
 }
 \arguments{
-\item{r}{Raster layer of a binary SDM}
-
-\item{proj}{Character string of r's projected coordinate system proj4string}
+\item{r}{Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.}
 
 \item{locs}{(optional) data.frame of occurrence records: Longitude and latitude. If provided, AOO of cells containing occurrence points
 is returned. If NULL, AOO of SDM is returned.}

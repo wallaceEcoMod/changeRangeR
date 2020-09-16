@@ -7,7 +7,7 @@
 ratioOverlap(r, shp, field, category)
 }
 \arguments{
-\item{r}{Binary Raster.}
+\item{r}{Binary Raster. Must be in same projection as shp parameter}
 
 \item{shp}{a shapefile of land cover features.}
 

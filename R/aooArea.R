@@ -1,16 +1,15 @@
 #' @title Calculate AOO
 #' @description Calculate area of occupancy measured in 2km resolution using a binary SDM
-#' @param r Raster layer of a binary SDM
-#' @param proj Character string of r's projected coordinate system proj4string
+#' @param r Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.
 #' @param locs (optional) data.frame of occurrence records: Longitude and latitude. If provided, AOO of cells containing occurrence points
 #' is returned. If NULL, AOO of SDM is returned.
 #' @export
 
 
-aooArea <- function(r, proj, locs=NULL) {
+aooArea <- function(r, locs=NULL) {
   ## If locs is NULL
   if (is.null(locs)){
-    if (identical(raster::crs(r), raster::crs("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))){
+    if (isLonLat(r)){
       # Project everything to WGS84
       #  r.2km <- raster::projectRaster(from = r, crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0", method = "ngb")
       # Create new dummy raster with correct 2km resolution

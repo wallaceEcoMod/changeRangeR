@@ -27,7 +27,7 @@ Translating a species’ current distribution into meaningful conservation metri
 [2]   Helgen, K.M., Miguel Pinto, C., Kays, R., Helgen, L.E., Tsuchiya, M. T. N., Quinn, A., Wilson, D.E., Maldonado, J.E. (2013) Taxonomic revision of the olingos (Bassaricyon), with description of a new species, the Olinguito. Zookeys, 324, 1-83. https://doi.org/10.3897/zookeys.324.5827.
 
 Load the packages you'll need
-```{r}
+```{r, message = F, warning = F}
 library(changeRangeR)
 library(raster)
 library(rgeos)
@@ -109,7 +109,7 @@ p <-raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/ol
 locs <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/All_localities_30n.csv"))
 locs <- locs[,1:2]
 p[!is.na(p)] <- 1
-AOOlocs<-aooArea(r = p,proj = crs(p), locs = locs)
+AOOlocs<-aooArea(r = p, locs = locs)
 
 print(AOOlocs)
 ```
@@ -119,7 +119,7 @@ print(AOOlocs)
 p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
-AOO<-aooArea(r = p,proj = crs(p))
+AOO<-aooArea(r = p)
 print(AOO)
 ```
 
@@ -128,7 +128,7 @@ print(AOO)
 p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
-AOO<-aooArea(r = p,proj = crs(p))
+AOO<-aooArea(r = p)
 print(AOO)
 ```
 
