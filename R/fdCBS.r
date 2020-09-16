@@ -341,7 +341,8 @@ cellBySpeciesMatrices=function(outDir,
 			cbs <- Matrix::Matrix(data = 0,
 													 nrow = length(cellsThisChunk),
 													 ncol = nrow(sp.ind),
-													 dimnames = list(as.character(cellsThisChunk), as.character(sp.ind[,2])),
+													 dimnames = list(as.character(cellsThisChunk),
+													                 as.character(sp.ind[,2])),
 													 sparse = T)
 			for(j in seq_along(chunk.f)){
 				if(verbose) cat(j,' ')

@@ -40,7 +40,6 @@
 fdMapPlot=function(r,
 									 plotFile=NULL,
 								   shp=NULL,
-									 legend.args=list(text='# species',line=1,side=3,cex=1),
 									 axis.args=list(cex.axis=1.1),
 									 open=F,
 									 ...){
@@ -50,7 +49,8 @@ fdMapPlot=function(r,
 
 	zlims=c(min(minValue(r)),max(maxValue(r)))
 	for(i in 1:nlayers(r)){
-		plot(r[[i]],zlim=zlims,axes=F,xlab="",ylab="",xaxt='n',yaxt='n', box=FALSE,col= c('white',cm.cols1(100)),legend.args=legend.args, axis.args=axis.args,smallplot= c(.89,.91,.1,.9),...)
+		plot(r[[i]],zlim=zlims,axes=F,xlab="",ylab="",xaxt='n',yaxt='n', box=FALSE,
+		     col= c('white',cm.cols1(100)), axis.args=axis.args,smallplot= c(.89,.91,.1,.9),...)
 		mtext(names(r)[i],3,line=0)
 		if(!is.null(shp)) plot(shp,add=T,lwd=1)
 	}

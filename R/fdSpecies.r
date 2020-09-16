@@ -63,8 +63,9 @@ richnessFromCBS=function(cbsDir,
 		rich.vec=do.call('rbind',richByCell)
 		rich.r=raster(env[[1]])
 		values(rich.r)[rich.vec$cellID]= rich.vec$rich
-
-		if(!is.null(outDir)) writeRaster(rich.r,file=paste0(outDir,'/richness_', scenario,'.tif'), overwrite=T)
+    names(rich.r)=scenario
+		if(!is.null(outDir))
+		  writeRaster(rich.r,file=paste0(outDir,'/richness_', scenario,'.tif'), overwrite=T)
 		t2=proc.time()-t1
 		message( paste0(round(t2[3],2),' s') )
 		return(rich.r)
@@ -87,7 +88,8 @@ richnessFromCBS=function(cbsDir,
 			rich.r=raster(env[[1]])
 			values(rich.r)[rich.vec$cellID]= rich.vec$rich
 
-			if(!is.null(outDir))	writeRaster(rich.r,file=paste0(outDir,'/', attrNames[y],'.tif'), overwrite=T)
+			if(!is.null(outDir))
+			  writeRaster(rich.r,file=paste0(outDir,'/', attrNames[y],'.tif'), overwrite=T)
 			rich.r
 		})
 		out1=stack(out)

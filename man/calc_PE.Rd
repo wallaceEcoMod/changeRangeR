@@ -4,11 +4,8 @@
 \alias{calc_PE}
 \title{Calculate phylogenetic endemism}
 \usage{
-calc_PE(
-  tree,
-  sites_x_tips,
-  presence = c("presence", "abundance", "probability")
-)
+calc_PE(tree, sites_x_tips, presence = c("presence", "abundance",
+  "probability"))
 }
 \arguments{
 \item{tree}{class phylo object of phylogenetic tree. The names on tree's tip labels need to match the column names on the matrix}

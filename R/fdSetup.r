@@ -25,7 +25,9 @@ setupSummaryDirectories=function(summaryBaseDir,
 	if(!file.exists(figDir)) dir.create(figDir)
 	attrDir=paste0(summaryBaseDir,'/AttributeTables')
 	if(!file.exists(attrDir)) dir.create(attrDir)
-	cbsDir=paste0(summaryBaseDir,'/CellSpeciesLists')
+	sparseDir=paste0(summaryBaseDir,'/SparseMatrices')
+	if(!file.exists(sparseDir)) dir.create(sparseDir)
+	cbsDir=paste0(sparseDir,'/CellBySpecies')
 	if(!file.exists(cbsDir)) dir.create(cbsDir)
 	rangeSizeDir=paste0(summaryBaseDir,'/RangeSize')
 	if(!file.exists(rangeSizeDir)) dir.create(rangeSizeDir)
@@ -45,7 +47,7 @@ setupSummaryDirectories=function(summaryBaseDir,
 	#if(!file.exists(uniqueComDir)) dir.create(uniqueComDir)
 
 	out=list(myBaseDir=myBaseDir,sumBaseDir=summaryBaseDir, figDir=figDir,
-	         attrDir=attrDir,cbsDir=cbsDir, rangeSizeDir=rangeSizeDir,
+	         attrDir=attrDir,sparseDir=sparseDir, cbsDir=cbsDir, rangeSizeDir=rangeSizeDir,
 	         richDir=richDir,envDir=envDir,miscDir=miscDir,
 	         #uniqueComDir=uniqueComDir,
 	         optional)
