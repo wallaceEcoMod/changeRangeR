@@ -36,7 +36,7 @@ aooArea <- function(r, locs=NULL) {
       dummy <- r.2km
       raster::res(dummy) <- 0.01666667
       # resample SDM
-      r.2km <- raster::resample(x = r.2km, y = dummy)
+      r.2km <- raster::resample(x = r.2km, y = dummy, method = "ngb")
       locCells <- raster::extract(r.2km, locs)
       return(paste0("AOO of cells with occurrence records:", length(locCells) * 4, "km^2"))
     }

@@ -18,11 +18,12 @@ Depends:
   textTinyR,
   tools
 Suggests: 
-  ape,
-  fastDummies,
-  parallelsugar,
-  PhyloMeasures,
-  rgdal,
-  tictoc,
-  tidyverse
+    ape,
+    fastDummies,
+    parallelsugar,
+    PhyloMeasures,
+    rgdal,
+    tictoc,
+    tidyverse,
+    testthat
 RoxygenNote: 7.1.1
