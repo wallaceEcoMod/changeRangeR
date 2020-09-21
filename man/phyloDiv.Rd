@@ -6,8 +6,14 @@
 \usage{
 phyloDiv(uniqueCom, tree, fullMatch = T, verbose = T, ...)
 }
+\value{
+
+}
 \description{
 title
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

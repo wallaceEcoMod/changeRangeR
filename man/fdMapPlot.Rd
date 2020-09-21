@@ -4,8 +4,14 @@
 \alias{fdMapPlot}
 \title{title}
 \usage{
-fdMapPlot(r, plotFile = NULL, shp = NULL, axis.args = list(cex.axis =
-  1.1), open = F, ...)
+fdMapPlot(
+  r,
+  plotFile = NULL,
+  shp = NULL,
+  axis.args = list(cex.axis = 1.1),
+  open = F,
+  ...
+)
 }
 \arguments{
 \item{r}{a raster}
@@ -20,11 +26,17 @@ fdMapPlot(r, plotFile = NULL, shp = NULL, axis.args = list(cex.axis =
 
 \item{axis.args=list(cex.axis=1.1), }{}
 }
+\value{
+
+}
 \description{
 title
 }
 \details{
 Plot a raster to a pdf
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

@@ -218,7 +218,7 @@ primRas <- crop(primRas, e)
 
 Calculate species endemism
 ```{r}
-sp.End <- SE(primRas)
+sp.End <- SE(primRas[[1:3]])
 plot(sp.End)
 ```
 
