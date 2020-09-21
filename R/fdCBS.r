@@ -205,6 +205,7 @@ cellBySpeciesMatrices=function(outDir,
 		                                        mc.cores=mc.cores,
 		                                        outDir=outDir,
 		                                        sp.ind=sp.ind,
+		                                        cell.ind=cell.ind,
 		                                        #myTempPath=myTempPath,
 		                                        reprojectToEnv=reprojectToEnv,
 		                                        verbose=verbose)
