@@ -85,7 +85,11 @@ primRas <- crop(primRas, e)
 ```
 
 ### Load phylogenetic tree
-THIS NEEDS A CITATION (ANDREA?)
+This phylogenetic tree of South American primates come from [VertLife](https://vertlife.org/). Specifically, phylogenies are from the following sources:
+
+   [1] Upham, N. S., J. A. Esselstyn, and W. Jetz. 2019. Inferring the mammal tree: species-level sets of phylogenies for questions in ecology, evolution, and conservation. PLOS Biology. https://doi.org/10.1371/journal.pbio.3000494
+   [2] Upham, N. S., J. A. Esselstyn, and W. Jetz. 2019. Ecological causes of speciation and species richness in the mammal tree of life. bioRxiv:504803. https://doi.org/10.1101/504803v3
+   
 ```{r}
 primTree <- read.nexus(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/phyloTree/output.nex"))
 ```
