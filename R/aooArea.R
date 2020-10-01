@@ -19,7 +19,7 @@ aooArea <- function(r, locs=NULL) {
       r.2km <- raster::resample(x = r, y = dummy, method = 'ngb')
       # Calculate number of cells
       fc.cells <- raster::cellStats(!is.na(r.2km), stat = sum) * 4
-      return(paste0("AOO:", fc.cells, " km^2"))
+      rasArea <- paste0("AOO:", fc.cells, " km^2")
     } else {
       r.dummy <- r
       agg <- 2000 /raster::res(r)[1]
