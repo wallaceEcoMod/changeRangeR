@@ -23,7 +23,9 @@ envChange <- function(rStack, SDM, threshold){
   if (!isLonLat(maskStack)){
     areas <- lapply(masks, function(x) res(x)[[1]] *ncell(x[!is.na(x)]))
   } else {
-    areas <- lapply(masks, raster::area)
+    area <- lapply(masks, raster::area)
+    areas.1 <- lapply(area, function(x) x[!is.na(x)])
+    areas <- lapply(areas.1, function(x) length(x) * median(x))
   }
   return(list(Area = areas, masks = maskStack))
 }
