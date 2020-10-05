@@ -32,7 +32,8 @@ collapseCols=function(inDir,
                       type='binary',
                       keepChunks=F,
                       mc.cores=mc.cores,
-                      verbose=F){
+                      overwrite=F,
+                      verbose=T){
   ## for testing
   ## attrTable=genusSpAttr; attrName='genus'; scenario='present'; inDir=sumDirs$cbsDir; outDir=sumDirs$cbgDir; keepChunks=F
 
@@ -43,11 +44,18 @@ collapseCols=function(inDir,
   if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply
 
   anames=unique(spAttrTable[,attrName]) %>% na.omit
+  message(paste(length(anames), 'groups to aggregate over'))
   out=mclapply(seq_along(cbs.f), function(x){
     if(verbose) message(x)
+    out.f=paste0(outDir,'/chunk_',x,'.rds')
+    if(file.exists(out.f) & !overwrite) {
+    	message(paste('chunk',x,'done, skipping'))
+    	return()
+    }
     cbs.tmp=readRDS(cbs.f[x])
     colByName=lapply(seq_along(anames),function(y){
       keep=which(spAttrTable[,attrName]==anames[y])
+      if(length(keep)==1) return(cbs.tmp[,keep])
       o=cbs.tmp[,keep] %>% textTinyR::sparse_Sums(rowSums = T)
       if(type=='binary') return(o %>% pmin(1))
       if(type=='count') return(o)

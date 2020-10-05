@@ -43,8 +43,7 @@ mc.cores=6
 
 ```{r}
 ### determine where you want outputs
-summaryBaseDir='/Volumes/cm2/changeRangerDemos/trees190_test4'
-#summaryBaseDir='/Volumes/cm2/changeRangerDemos/trees190/selec'
+summaryBaseDir='/Volumes/cm2/changeRangerDemos/trees190_test6'
 if(!file.exists(summaryBaseDir)) dir.create(summaryBaseDir)
 
 # Indicate scenarios. these names will be used throughout to structure folders 
@@ -66,8 +65,8 @@ world.shp2=spTransform(world.shp,projection(envGrid))
 
 Set up a standardized set of directory names and structure so that that `changeRanger` functions can access the right files internally. You can specify any optional subdirectories you like, although `changeRanger` will only write outputs there.
 
-TODO: store all the collapsing info in the index tabels, or optionally in separate attribute tabels. 
-TODO: all funcions supply the path to the appropriate collapsed sparse folder and work on whatever is in there. do each of these need their own index tables or can they work off a master one? maybe make reserved names that have CellID pasted to the collapse type.
+<!-- TODO: store all the collapsing info in the index tables, or optionally in separate attribute tables.  -->
+<!-- TODO: all funcions supply the path to the appropriate collapsed sparse folder and work on whatever is in there. do each of these need their own index tables or can they work off a master one? maybe make reserved names that have CellID pasted to the collapse type. -->
 
 ```{r}
 sumDirs=setupSummaryDirectories(summaryBaseDir, optionalSubDirs=c('funcDiv','phyloDiv'))
@@ -81,6 +80,7 @@ str(sumDirs)
 Begin by converting the range rasters to a matrix with rows indexing cells and columns indexing species. With the `nCellChunks` argument, I'm specifying that the globe should be split up into 10 chunks; this is important when your cell x species matrix is large, because the whole thing can't be read into memory at once. 'Large' will depend on the number of species, the resolution and extent of your maps, and your computer's capabilities. 
 
 ```{r message=F}
+# make a table of the raster file names and the associated species names
 allSpeciesMaps=tibble(rasterFiles=list.files(paste0(myDir,'/present'),
                                              recursive=T, full.names=T)) %>% 
   mutate(sp.names= rasterFiles %>% basename %>% file_path_sans_ext) %>%
@@ -90,28 +90,7 @@ allSpeciesMaps=tibble(rasterFiles=list.files(paste0(myDir,'/present'),
 sp.ind=speciesIndexTable(allSpeciesMaps,sumDirs)
 # cell index Table. columns: long, lat, cellid
 cell.ind=cellIndexTable(envGrid,nCellChunks=10,sumDirs)
-
-for (scn in allScen){
-  allSpeciesMaps=tibble(rasterFiles=list.files(paste0(myDir,'/',scn),
-                                               recursive=T, full.names=T)) %>% 
-    mutate(sp.names= rasterFiles %>% basename %>% file_path_sans_ext) %>%
-    separate(sp.names,into=c('g','sp','t','s'),sep='_') %>% select(-t,-s) %>%
-    unite(sp.names,g,sp)
-  # TODO clean up the guts of this function
-  cellBySpeciesMatrices(sumDirs$cbsDir,
-	                      allSpeciesMaps=allSpeciesMaps,
-	                      scenario=scn,
-	                      envGrid=envGrid,
-	                      sp.ind=sp.ind,
-                        cell.ind=cell.ind,
-	                      nCellChunks=10, # number of chunks to split the envGrid into
-	                      mc.cores=mc.cores,
-	                      overwrite=T)
-}
 ```
-
-This step can take a little time, but makes all the downstream steps fast. It converted all the ranges into sparse matrices and stored them in the folder '.../SparseMatrices/CellBySpecies'. We refer to these as 'cell by species' matrices, or CBS matrices for short. Depending on file size, or your settings, CBS matrices can be stored in chunks to reduce the need to load in huge files in later operations where you may only need a subset of the chunks. Chunking is done based on rows; that is each contains a subset of cells, but all species. 
-
 Two key outputs are:
 
   -   cellIndexTable.rds is a data frame where the row indices of the CBS matrices are stored along with the coordinates and cellIDs of your environmental grid.
@@ -124,6 +103,7 @@ cell.ind=readRDS(paste0(sumDirs$myBaseDir,'/cellIndexTable.rds'))
 head(cell.ind)
 ```
 
+
 ```{r}
 sp.ind=readRDS(paste0(sumDirs$myBaseDir,'/speciesIndexTable.rds'))
 head(sp.ind)
@@ -133,8 +113,33 @@ You can see how the globe is broken up into chunks. `sparseToRaster` is also use
 
 ```{r}
 cell.ind=readRDS(paste0(sumDirs$myBaseDir,'/cellIndexTable.rds'))
-chunks.r=sparseToRaster(cell.ind,envGrid,'chunkID')
+# a convenient function to convert between sparse matrices and rasters, where plotting is easier
+chunks.r=cellIDToRaster(cell.ind,envGrid,'chunkID')
+# a convient plotting function in changeRanger
 fdMapPlot(chunks.r,shp=world.shp2,legend.args=list(text='chunk ID'))
+```
+
+Now we're ready to make the sparse matrices. This step can take a little time, but makes all the downstream steps fast. It converted all the ranges into sparse matrices and stored them in the folder '.../SparseMatrices/CellBySpecies'. We refer to these as 'cell by species' matrices, or CBS matrices for short. Depending on file size, or your settings, CBS matrices can be stored in chunks to reduce the need to load in huge files in later operations where you may only need a subset of the chunks. Chunking is done based on rows; that is each contains a subset of cells, but all species. 
+  <!-- # TODO clean up the guts of this function -->
+
+```{r message=F}
+for (scn in allScen){
+  allSpeciesMaps=tibble(rasterFiles=list.files(paste0(myDir,'/',scn),
+                                               recursive=T, full.names=T)) %>% 
+    mutate(spNames= rasterFiles %>% basename %>% file_path_sans_ext) %>%
+    separate(spNames,into=c('g','sp','t','s'),sep='_') %>% select(-t,-s) %>%
+    unite(spNames,g,sp)
+  cellBySpeciesMatrices(sumDirs$cbsDir,
+	                      rasterFiles=allSpeciesMaps$rasterFiles,
+                        spNames=allSpeciesMaps$spNames,
+	                      scenario=scn,
+	                      envGrid=envGrid,
+	                      sp.ind=sp.ind,
+                        cell.ind=cell.ind,
+	                      nCellChunks=10, # number of chunks to split the envGrid into
+	                      mc.cores=mc.cores,
+	                      overwrite=T)
+}
 ```
 
 ---------------------------------------------------------------
@@ -150,7 +155,6 @@ rich=lapply(allScen,function(scn){
   r=richnessFromCBS(cbsDir=sumDirs$cbsDir,
                     scenario=scn,env=envGrid,
                     mc.cores=mc.cores, outDir=sumDirs$richDir)
-  
   # I like to store all the plots as I go
   fdMapPlot(stack(r),paste0(sumDirs$figDir,'/Richness_',scn,'.pdf'),shp=world.shp2,
             legend.args=list(text='Species Richness'))
@@ -184,7 +188,7 @@ newSpInd= sp.ind %>% full_join(ra[[1]],by=c('species','index')) %>%
   rename(rangeAreaPresent=rangeArea) %>% 
   full_join(ra[[2]],by=c('species','index')) %>% 
   rename(rangeArea8580=rangeArea) 
-saveRDS(newSpInd,file=paste0(sumDirs$sumBaseDir,'/speciesIndexTable.rds'))
+str(newSpInd)
 ```
 
 
@@ -226,18 +230,46 @@ The second type, **collapsing** <!-- need a better name --> operations, involves
 
 The third type, **moments** over rows/columns, currently supports estimating the mean value (eventually first four moments) of an attribute over rows or columns. For example, this could be the mean attribute of species that occur in the same cell; in fact we just saw this when calculating the cell-level rarity above by taking the mean of 1/range_size over species. Relatedly, as we'll demonstrate below, one might also be interested in the mean values of cells where a species occurs.
 
-TODO: need a cellAttributeBySpecies function analogous to speciesAttributeByCell
+<!-- TODO: need a cellAttributeBySpecies function analogous to speciesAttributeByCell -->
 
 ### Richness by species attributes
-TODO: estimate whether you need multiple chunks. (esp for spatial ones that could be combined)
+<!-- TODO: estimate whether you need multiple chunks. (esp for spatial ones that could be combined) -->
 
-Species might have different attributes, like growth form, clade, etc, such that it is useful to split up analyses by group. Here, we'll make a separate richness map for each genus.
+Species might have different attributes, like growth form, clade, etc., such that it is useful to split up analyses by group. Here, we'll make a separate richness map for each genus. This corresponds to **row sum** operations, as described above.
+
 ```{r}
 sumDirs$richByGenusDir=file.path(sumDirs$richDir,'byGenus')
 if(!file.exists(sumDirs$richByGenusDir)) dir.create(sumDirs$richByGenusDir)
 ```
 
-Generate an binary indicator of the genus. Its important that the factors are converted to binary indicators.
+We begin by looking at richness within each genus separately.
+
+```{r}
+sp.ind=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))
+genusSpAttr=sp.ind %>% select(species) %>%
+  separate(species,c("genus",NA),sep='_')  
+sp.ind = sp.ind %>% bind_cols(genusSpAttr)
+saveRDS(sp.ind,file=paste0(sumDirs$sumBaseDir,'/speciesIndexTable.rds'))
+head(sp.ind) 
+```
+
+
+```{r}
+richWithinGen=lapply(allScen,function(scn){
+	r=richnessFromCBS(cbsDir=sumDirs$cbsDir,scenario=scn,
+	                  envGrid=envGrid,mc.cores=mc.cores,
+	                  attrTable=sp.ind,attrName='genus',outDir=sumDirs$richByGenusDir)
+	names(r)=paste0(names(r),'_',scn)
+	fdMapPlot(r,plotFile=paste0(sumDirs$figDir,'/RichnessByGenus_',scn,'.pdf'), 
+	          shp=world.shp2, legend.args=list(text='# species',line=2,side=4))
+	r
+})
+fdMapPlot(richWithinGen[[1]],shp=world.shp2,legend.args=list(text='Species Richness')) 
+fdMapPlot(richWithinGen[[2]],shp=world.shp2,legend.args=list(text='Species Richness')) 
+```
+
+Next we'll look at the richness of genera - that is, how many genera are in each pixel? 
+This is our first demonstration of **collapsing column** operations, as described above, because we combine all the columns related to a particular genus together. We'll store a new set of matrices - **cell by genus (CBG)** matrices that are analogous to the CBS matrices, except that he columns now correspond to genera. Then we can calculate richness of genera using the same `richnessFromCBS` used above. 
 
 <!-- Split the operations into species attributes which are binary (so collapse columns) or continuous, which we can get moments for. I think that's most operations. maybe extremes or quantiles would be good too. -->
 
@@ -248,18 +280,22 @@ if(!file.exists(sumDirs$cbgDir)) dir.create(sumDirs$cbgDir)
 # overwrite existing directory settings to save this.
 saveRDS(sumDirs,file=paste0(sumDirs$sumBaseDir,'/dirList.rds'))
 
-gen=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))
-genusSpAttr = gen %>% select(species,index) %>% mutate(temp=species) %>% 
-  separate(temp,c("genus",NA),sep='_')
+sp.ind=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))  %>% select(species) %>%
+  separate(species,c("genus",NA),sep='_')
 
 # collapse columns of the cbs matrices to make cell by genus matrices
 lapply(allScen,function(scn){
   outDirScn=paste0(sumDirs$cbgDir,'/',scn)
   if(!file.exists(outDirScn)) dir.create(outDirScn)
   collapseCols(inDir=sumDirs$cbsDir,outDir=outDirScn,scenario=scn,
-               spAttrTable=genusSpAttr,attrName='genus',
+               spAttrTable=sp.ind,attrName='genus',
                type='binary',keepChunks=T,mc.cores=mc.cores)
 })
+
+# make genus index table (analogous to species index table) so we know which CBG columns correspond  to which species
+gen.ind=data.frame(genus=unique(sp.ind[,'genus']) %>% na.omit)
+gen.ind$index=1:nrow(gen.ind)
+saveRDS(gen.ind,file=paste0(sumDirs$sumBaseDir,'/generaIndexTable.rds'))
 
 # calculate richness (row sums) from cell by genus matrices 
 richGen=lapply(allScen,function(scn){
@@ -273,50 +309,33 @@ richGen=lapply(allScen,function(scn){
 fdMapPlot(richGen[[1]],shp=world.shp2,legend.args=list(text='Genus Richness'))
 fdMapPlot(richGen[[2]],shp=world.shp2,legend.args=list(text='Genus Richness'))
 ```
-<!-- CAN DO the next step with sparse count matrices. Todo.
-Note that there's a second way to do the same operation as above, which uses species attributes internally in the function without making the cell by genus matrices. This way is less flexible because you can only do one calculation (richness), and is a little slower, but saves you from making extra matrices if your only interest is genus (or some other factor) richness. -->
 
-You might also want to look at richness within each genus separately.
 
-```{r}
-gen=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))
-genusSpAttr2 = gen %>% select(species) %>%
-  separate(species,c("genus",NA),sep='_')  %>%
-  fastDummies::dummy_cols()  %>%  select(-genus) %>%
-  bind_cols(gen %>% select(species,index))
-# not great that you have to subset the spIndex table for this to work, since that may be confusing
-richGen2=lapply(allScen,function(scn){
-	r=richnessFromCBS(cbsDir=sumDirs$cbsDir,scenario=scn,
-	                  env=envGrid,mc.cores=mc.cores,
-	                  attrTable=genusSpAttr2,outDir=sumDirs$richByGenusDir)
-	names(r)=paste0(names(r),'_',scn)
-	fdMapPlot(r,plotFile=paste0(sumDirs$figDir,'/RichnessByGenus_',scn,'.pdf'), 
-	          shp=world.shp2, legend.args=list(text='# species',line=2,side=4))
-	r
-})
-# same as last plots
-fdMapPlot(richGen2[[1]],shp=world.shp2,legend.args=list(text='Species Richness')) 
-fdMapPlot(richGen2[[2]],shp=world.shp2,legend.args=list(text='Species Richness')) 
-```
 
  
 ---------------------------------------------------------------
 
 ## Metrics depending on cell attributes
 
-In contrast to species attributes, cells can also have attributes and similarly it is common to (1) summarize cell attributes over species range, or (2) group cells based on different values of an attribute and calculate a summary statistic of the species it contains. A wide variety of analyses can be written in terms of cell attributes: here we classify cells by which ecoregion they occur in. Other possibilities include whether cells are protected, the level of disturbance they have experienced, the level of human impact they have experienced, etc. The key similarity is that each classify every cell into one of a collection of categories.
+In contrast to species attributes, cells can also have attributes and similarly it is common to (1) summarize cell attributes over a species range, or (2) group cells based on different values of an attribute and calculate a summary statistic of the species it contains. A wide variety of analyses can be written in terms of cell attributes: here we classify cells by which ecoregion they occur in. Other possibilities include whether cells are protected, the level of disturbance they have experienced, the level of human impact they have experienced, etc. The key similarity is that each classify every cell into one of a collection of categories.
 
-```{r}
+```{r,eval=F}
 eco=raster(system.file('extdata/treeDemo/GlobalEcoregions.tif',package='changeRangeR'))
-# you may need to reproject rasters so that they align with your envGrid
-eco2=projectRaster(eco,envGrid,method='ngb')
 # mask to australia where there are 28 ecoregions (the masking is slow, so we just read in a stored result from the commented code)
-	# aus=getData('GADM', country='AUS', level=0) 
-	# aa=sp::spTransform(aus,projection(eco2))
-	# ecoAus=raster::mask(eco,aa)
-	# writeRaster(ecoAUS,paste0(sumDirs$miscDir,'/aus.tif'),overwrite=T)
-ecoAus=raster(system.file('extdata/treeDemo/Misc/aus.tif',package='changeRangeR'))			
+  # you may need to reproject rasters so that they align with your envGrid
+eco2=projectRaster(eco,envGrid,method='ngb')
+aus=getData('GADM', country='AUS', level=0)
+aa=sp::spTransform(aus,projection(eco2))
+ecoAus=raster::mask(eco,aa)
+ecoAus2=projectRaster(ecoAus,envGrid,method='ngb')
+writeRaster(ecoAus2,paste0(sumDirs$miscDir,'/aus.tif'),overwrite=T)
 ```
+
+The masking is slow, so we just read in a stored result.
+```{r}
+ecoAus2=raster(system.file('extdata/treeDemo/Misc/aus.tif',package='changeRangeR'))			
+```
+
 <!-- # don't need this, i think -->
 <!-- # # make a cell attribute table -->
 <!-- # cell.ind=readRDS(paste0(sumDirs$myBaseDir,'/cellIndexTable.rds')) -->
@@ -326,82 +345,80 @@ ecoAus=raster(system.file('extdata/treeDemo/Misc/aus.tif',package='changeRangeR'
 <!-- # 	 -->
 <!-- # saveRDS(cellEcoAttr,paste0(sumDirs$attrDir,'cellEcoregionAus.rds')) -->
 
-As an example of (1) we find the proportion of each species range in each ecoregion.
+As an example of summarize cell attributes over a species range (1) we find the proportion of each species range in each ecoregion.
 
 ```{r}
 sp.ind=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))
-ecoAus2=projectRaster(ecoAus,envGrid,method='ngb')
 # check a few species that occur in australia in this demo
-m=mapSpecies(cbsDir=sumDirs$cbsDir,27:30,scenario='present',sp.ind,cell.ind,envGrid)
+m=mapSpecies(cbsDir=sumDirs$cbsDir,26:29,scenario='present',sp.ind,cell.ind,envGrid)
 m # a stack  with each species map as a layer
 ```
 
 
 ```{r,cache=FALSE}
 # TEMP: for some reason the package doesn't see the correct function
-source('/Users/ctg/Dropbox/Projects/Wallace/changeRangeR/R/fdSpecies.r')
+#source('/Users/ctg/Dropbox/Projects/Wallace/changeRangeR/R/fdSpecies.r')
 # Step 1: get the total number of cells in each species range in each ecoregion
+
+#the problem is the ecoAUS2 doesn't have the same dimensions as envGrid so the cellIDs don't match up
 rar=rangeAreaCategoricalRaster(someRaster=ecoAus2,cbsDir=sumDirs$cbsDir,scenario='present',
                                sp.ind=sp.ind,cell.ind=cell.ind,mc.cores=mc.cores)
-# Step 2: divide these counts by the total range size to get the proportion of each species range in each ecoregion. 
-rap=rangeArea(cbsDir=sumDirs$cbsDir,scenario='present',sp.ind=sp.ind,mc.cores=mc.cores)
-# Step 3: join the data frames and calculate proportions
-rpbc=rap %>%
-  full_join(rar,by=c('species','index')) %>%
-  mutate_at(vars(X53:X783), funs(round(./rangeArea,2)))
+# Step 2: divide these counts by the total range size to get the proportion of each species range in each ecoregion.  join the data frames and calculate proportions
+rpbc=rar %>% mutate_at(vars(X53:X783), funs(round(./rangeAreaPresent,2)))
 
 head(rpbc[27:31,])
 ```
+<!-- THIS IS PROBABLY CLOSE TO WORKING -->
+<!-- ### Overlay with ecoregions  -->
 
-### Overlay with ecoregions 
+<!-- As an example of (2) (grouping cells based on different values of an attribute and calculating a summary statistic of the species it contains) we find the species richness in each ecoregion. This represents a special case because we only need a binary indicator of whether each species occurs in each ecoregion. Fortunately, this is is straighforward to implement, because we can generate these from the CBS matrices by collapsing the rows that occur in the same ecoregion, thus generating an **ecoregion by species (EBS)** matrix . With this, we can use any of the functions developed above on the ecoregion by species matrices to make ecoregion-specific diversity metrics.  -->
 
-As an example of (2) we find the species richness in each ecoregion. This represents a special case because we only need a binary indicator of whether each species occurs in each ecoregion.
-Fortunately, this is is straighforward to implement, because we can generate these from the CBS matrices by collapsing the rows that occur in the same ecoregion, thus generating an ecoregion by species matrix. With this, we can use any of the functions developed above on the ecoregion by species matrices to make ecoregion-specific diversity metrics. 
+<!-- Although we deomnstrate with ecoregions this approach could be useful with different political units, protected areas, vegetation classes, land use classes, or any other factor on a map. The greatest efficiency gains will be observed when the map has a large number of factors.  -->
 
-Although we deomnstrate with ecoregions this approach could be useful with different political units, protected areas, vegetation classes, land use classes, or any other factor on a map. The greatest efficiency gains will be observed when the map has a large number of factors. 
+<!-- <!-- TODO: (someday) could do any community metric on uniqueComm to be faster, but maybe already fast enough for most operation. --> -->
 
-<!-- TODO: (someday) could do any community metric on uniqueComm to be faster, but maybe already fast enough for most operation. -->
+<!-- ```{r} -->
+<!-- # make ecoregion by species matrices -->
+<!-- # Determine which CBS cells are in each group (here, ecoregion) -->
+<!-- cellAttr=readRDS(paste0(sumDirs$sumBaseDir, '/cellIndexTable.rds')) -->
+<!-- cellAttr$ecoregion=ecoAus2[cellAttr$cellID] -->
+<!-- # since this analysis is likely pretty unique to each study, we'll add some custom directories to store things. First, we'll need a place for the ecoregion by species matrices. -->
 
-```{r}
-# make ecoregion by species matrices
-# Determine which CBS cells are in each group (here, ecoregion)
-cellAttr=readRDS(paste0(sumDirs$sumBaseDir, '/cellIndexTable.rds'))
-cellAttr$ecoregion=ecoAus2[cellAttr$cellID]
-# since this analysis is likely pretty unique to each study, we'll add some custom directories to store things. First, we'll need a place for the ecoregion by species matrices.
+<!-- #BELOW NOT CHECKED YET -->
+<!-- # # make a directory to put the new cell by genus matrices in -->
+<!-- # sumDirs$cbgDir=paste0(sumDirs$sparseDir,'/CellByGenus') -->
+<!-- # if(!file.exists(sumDirs$cbgDir)) dir.create(sumDirs$cbgDir) -->
+<!-- # # overwrite existing directory settings to save this. -->
+<!-- # saveRDS(sumDirs,file=paste0(sumDirs$sumBaseDir,'/dirList.rds')) -->
+<!-- #  -->
+<!-- # gen=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds')) -->
+<!-- # genusSpAttr = gen %>% select(species,index) %>% mutate(temp=species) %>%  -->
+<!-- #   separate(temp,c("genus",NA),sep='_') -->
+<!-- #  -->
+<!-- # # collapse columns of the cbs matrices to make cell by genus matrices -->
+<!-- # lapply(allScen,function(scn){ -->
+<!-- #   outDirScn=paste0(sumDirs$cbgDir,'/',scn) -->
+<!-- #   if(!file.exists(outDirScn)) dir.create(outDirScn) -->
+<!-- #   collapseCols(inDir=sumDirs$cbsDir,outDir=outDirScn,scenario=scn, -->
+<!-- #                spAttrTable=genusSpAttr,attrName='genus', -->
+<!-- #                type='binary',keepChunks=T,mc.cores=mc.cores) -->
+<!-- # }) -->
+<!-- #  -->
+<!-- # # calculate richness (row sums) from cell by genus matrices  -->
+<!-- # richGen=lapply(allScen,function(scn){ -->
+<!-- # 	r=richnessFromCBS(cbsDir=sumDirs$cbgDir,scenario=scn, -->
+<!-- # 	                  env=envGrid,mc.cores=mc.cores,outDir=sumDirs$richByGenusDir) -->
+<!-- # 	names(r)=paste0(names(r),'_',scn) -->
+<!-- # 	fdMapPlot(r,plotFile=paste0(sumDirs$figDir,'/RichnessByGenus_',scn,'.pdf'),  -->
+<!-- # 	          shp=world.shp2, legend.args=list(text='# species',line=2,side=4)) -->
+<!-- # 	r -->
+<!-- # }) %>% stack -->
+<!-- # fdMapPlot(richGen[[1]],shp=world.shp2,legend.args=list(text='Genus Richness')) -->
+<!-- # fdMapPlot(richGen[[2]],shp=world.shp2,legend.args=list(text='Genus Richness')) -->
 
-#BELOW NOT CHECKED YET
-# # make a directory to put the new cell by genus matrices in
-# sumDirs$cbgDir=paste0(sumDirs$sparseDir,'/CellByGenus')
-# if(!file.exists(sumDirs$cbgDir)) dir.create(sumDirs$cbgDir)
-# # overwrite existing directory settings to save this.
-# saveRDS(sumDirs,file=paste0(sumDirs$sumBaseDir,'/dirList.rds'))
-# 
-# gen=readRDS(paste0(sumDirs$sumBaseDir, '/speciesIndexTable.rds'))
-# genusSpAttr = gen %>% select(species,index) %>% mutate(temp=species) %>% 
-#   separate(temp,c("genus",NA),sep='_')
-# 
-# # collapse columns of the cbs matrices to make cell by genus matrices
-# lapply(allScen,function(scn){
-#   outDirScn=paste0(sumDirs$cbgDir,'/',scn)
-#   if(!file.exists(outDirScn)) dir.create(outDirScn)
-#   collapseCols(inDir=sumDirs$cbsDir,outDir=outDirScn,scenario=scn,
-#                spAttrTable=genusSpAttr,attrName='genus',
-#                type='binary',keepChunks=T,mc.cores=mc.cores)
-# })
-# 
-# # calculate richness (row sums) from cell by genus matrices 
-# richGen=lapply(allScen,function(scn){
-# 	r=richnessFromCBS(cbsDir=sumDirs$cbgDir,scenario=scn,
-# 	                  env=envGrid,mc.cores=mc.cores,outDir=sumDirs$richByGenusDir)
-# 	names(r)=paste0(names(r),'_',scn)
-# 	fdMapPlot(r,plotFile=paste0(sumDirs$figDir,'/RichnessByGenus_',scn,'.pdf'), 
-# 	          shp=world.shp2, legend.args=list(text='# species',line=2,side=4))
-# 	r
-# }) %>% stack
-# fdMapPlot(richGen[[1]],shp=world.shp2,legend.args=list(text='Genus Richness'))
-# fdMapPlot(richGen[[2]],shp=world.shp2,legend.args=list(text='Genus Richness'))
+<!-- ``` -->
 
-```
+
 
 
 <!-- TODO: need a general function that matches the cellID of envGrid to an new set of IDs defined by a raster with different classes (can rasterize a polygon for an arbitrary polygon). Can also use this for danilo
@@ -447,70 +464,67 @@ Well, maybe not. why not just reproject one onto the other?
 
 <!-- ``` -->
 
-```{r}
-# # Determine which CBS cells are in each group (here, ecoregion)
-# cellAttr=readRDS(paste0(sumDirs$sumBaseDir, '/cellIndexTable.rds'))
-# cellAttr$ecoregion=ecoAus2[cellAttr$cellID]
-# 
-# 
-# # Calc richness by group
-# richnessByFactor=function(cbsDir,scenario,cellAttr,attrName,verbose=F){
-#   
-#   t1=proc.time()
-# 	message(paste0('starting ',scenario))
-# 	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
-# 	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
-# 	if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply
-# 	attrs=unique(cellAttr[,attrName])
-#   richByFact=mclapply(seq_along(cbs.f), function(fu){
-#     if(verbose) message(fu)
-#     cbs.tmp=readRDS(cbs.f[fu])
-#     # 1. split CBS by factor
-#     a=cellAttr %>% filter(chunkID==fu) 
-#     ua=unique(a[,attrName]) %>% na.omit
-#     if(length(ua)==0) return(NULL)
-#     # 2. colSums within factor
-#     cbs %>% mutate(cellID=row.names(cbs)) %>% left_join(cellAttr,by='cellID') %>%
-#       group_by(ecoregion) %>% summarize(somethingAboutColSums) %>% somethingToMakeSparseAgain
-#       # make a sparse matrix where the rows are the factor values and cols are species
-#     out=lapply(ua,function(xx){
-#       cid=cellAttr %>% filter(.data[[attrName]]==xx) %>% select(cellID) 
-#       # match cellIDs to the rowNames of cbs
-#       keep=which(as.integer(row.names(cbs.tmp)) %in% cid[,1])
-#       out=textTinyR::sparse_Sums(cbs.tmp[keep,], rowSums = F)
-#       # 3. convert to binary with vals > 0
-#       out[out>0]=1 #there's probably a faster way
-#       out
-#     }) %>% data.frame
-#     names(out)=ua
-#     out
-#   },mc.cores=mc.cores)
-#     # 4. combine across cbs
-#   str(richByFact)
-#   richByFact %>% reduce(bind_rows)
-#   richByFact %>% bind_rows
-# 
-#     out=Reduce('+',richByFact) %>% as.matrix %>% as.data.frame
-# 	names(out)=names(someStack)
-# 	out=data.frame(sp.ind,out)
-#     # 5. row sums for richness (or any other operation on these reduced factor by species (FBS) matrices)
-#       data.frame(cellID=as.numeric(rownames(cbs)),rich=textTinyR::sparse_Sums(cbs, rowSums = T))
-#   
-# }
-# 
-# richnessByFactor(cbsDir=sumDirs$cbsDir,scenario='present',cellAttr=cellAttr,attrName='ecoregion')
-```
+<!-- ```{r} -->
+<!-- # # Determine which CBS cells are in each group (here, ecoregion) -->
+<!-- # cellAttr=readRDS(paste0(sumDirs$sumBaseDir, '/cellIndexTable.rds')) -->
+<!-- # cellAttr$ecoregion=ecoAus2[cellAttr$cellID] -->
+<!-- #  -->
+<!-- #  -->
+<!-- # # Calc richness by group -->
+<!-- # richnessByFactor=function(cbsDir,scenario,cellAttr,attrName,verbose=F){ -->
+<!-- #    -->
+<!-- #   t1=proc.time() -->
+<!-- # 	message(paste0('starting ',scenario)) -->
+<!-- # 	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario) -->
+<!-- # 	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply -->
+<!-- # 	if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply -->
+<!-- # 	attrs=unique(cellAttr[,attrName]) -->
+<!-- #   richByFact=mclapply(seq_along(cbs.f), function(fu){ -->
+<!-- #     if(verbose) message(fu) -->
+<!-- #     cbs.tmp=readRDS(cbs.f[fu]) -->
+<!-- #     # 1. split CBS by factor -->
+<!-- #     a=cellAttr %>% filter(chunkID==fu)  -->
+<!-- #     ua=unique(a[,attrName]) %>% na.omit -->
+<!-- #     if(length(ua)==0) return(NULL) -->
+<!-- #     # 2. colSums within factor -->
+<!-- #     cbs %>% mutate(cellID=row.names(cbs)) %>% left_join(cellAttr,by='cellID') %>% -->
+<!-- #       group_by(ecoregion) %>% summarize(somethingAboutColSums) %>% somethingToMakeSparseAgain -->
+<!-- #       # make a sparse matrix where the rows are the factor values and cols are species -->
+<!-- #     out=lapply(ua,function(xx){ -->
+<!-- #       cid=cellAttr %>% filter(.data[[attrName]]==xx) %>% select(cellID)  -->
+<!-- #       # match cellIDs to the rowNames of cbs -->
+<!-- #       keep=which(as.integer(row.names(cbs.tmp)) %in% cid[,1]) -->
+<!-- #       out=textTinyR::sparse_Sums(cbs.tmp[keep,], rowSums = F) -->
+<!-- #       # 3. convert to binary with vals > 0 -->
+<!-- #       out[out>0]=1 #there's probably a faster way -->
+<!-- #       out -->
+<!-- #     }) %>% data.frame -->
+<!-- #     names(out)=ua -->
+<!-- #     out -->
+<!-- #   },mc.cores=mc.cores) -->
+<!-- #     # 4. combine across cbs -->
+<!-- #   str(richByFact) -->
+<!-- #   richByFact %>% reduce(bind_rows) -->
+<!-- #   richByFact %>% bind_rows -->
+<!-- #  -->
+<!-- #     out=Reduce('+',richByFact) %>% as.matrix %>% as.data.frame -->
+<!-- # 	names(out)=names(someStack) -->
+<!-- # 	out=data.frame(sp.ind,out) -->
+<!-- #     # 5. row sums for richness (or any other operation on these reduced factor by species (FBS) matrices) -->
+<!-- #       data.frame(cellID=as.numeric(rownames(cbs)),rich=textTinyR::sparse_Sums(cbs, rowSums = T)) -->
+<!-- #    -->
+<!-- # } -->
+<!-- #  -->
+<!-- # richnessByFactor(cbsDir=sumDirs$cbsDir,scenario='present',cellAttr=cellAttr,attrName='ecoregion') -->
+<!-- ``` -->
 
-
-
-
->>  **Calculation**:
+<!-- >>  **Calculation**: -->
 
 ---------------------------------------------------------------
 
 ## Assemblage/Community metrics
 
-Some species attributes depend on which species cooccur with them.
+Some species attributes depend on which species co-occur with them.
 
 ### Find unique communities
 
@@ -605,6 +619,25 @@ plot(fd)
 -------------------------------------------------------------------------
 
 ## Changes between scenarios
+
+
+
+-------------------------------------------------------------------------
+## Masking
+
+
+
+```{r}
+spMaskDir=system.file("extdata/treeDemo/Migrationmask/120km/",package='changeRangeR')
+allSpeciesMasks=tibble(rasterFiles=list.files(spMaskDir, recursive=T, full.names=T)) %>%
+  mutate(sp.names= rasterFiles %>% basename %>% file_path_sans_ext)
+maskCBSscenario(sumDirs = sumDirs,
+                sp.ind = sp.ind,
+                allSpeciesMasks = allSpeciesMasks,
+                scenario = 'present',
+                maskName = 'dispTry',
+                mc.cores = 6)
+```
 
 
 

@@ -6,7 +6,7 @@
 \usage{
 collapseCols(inDir, outDir, scenario, spAttrTable, attrName,
   type = "binary", keepChunks = F, mc.cores = mc.cores,
-  verbose = F)
+  overwrite = F, verbose = T)
 }
 \description{
 Collapse columns of a sparse matrix

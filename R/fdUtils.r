@@ -190,7 +190,7 @@ aggregateCells=function(cell.ind,facts,mc.cores=mc.cores,outDir){
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-sparseToRaster=function(cell.ind,envGrid,colName){
+cellIDToRaster=function(cell.ind,envGrid,colName){
 	out=raster(envGrid[[1]])
 	out[cell.ind$cellID]=cell.ind[,colName]
 	out

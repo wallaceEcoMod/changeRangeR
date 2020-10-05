@@ -5,7 +5,7 @@
 \title{title}
 \usage{
 fdMapPlot(r, plotFile = NULL, shp = NULL, axis.args = list(cex.axis =
-  1.1), open = F, ...)
+  1.1), open = F, zlim, ...)
 }
 \arguments{
 \item{r}{a raster}

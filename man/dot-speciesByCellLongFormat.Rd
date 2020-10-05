@@ -5,7 +5,8 @@
 \title{Make dataframe of species ID and occupied cells}
 \usage{
 .speciesByCellLongFormat(scenario, f, envGrid, nChunks, sp.names, mc.cores,
-  outDir, sp.ind, cell.ind, reprojectToEnv = F, verbose = T)
+  outDir, sp.ind, cell.ind, overwrite = F, reprojectToEnv = F,
+  verbose = T)
 }
 \description{
 Convert rasters to long format data frames. Optionally reproject rasters first.

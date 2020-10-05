@@ -4,23 +4,30 @@
 \alias{cellBySpeciesMatrices}
 \title{Make cell by species (CBS) matrices split into a specified number of chunks over cells.}
 \usage{
-cellBySpeciesMatrices(outDir, allSpeciesMaps, scenario, sp.ind, cell.ind,
-  envGrid, nCellChunks, removeTempFiles = FALSE, mc.cores = mc.cores,
-  overwrite = FALSE, reprojectToEnv = F, verbose = F)
+cellBySpeciesMatrices(outDir, rasterFiles, spNames, scenario, sp.ind,
+  cell.ind, envGrid, nCellChunks, removeTempFiles = FALSE,
+  mc.cores = mc.cores, overwrite = FALSE, reprojectToEnv = F,
+  verbose = F)
 }
 \arguments{
 \item{scenario}{character; any user-defined terms for scenarios are acceptable. For example, ‘Present’, ’2050’, ’2070’}
 
-\item{nCellChunks}{integer}
+\item{nCellChunks}{integer - number of chunks to break species and cell lists into in order to reduce memory demands. Use more chunks if your computer doesn't have a lot of RAM}
 
 \item{mc.cores}{number of cores to use}
 
-\item{overwrite}{logical; overwrite existing files?
-# @examples#@return NULL}
+\item{overwrite}{logical; overwrite existing files?}
+
+\item{reprojectToEnv}{logical; if the species rasters are not in the same projection as     `envGrid`, set to TRUE to reproject first.}
 
 \item{sumDirs}{a list of directories as created by `setupSummaryDirectories`}
 
 \item{env}{a raster object defining the grid associated with cell indices}
+
+\item{allSpeciesMaps}{a list with two elements of the same length named `rasterFile` (full paths to rasters) and `speciesNames` (taxon names associated with each raster file)}
+
+\item{verbos}{logical; print optional status reports
+# @examples#@return NULL}
 }
 \description{
 Convert a folder of species range maps to a sparse matrix

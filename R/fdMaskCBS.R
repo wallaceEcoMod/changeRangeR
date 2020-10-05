@@ -6,8 +6,8 @@
 #' @param maskName
 #' @param nCellChunks
 #' @param mc.cores
-#' @param
-#' @param
+# @param
+# @param
 # @examples
 #
 #' @return saves a cbs file
@@ -37,27 +37,32 @@ maskCBSscenario <- function (sumDirs,
  #   mutate(sp.names= rasterFiles %>% basename %>% file_path_sans_ext)
  # sumDirs= sumDirs; allSpeciesMasks = allSpeciesMasks; scenario = '8580';
  # maskName = 'dispers120';nCellChunks = NULL;mc.cores=6
+
   t1=proc.time()
 
   #initial congruence tests
-  if (length(allSpeciesMasks$sp.names) != nrow(sp.ind)) {warning ('not the same number of species and masks')}
+  if (length(allSpeciesMasks$sp.names) != nrow(sp.ind)) {
+    warning('not the same number of species and masks')}
   if (!all(allSpeciesMasks$sp.names %in% as.character (sp.ind$species))) {
     stop('some species masks are not part of your analysis')
-    print ( allSpeciesMasks$sp.names [which (!allSpeciesMasks$sp.names %in% sp.ind$species)] )
+    print(allSpeciesMasks$sp.names [which (!allSpeciesMasks$sp.names %in% sp.ind$species)] )
   }
-  exampleRas = raster (allSpeciesMasks$rasterFiles[1])
-  if (!compareRaster(exampleRas,envGrid)) stop ('the envGrid and the masks do not coincide')
-  rm (exampleRas)
+  exampleRas = raster(allSpeciesMasks$rasterFiles[1])
+  if (!compareRaster(exampleRas,envGrid)) stop('the envGrid and the masks do not coincide')
+  rm(exampleRas)
+
   outDir = sumDirs$cbsDir
 
   #check if need to build masks with raster[]<- 1 for species w/o masks ]
-  ###Pep: not sure if we need/want this.
-  buildFakeMasks = ifelse (!all(sp.ind$species %in% spMaskRaster),F ,T )
-  if (buildFakeMasks){print('Some species modelled do not have a mask. Automatic mask generation not implemented yet, Talk to Cory'); stop()}
+  ###Pep: not sure if we need/want this. CM: I think users should have to build these themselves so it doesn't become too black boxy
+  buildFakeMasks = ifelse(!all(sp.ind$species %in% spMaskRaster),F ,T )
+  if (buildFakeMasks){print('Some species modelled do not have a mask. Automatic mask
+                            generation not implemented yet, Talk to Cory'); stop()}
 
   #get info on nCellChunks from the scenario
-  if (is.null (nCellChunks)){
-    chunkFiles = textclean::drop_element(x = list.files(cbsScnDir,pattern = '.rds'),pattern = 'temp')
+  if(is.null(nCellChunks)){
+    chunkFiles = textclean::drop_element(x = list.files(cbsScnDir,pattern = '.rds'),
+                                         pattern = 'temp')
     nCellChunks = length (chunkFiles)
   }
 

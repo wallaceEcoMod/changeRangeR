@@ -42,15 +42,16 @@ fdMapPlot=function(r,
 								   shp=NULL,
 									 axis.args=list(cex.axis=1.1),
 									 open=F,
+									 zlim,
 									 ...){
 
 	if(!is.null(plotFile)) pdf(plotFile,h=4*nlayers(r),w=8)
 	par(mfrow=c(nlayers(r),1),mar=c(0,0,2,0),oma=c(0,0,0,0))
 
-	zlims=c(min(minValue(r)),max(maxValue(r)))
+	if(missing(zlim)) zlim=c(min(minValue(r)),max(maxValue(r)))
 	for(i in 1:nlayers(r)){
-		plot(r[[i]],zlim=zlims,axes=F,xlab="",ylab="",xaxt='n',yaxt='n', box=FALSE,
-		     col= c('white',cm.cols1(100)), axis.args=axis.args,smallplot= c(.89,.91,.1,.9),...)
+		plot(r[[i]],zlim=zlim,axes=F,xlab="",ylab="",xaxt='n',yaxt='n', box=FALSE,
+		     col= c('white',cm.cols1(100)[3:100]), axis.args=axis.args,smallplot= c(.89,.91,.1,.9),...)
 		mtext(names(r)[i],3,line=0)
 		if(!is.null(shp)) plot(shp,add=T,lwd=1)
 	}
