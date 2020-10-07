@@ -15,12 +15,15 @@
 																 sp.ind,
 																 cell.ind,
 																 #myTempPath,
+																 overwrite=F,
 																 reprojectToEnv=F,
 																 verbose=T){
 
 	#  for testing
-	#  f=allSpeciesMaps$rasterFiles; nChunks=nCellChunks; scenario='present'; sp.names=allSpeciesMaps$sp.names;  outDir=sumDirs$cbsDir; reprojectToEnv=F
-
+	#  f=allSpeciesMaps$rasterFiles; nChunks=nCellChunks; scenario='present'; sp.names=allSpeciesMaps$sp.names;  outDir=sumDirs$cbsDir; reprojectToEnv=F; overwrite=F
+	
+	if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
+	if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
 	t1=proc.time()
 
 	# set up directories
@@ -44,6 +47,13 @@
 
 	lapply(seq_along(tasks),function(x){ # loop over nChunks
 	  if(verbose) message('chunk ',x,' \n')
+	  outFile=paste0(outDir2,'/temp_long_',x,'.rds')
+	  if(!overwrite) { 
+	  	if(file.exists(outFile)) {
+	 	 		message('chunk ',x,' already done, skipping\n')
+	 	 		return()
+	  	}
+	  }
 		# defaultRasterTmpDir=raster::rasterOptions(overwrite=T)$tmpdir #reset later
 		# myRasterTmpDir=paste0(myTempPath,'/tmp_',x)
 		# if(!file.exists(myRasterTmpDir)) dir.create(myRasterTmpDir)
@@ -55,11 +65,11 @@
 
 		  sp.name=tasks.sp.name[[x]][ii]
 			this.sp.ind=sp.ind$index[which(sp.ind$species %in% sp.name)]
+			length(this.sp.ind)
+			length(this.sp.ind)>1
 			if(length(this.sp.ind)>1){
 				warning(paste0('There are multiple rasters for this species: ',sp.name,
-				               ". Because we use names to match files, multiple files with the same
-				               basename are not supported. As a (possibly bad) default I'm selecting
-				               just the first instance of this species"))
+				               ". Because we use names to match files, multiple files with the same basename are not supported. As a (possibly bad) default I'm selecting just the first instance of this species"))
 				this.sp.ind=this.sp.ind[1]
 			}
 
@@ -125,8 +135,6 @@
 		} # end internal function
 
 	 # parallelize ------------------------------------------------------
-		if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
-		if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
 		t3=proc.time()
 		out=mclapply(seq_along(tasks[[x]]),function(ii){
 		  longFun(ii,tasks.sp.name,sp.ind)
@@ -156,18 +164,20 @@
 #' @param scenario character; any user-defined terms for scenarios are acceptable. For example, ‘Present’, ’2050’, ’2070’
 #' @param env a raster object defining the grid associated with cell indices
 #' @param mc.cores number of cores to use
-#' @param allSpeciesMaps
-#' @param nCellChunks integer
-#' @param reprojectToEnv
-#' @param myTempPath
+#' @param allSpeciesMaps a list with two elements of the same length named `rasterFile` (full paths to rasters) and `speciesNames` (taxon names associated with each raster file)
+#' @param nCellChunks integer - number of chunks to break species and cell lists into in order to reduce memory demands. Use more chunks if your computer doesn't have a lot of RAM
+#' @param reprojectToEnv logical; if the species rasters are not in the same projection as 	`envGrid`, set to TRUE to reproject first.
+# @param myTempPath
 #' @param overwrite logical; overwrite existing files?
+#' @param verbos logical; print optional status reports
 #' # @examples#@return NULL
 #' @author Cory Merow <cory.merow@@gmail.com>, Pep Serra-Diaz
 #' # @note# @seealso# @references# @aliases - a list of additional topic names that will be mapped to# this documentation when the user looks them up from the command# line.# @family - a family name. All functions that have the same family tag will be linked in the docum@export
 
 #' @export
 cellBySpeciesMatrices=function(outDir,
-                               allSpeciesMaps,
+                               rasterFiles,
+                               spNames,
                                scenario,
                                sp.ind,
                                cell.ind,
@@ -187,31 +197,36 @@ cellBySpeciesMatrices=function(outDir,
 
 	#  for testing
 	#  scenario='present'; outDir=sumDirs$cbsDir;  myTempPath=rasterOptions()$tmpdir; overwrite=F; removeTempFiles=F; verbose=T; nCellChunks=10
-
+	if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
+	if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
+	t1=proc.time()
 	# intermediate step of long format ---------------------------------
 	scenDir=paste0(outDir,'/',scenario)
 	if(!file.exists(scenDir)) dir.create(scenDir)
 
 	chunk.f=list.files(scenDir,full.names=T,pattern='temp_long')
-	if(length(chunk.f)==0 | overwrite ){
+	if(length(chunk.f)<nCellChunks | overwrite ){
 		# testing for ordering of names
 			# 		f.sp=unlist(lapply(seq_along(f),function(x) strsplit(basename(f[x]),'__')[[1]][2]))
 			# 		f.ind=which(sp.ind$species %in% f.sp)
-		changeRangeR:::.speciesByCellLongFormat(scenario,
-		                                        f=allSpeciesMaps$rasterFiles,
-		                                        nChunks=nCellChunks,
-		                                        envGrid=envGrid,
-		                                        sp.names=allSpeciesMaps$sp.names,
-		                                        mc.cores=mc.cores,
-		                                        outDir=outDir,
-		                                        sp.ind=sp.ind,
-		                                        cell.ind=cell.ind,
-		                                        #myTempPath=myTempPath,
-		                                        reprojectToEnv=reprojectToEnv,
-		                                        verbose=verbose)
+		#changeRangeR:::
+		.speciesByCellLongFormat(scenario,
+														 f=rasterFiles,
+														 nChunks=nCellChunks,
+														 envGrid=envGrid,
+														 sp.names=spNames,
+														 mc.cores=mc.cores,
+														 outDir=outDir,
+														 sp.ind=sp.ind,
+														 cell.ind=cell.ind,
+														 #myTempPath=myTempPath,
+														 reprojectToEnv=reprojectToEnv,
+														 verbose=verbose)
 	}
-	message('done making intermediate long format')
-
+	t2=(proc.time()['elapsed']-t1['elapsed'])/60
+	message(paste('Making intermediate long format ran in ',round(t2,2),' minutes'))
+	gc()
+	
 	# 		# for testing that range sizes are correctly recorded
 	# 	if(scenario=='Present'){
 	# 		chunk.f=list.files(paste0(outDir,scenario), full.names=T,pattern='temp')
@@ -324,10 +339,9 @@ cellBySpeciesMatrices=function(outDir,
 #
 	# Cory's old way
 		# for each chunk of cells, read in each chunk of species and grab just the ones associated with the cells. this is a little inefficient because you have to duplicate reading in the species nChunks times, but its easier to code and never requires reading all data in at once.
-		if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
-		if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
-		chunk.f=list.files(paste0(outDir,'/',scenario),full.names=T, pattern='temp_long')
 		t1=proc.time()
+
+		chunk.f=list.files(paste0(outDir,'/',scenario),full.names=T, pattern='temp_long')
 
 		mclapply(1:nCellChunks,function(x){
 			message(paste0('chunk ',x,' of ',nCellChunks))

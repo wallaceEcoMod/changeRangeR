@@ -41,9 +41,10 @@ speciesIndexTable=function(allSpeciesMaps,sumDirs){
 #' @export
 richnessFromCBS=function(cbsDir,
 												 scenario,
-												 env,
+												 envGrid,
 												 mc.cores=1,
 												 attrTable=NULL,
+												 attrName=NULL,
 											   outDir=NULL,
 											   verbose=F){
 
@@ -58,10 +59,10 @@ richnessFromCBS=function(cbsDir,
 			if(verbose) message(x)
 			cbs=readRDS(cbs.f[x])
 			a=data.frame(cellID=as.numeric(rownames(cbs)),
-								 rich=textTinyR::sparse_Sums(cbs, rowSums = T))
+								 	 rich=textTinyR::sparse_Sums(cbs, rowSums = T))
 		},mc.cores=mc.cores)
 		rich.vec=do.call('rbind',richByCell)
-		rich.r=raster(env[[1]])
+		rich.r=raster(envGrid[[1]])
 		values(rich.r)[rich.vec$cellID]= rich.vec$rich
     names(rich.r)=scenario
 		if(!is.null(outDir))
@@ -70,14 +71,18 @@ richnessFromCBS=function(cbsDir,
 		message( paste0(round(t2[3],2),' s') )
 		return(rich.r)
 	} else {
-		attrNames=names(attrTable)
-		# if species and index were included, toss them
-		toss=unlist(mapply(function(x){grep(x,attrNames)}, c('species','index')))
-		if(length(toss) > 0 ) attrNames=attrNames[-toss]
+		# CM: not needed now, since manually specified
+	  # attrNames=names(attrTable)
+		# # if species and index were included, toss them
+		# toss=unlist(mapply(function(x){grep(x,attrNames)}, c('species','index')))
+		# if(length(toss) > 0 ) attrNames=attrNames[-toss]
 
-		out=lapply(seq_along(attrNames),function(y){
-			if(verbose) message(attrNames[y])
-			keep=attrTable$index[attrTable[attrNames[y]]==1]
+	  # make dummy cols for each factor
+	  dum=attrTable %>% select(!!attrName) %>% fastDummies::dummy_cols() %>% select(-!!attrName)
+
+		out=lapply(seq_along(dum),function(y){
+			if(verbose) message(names(dum)[y])
+			keep=attrTable$index[dum[y]==1]
 			richByCell=mclapply(seq_along(cbs.f), function(x){
 				if(verbose) message(x)
 				cbs.tmp=readRDS(cbs.f[x])
@@ -85,15 +90,15 @@ richnessFromCBS=function(cbsDir,
 				data.frame(cellID=as.numeric(rownames(cbs)),rich=textTinyR::sparse_Sums(cbs, rowSums = T))
 			},mc.cores=mc.cores)
 			rich.vec=do.call('rbind',richByCell)
-			rich.r=raster(env[[1]])
+			rich.r=raster(envGrid[[1]])
 			values(rich.r)[rich.vec$cellID]= rich.vec$rich
 
 			if(!is.null(outDir))
-			  writeRaster(rich.r,file=paste0(outDir,'/', attrNames[y],'.tif'), overwrite=T)
+			  writeRaster(rich.r,file=paste0(outDir,'/', names(dum[y]),'.tif'), overwrite=T)
 			rich.r
 		})
 		out1=stack(out)
-		names(out1)=attrNames
+		names(out1)=names(dum)
 		t2=proc.time()-t1
 		message( paste0(round(t2[3],2),' s') )
 		return(out1)
@@ -215,14 +220,17 @@ rangeArea=function(cbsDir,outDir=NULL,scenario,sp.ind,mc.cores=1,verbose=F){
 #===================================================================
 #' @export
 rangeAreaInBinaryStack=function(someStack,cbsDir,scenario,sp.ind,cell.ind,mc.cores=1){
-	#  someStack=someRaster2
+    #  for testing
+  	#  someStack=someRaster2
+
 	t1=proc.time()
 	message(paste0('starting ',scenario))
 
 	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
-	bigMat=matrix(values(someStack),ncol=nlayers(someStack))
+	bigMat=values(someStack)[cell.ind$cellID,]
+	#bigMat=matrix(values(someStack)[cell.ind$cellID,],ncol=nlayers(someStack))
 	# bigMat= someStack %>% values %>% as.matrix # seems as slow
-	rangeSize.tmp=mclapply(seq_along(cbs.f),function(x){
+	rangeSize.tmp=lapply(seq_along(cbs.f),function(x){
 		message(x)
 		cbs=readRDS(cbs.f[x])
 		# row numbers of cell.ind for cells in this cbs matrix
@@ -234,7 +242,7 @@ rangeAreaInBinaryStack=function(someStack,cbsDir,scenario,sp.ind,cell.ind,mc.cor
 		someStack.mat[is.na(someStack.mat)]=0
 		out=t(cbs) %*% someStack.mat
     out
-	},mc.cores=mc.cores)
+	})#,mc.cores=mc.cores)
 	out=Reduce('+',rangeSize.tmp) %>% as.matrix %>% as.data.frame
 	names(out)=names(someStack)
 	out=data.frame(sp.ind,out)
@@ -303,12 +311,13 @@ rangeAreaInBinaryStack=function(someStack,cbsDir,scenario,sp.ind,cell.ind,mc.cor
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the docum
 #' @export
-#' @export
+
 rangeAreaCategoricalRaster=function(someRaster,catNames=NULL,cbsDir,
                                     scenario,sp.ind,cell.ind, mc.cores=1){
 	#  for testing
   #  someRaster=ecoAus2; cbsDir=sumDirs$cbsDir; catNames=NULL
-	t1=proc.time()
+
+  t1=proc.time()
 	cats=sort(na.omit(unique(values(someRaster))))
   n.layers=length(unique(values(ecoAus2)))
   if(n.layers > 50) message(paste0("Warning - you're asking to layerize ",

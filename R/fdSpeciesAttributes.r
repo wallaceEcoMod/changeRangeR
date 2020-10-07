@@ -35,14 +35,15 @@ speciesAttributeByCell=function(cbsDir,
 																verbose=F){
 
 	t1=proc.time()
+	message(paste0('starting ',scenario))
+	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
+	if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply
 	cbs.f=changeRangeR:::.getCBS(cbsDir,scenario)
+
 	attrNames=names(attrTable)
 	# if species and index were included, toss them
 	toss=unlist(mapply(function(x){grep(x,attrNames)}, c('species','index')))
 	if(length(toss) > 0 ) attrNames=attrNames[-toss]
-
-	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
-	if(Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply
 
 	out=lapply(seq_along(attrNames),function(y){
 		if(verbose) message(attrNames[y])
@@ -53,7 +54,6 @@ speciesAttributeByCell=function(cbsDir,
 				cbs=readRDS(cbs.f[x])
 				b=cbs %*% as.matrix(attrTable[attrNames[y]],ncol=1)
 				rich=textTinyR::sparse_Sums(cbs, rowSums = T)
-				fuck=b/rich
 				data.frame(cellID=as.numeric(rownames(cbs)),thisAttr=as.numeric(b/rich))
 			},mc.cores=mc.cores)
 		} else{

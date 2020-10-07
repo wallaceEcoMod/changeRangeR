@@ -4,15 +4,8 @@
 \alias{maskCBSscenario}
 \title{cbs scenario masking}
 \usage{
-maskCBSscenario(
-  sumDirs,
-  sp.ind,
-  allSpeciesMasks,
-  scenario,
-  maskName,
-  nCellChunks = NULL,
-  mc.cores
-)
+maskCBSscenario(sumDirs, sp.ind, allSpeciesMasks, scenario, maskName,
+  nCellChunks = NULL, mc.cores)
 }
 \value{
 saves a cbs file

@@ -8,8 +8,6 @@
 
 SE <- function(rStack){
   require(raster)
-  # Remove zeros
-  rStack[rStack == 0] <- NA
   # Convert rasterstack to points dataframe
   p.df <- as.data.frame(raster::rasterToPoints(rStack))
   # For each species, sum total pixels
@@ -24,7 +22,6 @@ SE <- function(rStack){
   SEvals <- spSum/ssp.PixSum
   # put back into raster
   stackTotal <- sum(rStack, na.rm = T)
-  stackTotal[stackTotal == 0] <- NA
   stackTotal[!is.na(stackTotal)] <- SEvals
   return(stackTotal)
 }

@@ -4,24 +4,11 @@
 \alias{rangeAreaCategoricalRaster}
 \title{Calculate range area intersecting a raster}
 \usage{
-rangeAreaCategoricalRaster(
-  someRaster,
-  catNames = NULL,
-  cbsDir,
-  scenario,
-  sp.ind,
-  cell.ind,
-  mc.cores = 1
-)
-}
-\value{
-
+rangeAreaCategoricalRaster(someRaster, catNames = NULL, cbsDir, scenario,
+  sp.ind, cell.ind, mc.cores = 1)
 }
 \description{
 For use with a single categorical raster
-}
-\note{
-
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

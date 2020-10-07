@@ -111,9 +111,7 @@ locs <- locs[,1:2]
 p[!is.na(p)] <- 1
 AOOlocs<-aooArea(r = p, locs = locs)
 
-AOOlocs
-
-plot(AOOlocs$aooRaster)
+print(AOOlocs)
 ```
 
 ## AOO pre-masked SDM
@@ -122,10 +120,7 @@ p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/o
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO<-aooArea(r = p)
-
-AOO
-
-plot(AOO$aooRaster)
+print(AOO)
 ```
 
 ## AOO masked SDM
@@ -134,10 +129,7 @@ p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/o
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO<-aooArea(r = p)
-
-AOO
-
-plot(AOO$aooRaster)
+print(AOO)
 ```
 
 # Optimized Model Threshold

@@ -19,18 +19,8 @@ primRas <- crop(primRas, e)
 # run function
 out <- SE(primRas)
 
-
 ## TESTS
 test_that("output type checks", {
-
-  expect_is(out, "RasterLayer")
+  expect_is(out, "raster")
 })
-
-
-test_that("output data checks", {
-  expect_equal(nlayers(out), 1)
-  #
-})
-
-
 

@@ -19,14 +19,14 @@ aooArea <- function(r, locs=NULL) {
       r.2km <- raster::resample(x = r, y = dummy, method = 'ngb')
       # Calculate number of cells
       fc.cells <- raster::cellStats(!is.na(r.2km), stat = sum) * 4
-      rasArea <- paste0("AOO:", fc.cells, " km^2")
+      return(paste0("AOO:", fc.cells, " km^2"))
     } else {
       r.dummy <- r
       agg <- 2000 /raster::res(r)[1]
-      r.2km <- raster::aggregate(x = r, fact = agg, fun = 'max')
+      r.resam <- raster::aggregate(x = r, fact = agg, fun = 'max')
       #fc.cells<- cellStats(!is.na(r.resam), stat=sum)
-      fc.cells <- raster::cellStats(r.2km, na.rm=T,stat=sum) * 4
-      rasArea <- paste0("AOO: ", fc.cells, " km^2")
+      fc.cells <- raster::cellStats(r.resam, na.rm=T,stat=sum) * 4
+      return(paste0("AOO: ", fc.cells, " km^2"))
   }
     } else {
       ## If interested in # of cells with occurrence points
@@ -38,7 +38,6 @@ aooArea <- function(r, locs=NULL) {
       # resample SDM
       r.2km <- raster::resample(x = r.2km, y = dummy, method = "ngb")
       locCells <- raster::extract(r.2km, locs)
-      rasArea <- paste0("AOO of cells with occurrence records:", length(locCells) * 4, "km^2")
+      return(paste0("AOO of cells with occurrence records:", length(locCells) * 4, "km^2"))
     }
-  return(list(area = rasArea, aooRaster = r.2km))
 }

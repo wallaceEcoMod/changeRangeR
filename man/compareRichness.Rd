@@ -6,17 +6,11 @@
 \usage{
 compareRichness(sumDirs, scn1, scn2, plotFig = T)
 }
-\value{
-
-}
 \description{
 title
 }
 \details{
 FUNCTIONS TO COMPARE SCENARIOS
-}
-\note{
-
 }
 \author{
 Cory Merow <cory.merow@gmail.com>
