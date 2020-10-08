@@ -26,7 +26,10 @@ envChange <- function(rStack, SDM, threshold){
     area <- lapply(masks, raster::area, na.rm = T)
     areas.1 <- lapply(area, function(x) x[!is.na(x)])
     areas <- lapply(areas.1, function(x) length(x) * median(x))
-    areas <- lapply(masks, raster::area)
+    #areas <- lapply(masks, raster::area)
   }
-  return(list(Area = areas, masks = maskStack))
+  allAreas <- cbind(unlist(areas))
+  colnames(allAreas) <- "Area"
+  rownames(allAreas) <- names(rStack)
+  return(list(Area = allAreas, masks = maskStack))
 }
