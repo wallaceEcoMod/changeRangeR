@@ -8,7 +8,7 @@
 
 aooArea <- function (r, locs = NULL){
   if (is.null(locs)) {
-    if (isLonLat(r)) {
+    if (raster::isLonLat(r)) {
       dummy <- r
       raster::res(dummy) <- 0.01666667
       r.2km <- raster::resample(x = r, y = dummy, method = "ngb")
