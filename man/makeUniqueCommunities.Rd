@@ -11,10 +11,15 @@ makeUniqueCommunities(cbsDir, scenario, mc.cores, overwrite = F)
 
 \item{mc.cores}{allowed cores for parallelization, default = 1}
 }
+\value{
+
+}
 \description{
 title
 }
 \note{
+
+
 it will write the uniqueCommunities for each chunk in the cbsDir
 }
 \author{

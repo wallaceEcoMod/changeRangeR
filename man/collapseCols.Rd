@@ -4,9 +4,21 @@
 \alias{collapseCols}
 \title{Collapse columns of a sparse matrix}
 \usage{
-collapseCols(inDir, outDir, scenario, spAttrTable, attrName,
-  type = "binary", keepChunks = F, mc.cores = mc.cores,
-  overwrite = F, verbose = T)
+collapseCols(
+  inDir,
+  outDir,
+  scenario,
+  spAttrTable,
+  attrName,
+  type = "binary",
+  keepChunks = F,
+  mc.cores = mc.cores,
+  overwrite = F,
+  verbose = T
+)
+}
+\value{
+
 }
 \description{
 Collapse columns of a sparse matrix
