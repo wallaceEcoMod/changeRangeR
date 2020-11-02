@@ -24,7 +24,7 @@ envChange <- function(rStack, SDM, threshold, bound, correlation = F){
   require(raster)
   require(rgdal)
 
-  if(bound = "lower"){
+  if(bound == "lower"){
 #    if(correlation = FALSE){
       rStack[rStack < threshold] <- NA
       rStack[rStack > threshold] <- 1
@@ -33,7 +33,7 @@ envChange <- function(rStack, SDM, threshold, bound, correlation = F){
 #    }
   }
 
-  if(bound = "upper"){
+  if(bound == "upper"){
 #    if(correlation = FALSE){
       rStack[rStack < threshold] <- 1
       rStack[rStack > threshold] <- NA
@@ -42,11 +42,11 @@ envChange <- function(rStack, SDM, threshold, bound, correlation = F){
 #    }
   }
 
-  if(bound = "neither"){
+  if(bound == "neither"){
     rStack = rStack
   }
 
-  if(bound = "both"){
+  if(bound == "both"){
 #    if(correlation = FALSE){
       rStack[rStack < min(thredhold)] <- NA
       rStack[rStack > max(threshold)] <- NA
