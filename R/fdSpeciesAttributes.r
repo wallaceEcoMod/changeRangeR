@@ -32,7 +32,8 @@ speciesAttributeByCell=function(cbsDir,
 													      env,
 																outDir=NULL,
 																richnessRaster=NULL,
-																verbose=F){
+																verbose=F,
+																mc.cores=mc.cores){
 
 	t1=proc.time()
 	message(paste0('starting ',scenario))

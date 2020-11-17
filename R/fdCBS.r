@@ -343,7 +343,7 @@ cellBySpeciesMatrices=function(outDir,
 
 		chunk.f=list.files(paste0(outDir,'/',scenario),full.names=T, pattern='temp_long')
 
-		mclapply(1:nCellChunks,function(x){
+		lapply(1:nCellChunks,function(x){
 			message(paste0('chunk ',x,' of ',nCellChunks))
 			outFile=paste0(outDir,'/',scenario,'/chunk_',x,'.rds')
 			if(!overwrite) { if(file.exists(outFile)) return()}
@@ -367,7 +367,7 @@ cellBySpeciesMatrices=function(outDir,
 				cellsIDinChunk.row.index=match(spOccCellChunk$cellID,cellsThisChunk)
 				matrixChunkLocations =  matrix (c(cellsIDinChunk.row.index, spOccCellChunk$spID),ncol = 2,byrow = F)
 				cbs[matrixChunkLocations] <- 1
-				#rm(matrixChunkLocations); gc(verbose = F)
+				# rm(matrixChunkLocations); gc(verbose = F)
 				# 				keep=which(c(tmp.dat[,2]) %in% cellsThisChunk)
 				# 				tmp.dat1=matrix(tmp.dat[keep,],ncol=2)
 				# 				# becuase there's no multiple match function.
@@ -381,7 +381,7 @@ cellBySpeciesMatrices=function(outDir,
 			}
 			saveRDS(cbs,outFile)
 			message(paste0('chunk ',x,' done'))
-		}, mc.cores=mc.cores) # end multichunk
+		})#, mc.cores=mc.cores) # end multichunk
 		t2=(proc.time()['elapsed']-t1['elapsed'])/60
 		message(paste('Making sparse chunks ran in ',round(t2,2),' minutes'))
 
