@@ -4,8 +4,10 @@
 \alias{setupSummaryDirectories}
 \title{Initialize a set of directories to store summary outputs}
 \usage{
-setupSummaryDirectories(summaryBaseDir, optionalSubDirs = c("funcDiv",
-  "phlyoDiv"))
+setupSummaryDirectories(
+  summaryBaseDir,
+  optionalSubDirs = c("funcDiv", "phlyoDiv")
+)
 }
 \arguments{
 \item{summaryBaseDir}{a file path}

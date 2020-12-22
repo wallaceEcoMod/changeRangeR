@@ -4,14 +4,27 @@
 \alias{turnoverFromCBS}
 \title{title}
 \usage{
-turnoverFromCBS(cbsDir, scn1, scn2, env, mc.cores, betaDivChange = F,
-  outputTable = F)
+turnoverFromCBS(
+  cbsDir,
+  scn1,
+  scn2,
+  env,
+  mc.cores,
+  betaDivChange = F,
+  outputTable = F
+)
+}
+\value{
+
 }
 \description{
 title
 }
 \details{
 FUNCTIONS TO COMPARE SCENARIOS
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

@@ -4,10 +4,21 @@
 \alias{cellBySpeciesMatrices}
 \title{Make cell by species (CBS) matrices split into a specified number of chunks over cells.}
 \usage{
-cellBySpeciesMatrices(outDir, rasterFiles, spNames, scenario, sp.ind,
-  cell.ind, envGrid, nCellChunks, removeTempFiles = FALSE,
-  mc.cores = mc.cores, overwrite = FALSE, reprojectToEnv = F,
-  verbose = F)
+cellBySpeciesMatrices(
+  outDir,
+  rasterFiles,
+  spNames,
+  scenario,
+  sp.ind,
+  cell.ind,
+  envGrid,
+  nCellChunks,
+  removeTempFiles = FALSE,
+  mc.cores = mc.cores,
+  overwrite = FALSE,
+  reprojectToEnv = F,
+  verbose = F
+)
 }
 \arguments{
 \item{scenario}{character; any user-defined terms for scenarios are acceptable. For example, ‘Present’, ’2050’, ’2070’}

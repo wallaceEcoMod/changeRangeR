@@ -6,38 +6,33 @@
 #' @export
 
 
-aooArea <- function(r, locs=NULL) {
-  ## If locs is NULL
-  if (is.null(locs)){
-    if (isLonLat(r)){
-      # Project everything to WGS84
-      #  r.2km <- raster::projectRaster(from = r, crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0", method = "ngb")
-      # Create new dummy raster with correct 2km resolution
+aooArea <- function (r, locs = NULL){
+  if (is.null(locs)) {
+    if (raster::isLonLat(r)) {
       dummy <- r
       raster::res(dummy) <- 0.01666667
-      # resample SDM
-      r.2km <- raster::resample(x = r, y = dummy, method = 'ngb')
-      # Calculate number of cells
+      r.2km <- raster::resample(x = r, y = dummy, method = "ngb")
       fc.cells <- raster::cellStats(!is.na(r.2km), stat = sum) * 4
-      return(paste0("AOO:", fc.cells, " km^2"))
-    } else {
-      r.dummy <- r
-      agg <- 2000 /raster::res(r)[1]
-      r.resam <- raster::aggregate(x = r, fact = agg, fun = 'max')
-      #fc.cells<- cellStats(!is.na(r.resam), stat=sum)
-      fc.cells <- raster::cellStats(r.resam, na.rm=T,stat=sum) * 4
-      return(paste0("AOO: ", fc.cells, " km^2"))
-  }
-    } else {
-      ## If interested in # of cells with occurrence points
-      # Project everything to WGS84
-      r.2km <- raster::projectRaster(from = r, crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0", method = "ngb")
-      # Create new dummy raster with correct 2km resolution
-      dummy <- r.2km
-      raster::res(dummy) <- 0.01666667
-      # resample SDM
-      r.2km <- raster::resample(x = r.2km, y = dummy, method = "ngb")
-      locCells <- raster::extract(r.2km, locs)
-      return(paste0("AOO of cells with occurrence records:", length(locCells) * 4, "km^2"))
+      rasArea <- paste0("AOO:", fc.cells, " km^2")
     }
+    else {
+      r.dummy <- r
+      agg <- 2000/raster::res(r)[1]
+      r.2km <- raster::aggregate(x = r, fact = agg, fun = "max")
+      fc.cells <- raster::cellStats(r.2km, na.rm = T, stat = sum) *
+        4
+      rasArea <- paste0("AOO: ", fc.cells, " km^2")
+    }
+  }
+  else {
+    r.2km <- raster::projectRaster(from = r, crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
+                                   method = "ngb")
+    dummy <- r.2km
+    raster::res(dummy) <- 0.01666667
+    r.2km <- raster::resample(x = r.2km, y = dummy, method = "ngb")
+    locCells <- raster::extract(r.2km, locs)
+    rasArea <- paste0("AOO of cells with occurrence records:",
+                      length(locCells) * 4, "km^2")
+  }
+  return(list(area = rasArea, aooRaster = r.2km))
 }

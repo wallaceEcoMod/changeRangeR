@@ -2,14 +2,17 @@
 % Please edit documentation in R/ratioOverlap.R
 \name{ratioOverlap}
 \alias{ratioOverlap}
-\title{Calculate the proportion of range area that is contained by landcover categories}
+\title{Calculate the proportion of a range area that is either 1: contained by landcover categories, or 2: correlated with
+a continuous environmental layer.}
 \usage{
-ratioOverlap(r, shp, field, category)
+ratioOverlap(r, shp = NULL, rasMask = NULL, field, category)
 }
 \arguments{
 \item{r}{Binary Raster. Must be in same projection as shp parameter}
 
-\item{shp}{a shapefile of land cover features.}
+\item{shp}{(optional) a shapefile of land cover features.}
+
+\item{rasMask}{(optional) a raster layer to calculate the relationship with the object r.}
 
 \item{field}{The shapefile field attribute containing the features to compare (i.e., the column name).}
 

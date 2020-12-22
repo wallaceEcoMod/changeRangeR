@@ -213,12 +213,14 @@ To see how SDM range size can change with suitable forest cover through time, su
 ```{r}
 SDM <- raster::raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
 rStack <- raster::stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/MODIS"), pattern = "\\.tif$", full.names = T))
-rStack <- raster::projectRaster(rStack, SDM, method = 'bilinear')
+rStack <- raster::projectRaster(rStack, SDM, method = "bilinear")
 threshold <- 50.086735
 
-SDM.time <- envChange(rStack = rStack, SDM = SDM, threshold = threshold)
+SDM.time <- envChange(rStack = rStack, SDM = SDM, threshold = threshold, bound = "lower")
 
 years <- c("2005", "2006", "2008", "2009", "2010")
+
+SDM.time$Area
 
 plot(y = SDM.time$Area, x = years, main = "SDM area change", ylab = "area (square m)")
 lines(y = SDM.time$Area, x = years)

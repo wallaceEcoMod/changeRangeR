@@ -4,9 +4,20 @@
 \alias{collapseRows}
 \title{Collapse rows of a sparse matrix}
 \usage{
-collapseRows(inDir, outDir, scenario, cellAttrTable, attrName,
-  type = "binary", keepChunks = F, mc.cores = mc.cores,
-  verbose = F)
+collapseRows(
+  inDir,
+  outDir,
+  scenario,
+  cellAttrTable,
+  attrName,
+  type = "binary",
+  keepChunks = F,
+  mc.cores = mc.cores,
+  verbose = F
+)
+}
+\value{
+
 }
 \description{
 Collapse rows of a sparse matrix
