@@ -6,8 +6,10 @@ output:
   pdf_document: default
   html_document: default
   word_document: default
-vignette: |
-  %\VignetteIndexEntry{changeRanger Single Species Metrics} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+vignette: >
+  %\VignetteIndexEntry{changeRanger Single Species Metrics}    
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
 ---
 <!-- CM: Need to add this text into the header above so that devtools::buildvignettes() will work -->
 <!-- vignette: > -->

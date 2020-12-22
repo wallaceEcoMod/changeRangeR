@@ -5,8 +5,10 @@ date: "`r Sys.Date()`"
 output:
   pdf_document: default
   html_document: default
-vignette: |
-  %\VignetteIndexEntry{changeRanger Biodiversity Metrics} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+vignette: >
+  %\VignetteIndexEntry{changeRanger Biodiversity Metrics}
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

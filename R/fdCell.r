@@ -24,6 +24,7 @@ cellIndexTable=function(env,nCellChunks,sumDirs,toInteger=T){
 #===================================================================
 #===================================================================
 # used internally to read in only the necessary chunks for a given analysis
+# This seems to assume that `someRaster` is already exactly matched to the env grid used for cell.ind
 #' @export
 .chunkFinder=function(someRaster,cell.ind,chunkFiles){
 	notNAs=which(!is.na(values(someRaster)))

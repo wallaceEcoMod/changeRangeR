@@ -5,7 +5,8 @@
 \title{title}
 \usage{
 speciesAttributeByCell(cbsDir, attrTable, scenario, method = "mean", env,
-  outDir = NULL, richnessRaster = NULL, verbose = F)
+  outDir = NULL, richnessRaster = NULL, verbose = F,
+  mc.cores = mc.cores)
 }
 \description{
 title

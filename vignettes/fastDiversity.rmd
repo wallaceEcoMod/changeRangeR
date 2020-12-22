@@ -3,6 +3,10 @@ title: "Fast Diversity Calculations with changeRangeR"
 author: "Cory"
 date: "8/25/2020"
 output: html_document
+vignette: >
+  %\VignetteIndexEntry{changeRanger Multispecies examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
