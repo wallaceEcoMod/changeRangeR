@@ -2,13 +2,13 @@
 title: "changeRange Function Directory"
 author: "Cory Merow"
 date: "`r Sys.Date()`"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{changeRanger Function Directory}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-<!-- output: rmarkdown::html_vignette -->
-<!-- vignette: > -->
-<!--   %\VignetteIndexEntry{changeRanger Function Directory} -->
-<!--   %\VignetteEngine{knitr::rmarkdown} -->
-<!--   %\VignetteEncoding{UTF-8} -->
+
 
 The changeRanger package provides functionality for working with collections of species range maps. There are two main types of functions - those meant for large multispecies analyses (tested up to 200,000+) and for single species analysis. For full information on each function, see the associated help file.
 
