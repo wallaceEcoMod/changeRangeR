@@ -4,19 +4,8 @@
 \alias{richnessFromCBS}
 \title{Calculate taxon richness}
 \usage{
-richnessFromCBS(
-  cbsDir,
-  scenario,
-  envGrid,
-  mc.cores = 1,
-  attrTable = NULL,
-  attrName = NULL,
-  outDir = NULL,
-  verbose = F
-)
-}
-\value{
-
+richnessFromCBS(cbsDir, scenario, envGrid, mc.cores = 1,
+  attrTable = NULL, attrName = NULL, outDir = NULL, verbose = F)
 }
 \description{
 Calculate taxon richness

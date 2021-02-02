@@ -6,14 +6,8 @@
 \usage{
 spRangeChangeFromCBS(sumDirs, scn1, scn2, env, mc.cores)
 }
-\value{
-
-}
 \description{
 title
-}
-\note{
-
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

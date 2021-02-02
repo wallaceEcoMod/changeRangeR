@@ -5,7 +5,7 @@
 #' Create a table linking cell IDs with their longitude and latitude which can optoionally be used as a template for a	`cellAttributeTable`.
 #' @notes Columns are long, lat, cellid
 #' @export
-cellIndexTable=function(env,nCellChunks,sumDirs,toInteger=T){
+cellIndexTable=function(env,nCellChunks,sumDirs=NULL,toInteger=T){
 	co=coordinates(env)
 	#keep=apply(values(env),1,function(x) any(!is.na(x))) # not sure why i did this
 	keep=complete.cases(values(env))
@@ -16,7 +16,7 @@ cellIndexTable=function(env,nCellChunks,sumDirs,toInteger=T){
 	} else { chunks=rep(1,nrow(co)) }
 	cell.ind=data.frame(co,cellID=as.integer(cellFromXY(env,co)), chunkID=as.integer(chunks))
 	cell.ind=sapply(cell.ind,as.integer) %>% data.frame
-	saveRDS(cell.ind,file=paste0(sumDirs$sumBaseDir, '/cellIndexTable.rds'))
+	if(!is.null(sumDirs))	saveRDS(cell.ind,file=paste0(sumDirs$sumBaseDir, '/cellIndexTable.rds'))
 	cell.ind
 }
 

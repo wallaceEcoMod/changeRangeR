@@ -195,3 +195,106 @@ cellIDToRaster=function(cell.ind,envGrid,colName){
 	out[cell.ind$cellID]=cell.ind[,colName]
 	out
 }
+
+#============================================================
+#============================================================
+#============================================================
+#' @title Find corresponding cell IDs between two matrices
+#'
+#' @description See examples
+#'
+#' @details
+#' See Examples.
+#'
+#' @param r1 a raster
+#' @param r2 a raster
+# @keywords
+#' @export
+#'
+# @examples
+#'
+#' @author Cory Merow <cory.merow@@gmail.com>
+# @note this is more reliable they're in the same projection. Otherwise, we just check which cell centers of r2 are an a cell of r1
+# @seealso
+# @references
+# @aliases - a list of additional topic names that will be mapped to
+# this documentation when the user looks them up from the command
+# line.
+# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @export
+
+# this only works if they're in the same projection!!
+rasterDictionary <- function(r1, r2){ 
+  # This finds the cell where the center of each cell is located. Is that guaranteed to be the cell where the majority of a cell is?  
+  coords <- as.data.frame(raster::xyFromCell(r1, 1:ncell(r1))) 
+  coords$cellID_r1 <- 1:ncell(r1) 
+  # avoid huge slow operations when cells are NA
+  coords=coords[complete.cases(values(r1)),]
+  if(projection(r1)==projection(r2)){
+    coords$cellID_r2 <- raster::cellFromXY(r2, as.matrix(coords[,1:2])) %>% as.integer
+  } else {
+  	coords.projr2=coords %>% select(x,y) %>% as.matrix %>% SpatialPoints(proj4string=CRS(projection(r1))) %>% spTransform(projection(r2))
+  	coords$cellID_r2 <- raster::cellFromXY(r2, coords.projr2) %>% as.integer
+  }
+  return(coords[complete.cases(coords),])
+} 
+
+#============================================================
+#============================================================
+#============================================================
+#' @title Can you put a sparse matrix in Memory
+#'
+#' @description See examples
+#'
+#' @details
+#' See Examples.
+#'
+#' @param
+#' @param
+# @keywords
+#' @export
+#'
+# @examples
+#'
+#' @author Cory Merow <cory.merow@@gmail.com>
+# @note based on code stolen from raster::canProcessInMemory
+# @seealso
+# @references
+# @aliases - a list of additional topic names that will be mapped to
+# this documentation when the user looks them up from the command
+# line.
+# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @export
+
+# > canProcessInMemory
+# function (x, n = 4, verbose = FALSE) 
+# {
+#     if (.toDisk()) {
+#         return(FALSE)
+#     }
+#     nc <- ncell(x)
+#     n <- n * nlayers(x)
+#     memneed <- nc * n * 8
+#     maxmem <- .maxmemory()
+#     memavail <- .availableRAM(maxmem)
+#     if (verbose) {
+#         gb <- 1073741824
+#         cat("memory stats in GB")
+#         cat(paste("\nmem available:", round(memavail/gb, 2)))
+#         cat(paste0("\n        ", round(100 * .memfrac()), "%  : ", 
+#             round(.memfrac() * memavail/gb, 2)))
+#         cat(paste("\nmem needed   :", round(memneed/gb, 2)))
+#         cat(paste("\nmax allowed  :", round(maxmem/gb, 2), " (if available)\n"))
+#     }
+#     if (nc > (2^31 - 1)) 
+#         return(FALSE)
+#     memavail <- .memfrac() * memavail
+#     memavail <- min(memavail, maxmem)
+#     if (memneed > memavail) {
+#         options(rasterChunk = min(.chunksize(), memavail * 0.25))
+#         return(FALSE)
+#     }
+#     else {
+#         return(TRUE)
+#     }
+# }

@@ -69,7 +69,7 @@
 			length(this.sp.ind)>1
 			if(length(this.sp.ind)>1){
 				warning(paste0('There are multiple rasters for this species: ',sp.name,
-				               ". Because we use names to match files, multiple files with the same basename are not supported. As a (possibly bad) default I'm selecting just the first instance of this species"))
+				               ". Because we use names to match files, multiple files with the same basename are not supported. As as a (possibly bad) default I'm selecting just the first instance of this species"))
 				this.sp.ind=this.sp.ind[1]
 			}
 
@@ -145,13 +145,12 @@
 		# outputs  ------------------------------------------------------
 		colnames(out1)=c('cellID','spID')
 		saveRDS(out1,file=paste0(outDir2,'/temp_long_',x,'.rds'))
-		# unlink(raster::rasterOptions(overwrite=T)$tmpdir,recursive=T) # clean up
 		# raster::rasterOptions(tmpdir=defaultRasterTmpDir)
 		gc()
 	})
-
+	gc()
 	t2=(proc.time()['elapsed']-t1['elapsed'])/60
-	message(paste('Ran in ',round(t2,2),' minutes'))
+	#message(paste('Ran in ',round(t2,2),' minutes'))
 }
 
 
@@ -197,8 +196,8 @@ cellBySpeciesMatrices=function(outDir,
 
 	#  for testing
 	#  scenario='present'; outDir=sumDirs$cbsDir;  myTempPath=rasterOptions()$tmpdir; overwrite=F; removeTempFiles=F; verbose=T; nCellChunks=10
-	if (Sys.info()["sysname"]== "Windows") {mclapply <- parallelsugar::mclapply}
-	if (Sys.info()["sysname"]!= "Windows") {mclapply <- parallel::mclapply}
+	if (Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
+	if (Sys.info()["sysname"]!= "Windows") mclapply=parallel::mclapply
 	t1=proc.time()
 	# intermediate step of long format ---------------------------------
 	scenDir=paste0(outDir,'/',scenario)
@@ -219,9 +218,9 @@ cellBySpeciesMatrices=function(outDir,
 														 outDir=outDir,
 														 sp.ind=sp.ind,
 														 cell.ind=cell.ind,
-														 #myTempPath=myTempPath,
 														 reprojectToEnv=reprojectToEnv,
 														 verbose=verbose)
+		unlink(raster::rasterOptions(overwrite=T)$tmpdir,recursive=T) # clean
 	}
 	t2=(proc.time()['elapsed']-t1['elapsed'])/60
 	message(paste('Making intermediate long format ran in ',round(t2,2),' minutes'))
@@ -343,7 +342,7 @@ cellBySpeciesMatrices=function(outDir,
 
 		chunk.f=list.files(paste0(outDir,'/',scenario),full.names=T, pattern='temp_long')
 
-		lapply(1:nCellChunks,function(x){
+		mclapply(1:nCellChunks,function(x){
 			message(paste0('chunk ',x,' of ',nCellChunks))
 			outFile=paste0(outDir,'/',scenario,'/chunk_',x,'.rds')
 			if(!overwrite) { if(file.exists(outFile)) return()}
@@ -364,7 +363,7 @@ cellBySpeciesMatrices=function(outDir,
 				tmp.dat=readRDS(chunk.f[j]) %>% data.table::as.data.table()
 				spOccCellChunk = tmp.dat[tmp.dat$cellID %in% cellsThisChunk,]
 				#these are the indices of the rows in the cell id just for this chunk (cellsIDinChunk) (not the rows of values(env), because NAs were removed)
-				cellsIDinChunk.row.index=match(spOccCellChunk$cellID,cellsThisChunk)
+				cellsIDinChunk.row.index= match(spOccCellChunk$cellID,cellsThisChunk)
 				matrixChunkLocations =  matrix (c(cellsIDinChunk.row.index, spOccCellChunk$spID),ncol = 2,byrow = F)
 				cbs[matrixChunkLocations] <- 1
 				# rm(matrixChunkLocations); gc(verbose = F)
@@ -381,7 +380,7 @@ cellBySpeciesMatrices=function(outDir,
 			}
 			saveRDS(cbs,outFile)
 			message(paste0('chunk ',x,' done'))
-		})#, mc.cores=mc.cores) # end multichunk
+		}, mc.cores=mc.cores) # end multichunk
 		t2=(proc.time()['elapsed']-t1['elapsed'])/60
 		message(paste('Making sparse chunks ran in ',round(t2,2),' minutes'))
 

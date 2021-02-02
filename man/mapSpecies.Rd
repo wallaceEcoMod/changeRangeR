@@ -9,14 +9,8 @@ mapSpecies(cbsDir, species, scenario, sp.ind, cell.ind, envGrid, shp, ...)
 \arguments{
 \item{species}{a vector of species names or integers refering to species indices}
 }
-\value{
-
-}
 \description{
 Quickly map species stored in sparse matrices
-}
-\note{
-
 }
 \author{
 Cory Merow <cory.merow@gmail.com>
