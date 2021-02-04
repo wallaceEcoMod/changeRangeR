@@ -115,7 +115,41 @@ mapSpecies=function(cbsDir,species,scenario,sp.ind,cell.ind,envGrid,shp,...){
 	sp.r
 }
 
+#============================================================
+#============================================================
+#============================================================
+#' @title Map anytng stored in a cellIndexTable
+#' @description Quickly map for checking
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+#' @param
+# @examples
+#
+#' @return
+#' @author Cory Merow <cory.merow@@gmail.com>
+#' @note
+# @seealso
+# @references
+# @aliases - a list of additional topic names that will be mapped to
+# this documentation when the user looks them up from the command
+# line.
+# @family - a family name. All functions that have the same family tag will be linked in the docum
+#' @export
+# developed when pulling matrices for Danilo
 
+plotCellInd=function(cellInd,colName,envGrid,axis.args=list(cex.axis=1.1), zlim,...){
+	r=raster(envGrid)
+	values(r)[cellInd$cellID]= cellInd[,colName]
+	if(missing(zlim)) zlim=c(min(minValue(r)),max(maxValue(r)))
+	dev.new()
+	plot(r,zlim=zlim,axes=F,xlab="",ylab="",xaxt='n',yaxt='n', box=FALSE,
+		     col= c('white',cm.cols1(100)[3:100]), axis.args=axis.args,smallplot= c(.89,.91,.1,.9),...)
+	r	     
+}
 
 #============================================================
 #============================================================

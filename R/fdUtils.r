@@ -201,18 +201,19 @@ cellIDToRaster=function(cell.ind,envGrid,colName){
 #============================================================
 #' @title Find corresponding cell IDs between two matrices
 #'
-#' @description See examples
+#' @description Get cell IDs of raster 1 cell centers that occur in each raster 2 cell
 #'
 #' @details
 #' See Examples.
 #'
 #' @param r1 a raster
 #' @param r2 a raster
+#' @value data.frame with cell IDs of `r1` cell centers that occur in each `r2` cell. Note that this does not test whether *any* portion of an `r1` cell overlaps an `r2` cell, *just* whether the cell center does.
 # @keywords
-#' @export
 #'
 # @examples
-#'
+# r1=env;r2=targetGrid
+# rd=rasterDictionary(env,targetGrid) 
 #' @author Cory Merow <cory.merow@@gmail.com>
 # @note this is more reliable they're in the same projection. Otherwise, we just check which cell centers of r2 are an a cell of r1
 # @seealso
@@ -233,7 +234,7 @@ rasterDictionary <- function(r1, r2){
   if(projection(r1)==projection(r2)){
     coords$cellID_r2 <- raster::cellFromXY(r2, as.matrix(coords[,1:2])) %>% as.integer
   } else {
-  	coords.projr2=coords %>% select(x,y) %>% as.matrix %>% SpatialPoints(proj4string=CRS(projection(r1))) %>% spTransform(projection(r2))
+  	coords.projr2=coords %>% dplyr::select(x,y) %>% as.matrix %>% sp::SpatialPoints(proj4string=CRS(projection(r1))) %>% sp::spTransform(projection(r2))
   	coords$cellID_r2 <- raster::cellFromXY(r2, coords.projr2) %>% as.integer
   }
   return(coords[complete.cases(coords),])

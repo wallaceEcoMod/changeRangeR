@@ -4,7 +4,7 @@
 \alias{cellIndexTable}
 \title{Create a table linking cell IDs with their longitude and latitude which can optoionally be used as a template for a	`cellAttributeTable`.}
 \usage{
-cellIndexTable(env, nCellChunks, sumDirs, toInteger = T)
+cellIndexTable(env, nCellChunks, sumDirs = NULL, toInteger = T)
 }
 \description{
 Create a table linking cell IDs with their longitude and latitude which can optoionally be used as a template for a	`cellAttributeTable`.
