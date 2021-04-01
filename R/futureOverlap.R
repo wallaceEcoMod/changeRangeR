@@ -1,4 +1,4 @@
-#' @title Calculate future overlap of SDMs with shapefile categories
+#' @title Calculate the ratio of future overlap of SDMs with shapefile categories
 #' @description Calculate future overlap of SDMs with shapefile categories
 #' @param r list of Rasters of binary SDMs
 #' @param r.names list of character values of the names representing each raster in r
