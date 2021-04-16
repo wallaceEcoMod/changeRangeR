@@ -4,12 +4,12 @@
 \alias{envChange}
 \title{Calculate change in suitable SDM area through time}
 \usage{
-envChange(rStack, SDM, threshold, bound, correlation = F)
+envChange(rStack, binaryRange, threshold, bound, correlation = F)
 }
 \arguments{
 \item{rStack}{rasterStack of environmental variable to measure within binary SDM through time}
 
-\item{SDM}{raster object of binary SDM with same projection as rStack}
+\item{binaryRange}{raster object or shapefile of binary range (SDM, AOO, EOO) with same projection as rStack}
 
 \item{threshold}{integer (or integers if bound = "both") of where rStack layers should be thresholded}
 
@@ -19,7 +19,7 @@ the threshold (e.g., maximum human footprint)."lower" removes values below the t
 minimum and maximum temperature).}
 
 \item{correlation}{boolean. If FALSE, environmental variable will be converted to a binary map and used as a mask.
-If TRUE, environmental variable is only thresholded by bounds, but left continuous. Then#' Pearson's correlation
+If TRUE, environmental variable is only thresholded by bounds, but left continuous. Then, Pearson's correlation
 coefficient with SDM will be computed for overlapping areas.}
 }
 \description{

@@ -12,6 +12,19 @@
 #' the original occurrence points. The Jaccard similarity index is calculated to determine geographic similarity between
 #' the trial and observed MCP. The trial MCP is also spatially intersected with the original occurrence points to determine
 #' how many were omitted. The "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
+#' @return a list of 5 objects.
+#' @examples
+#' # create continuous raster
+#' p <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(p)<- runif(n = (108*108))
+#' # create occurrences
+#' xy <- dismo::randomPoints(p, 4)
+#' # create original convex hull
+#' ch.orig <- mcp(xy)
+#' # set threshold
+#' thr <- 0.5
+#' # mcpSDM
+#' mcpSDM(p, xy, ch.orig, thr)
 #' @export
 #'
 

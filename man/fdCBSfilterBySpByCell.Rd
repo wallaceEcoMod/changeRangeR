@@ -4,9 +4,21 @@
 \alias{fdCBSfilterBySpByCell}
 \title{cbs scenario filtering}
 \usage{
-fdCBSfilterBySpByCell(cbsDir, scenario, suffixScenario, spAttrTable,
-  spAttr, cellAttrTable, cellAttr, condition, NAfill = NULL,
-  mc.cores = 1, useForeach = F, g = 10, verbose = T)
+fdCBSfilterBySpByCell(
+  cbsDir,
+  scenario,
+  suffixScenario,
+  spAttrTable,
+  spAttr,
+  cellAttrTable,
+  cellAttr,
+  condition,
+  NAfill = NULL,
+  mc.cores = 1,
+  useForeach = F,
+  g = 10,
+  verbose = T
+)
 }
 \arguments{
 \item{cbsDir}{directory of cell by species matrix}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/futureOverlap.R
 \name{futureOverlap}
 \alias{futureOverlap}
-\title{Calculate future overlap of SDMs with shapefile categories}
+\title{Calculate the ratio of future overlap of SDMs with shapefile categories}
 \usage{
 futureOverlap(r, futures, field, category, r.names, futures.names)
 }

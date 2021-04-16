@@ -11,8 +11,20 @@
 #' @param field The shapefile field attribute containing the features to compare (i.e., the column name).
 #' @param category a list of the names of shapefile features to compare. If all features are to be used, input "All".
 #' @param subfield boolean. If TRUE, the overlap ratio of all unique categories will be calculated.
+#' @return a list of three objects. The first object is a raster object showing the masked range. The second is a character showing the
+#' percentagse of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
+#' @examples
+#' # create binary raster
+#' r <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(r)<- runif(n = (108*108))
+#' r[r < 0.5] <- NA
+#' r[r > 0.5] <- 1
+#' # create shp
+#' shp <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(shp)<- runif(n = (108*108))
+#' # ratioOverlap
+#' ratioOverlap(r = r, shp = shp)
 #' @export
-#'
 
 # # load r
 # r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
@@ -171,7 +183,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       }
       correlation <- NULL
       ratio <- lapply(maskedRange, function(x) raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(r)]) * 100)
-      ratio <- paste0("Percentage of range within ", category, " is ", round(x = ratio, digits = 3), "%")
+      ratio <- paste0("Percentage of range within ", category, " is ", round(x = unlist(ratio), digits = 3), "%")
       #ratio <- raster::ncell(maskedRange[!is.na(maskedRange)]) / raster::ncell(r[!is.na(r)]) * 100
       #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
     }

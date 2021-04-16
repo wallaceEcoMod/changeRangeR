@@ -169,7 +169,7 @@ colnames(shp@data)
 # Pick the field you are interested in
 field <- "DESIG_ENG"
 category <- "All"
-ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category)
+ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category, subfield = F)
 # Look at the range that is protected
 plot(ratio.Overlap$maskedRange)
 # The proportion of the range that is protected

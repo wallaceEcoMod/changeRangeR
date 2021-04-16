@@ -10,7 +10,28 @@
 #' @param correlation boolean. If FALSE, environmental variable will be converted to a binary map and used as a mask.
 #' If TRUE, environmental variable is only thresholded by bounds, but left continuous. Then, Pearson's correlation
 #' coefficient with SDM will be computed for overlapping areas.
+#' @return A list two objects. Area is a data.frame showing the total area of each masked raster. masks is a rasterStack
+#' of each masked raster.
+#' @examples
+#' # create rStack
+#' r1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(r1)<- runif(n = (108*108))
+#' r2 <-  raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(r2)<- runif(n = (108*108))
+#' rStack <-  raster::stack(r1,r2)
+#' # create binaryRange
+#' binaryRange <- raster::crop(r1, raster::extent(c(-50, 50, 0, 90)))
+#' binaryRange <- raster::extend(binaryRange, r1)
+#' binaryRange[!is.na(binaryRange)] <- 1
+#' # set threshold
+#' threshold <- 0.5
+#' # set bound
+#' bound <- "upper"
+#' # Run function
+#' envChange(rStack = rStack, binaryRange = binaryRange, threshold = threshold, bound = bound)
+#' @author
 #' @export
+
 
 #SDM <- raster::raster("inst/extdata/DemoData/SDM/olinguito/olinguitoSDM.tif")
 #binaryRange <- raster::raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
@@ -20,7 +41,6 @@
 #threshold <- 50.086735
 #test <- envChange(rStack, binaryRange, threshold, bound = "upper")
 #test2 <- envChange(rStack, binaryRange, threshold, bound = "lower")
-
 
 envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
   require(raster)
@@ -42,8 +62,8 @@ envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
 
   if(bound == "upper"){
     #    if(correlation = FALSE){
-    rStack[rStack < threshold] <- 1
     rStack[rStack > threshold] <- NA
+    rStack[rStack < threshold] <- 1
     #    } else {
     #      rStack[rStack > threshold] <- NA
     #    }

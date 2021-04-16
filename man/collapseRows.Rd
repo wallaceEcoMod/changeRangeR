@@ -4,9 +4,18 @@
 \alias{collapseRows}
 \title{Collapse rows of a sparse matrix}
 \usage{
-collapseRows(inDir, outDir = NULL, scenario, cellAttrTable, attrName,
-  type = "binary", keepChunks = F, colSubset = NULL,
-  mc.cores = mc.cores, verbose = F)
+collapseRows(
+  inDir,
+  outDir = NULL,
+  scenario,
+  cellAttrTable,
+  attrName,
+  type = "binary",
+  keepChunks = F,
+  colSubset = NULL,
+  mc.cores = mc.cores,
+  verbose = F
+)
 }
 \arguments{
 \item{outDir}{string; path to directory where you want to store new CBSmatrices}
@@ -15,11 +24,12 @@ collapseRows(inDir, outDir = NULL, scenario, cellAttrTable, attrName,
 
 \item{cellAttrTable}{Note that cellAttrTable needs to have a column with chunkID so you know which chunks need to be read in for each value to collapse over}
 
-\item{colSubset}{vector of indices of columns to keep. Useful when you want to take only a subset of taxa before collapsing rows. Default `NULL` keep all columns.}
+\item{colSubset}{numeric vector of column indices (corresponding to taxa) to keep from the columns of a CBS matrix. Default is NULL, which retains all columns (taxa). It helps to use your species index table to determine these indices.}
 
 \item{indir}{string; path to directory with CBS matrices}
+}
+\value{
 
-\item{colSubset}{numeric vector of column indices (corresponding to taxa) to keep from the columns of a CBS matrix. Default is NULL, which retains all columns (taxa). It helps to use your species index table to determine these indices.}
 }
 \description{
 Collapse rows of a sparse matrix

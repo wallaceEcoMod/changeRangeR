@@ -6,8 +6,14 @@
 \usage{
 filterCBS(sumDir, sumDirOut, spSelec = NULL, cellIdSelec = NULL)
 }
+\value{
+
+}
 \description{
 title
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

@@ -2,26 +2,35 @@
 % Please edit documentation in R/ratioOverlap.R
 \name{ratioOverlap}
 \alias{ratioOverlap}
-\title{Calculate the proportion of a range area that is either 1: contained by landcover categories, or 2: correlated with
+\title{Calculate the proportion of a range area that is either 1: contained by geographic categories, or 2: correlated with
 a continuous environmental layer.}
 \usage{
-ratioOverlap(r, shp = NULL, rasMask = NULL, field, category)
+ratioOverlap(
+  r,
+  shp = NULL,
+  rasMask = NULL,
+  field = NULL,
+  category = NULL,
+  subfield = FALSE
+)
 }
 \arguments{
-\item{r}{Binary Raster. Must be in same projection as shp parameter}
+\item{r}{either raster or shapefile object representing a binary range.}
 
-\item{shp}{(optional) a shapefile of land cover features.}
+\item{shp}{either 1) a shapefile of land cover features or 2) a continuous raster. Must be in same projection as r parameter. If shp is a raster, then the number of cells within each quantile are calculated.}
 
-\item{rasMask}{(optional) a raster layer to calculate the relationship with the object r.}
+\item{rasMask}{(optional) a raster layer to calculate the Pearson correlation with the object r. Only if r or shp is a raster layer}
 
 \item{field}{The shapefile field attribute containing the features to compare (i.e., the column name).}
 
 \item{category}{a list of the names of shapefile features to compare. If all features are to be used, input "All".}
 
-\item{proj}{character string proj4string of crs of landcover layer.}
+\item{subfield}{boolean. If TRUE, the overlap ratio of all unique categories will be calculated.}
 }
 \description{
 Calculate the proportion of the species' range (e.g., a thresholded SDM) that is contained by landcover categories
-taken from a shapefile. Example shapefile categories include protected areas, threatened areas. ratioOverlap returns an s4 object
-containing the masked raster layer and the percent of the total range that lies within the shapefile polygons specified.
+taken from a shapefile. Example shapefile categories include protected areas, threatened areas. ratioOverlap returns a list
+of the masked raster layer and the percent of the total range that lies within the shapefile polygons specified. If shp is a raster
+representing an environmental layer, the proportion of presence within quantiles of the environmental layer and the correlation
+between the layer and the range are returned.
 }
