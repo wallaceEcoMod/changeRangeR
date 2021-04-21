@@ -2,15 +2,32 @@
 % Please edit documentation in R/complementarity.R
 \name{complementarity}
 \alias{complementarity}
-\title{Compare continuous raster values within and outside of a mask}
+\title{Compare raster values within and outside of a mask}
 \usage{
 complementarity(ras1, ras1mask)
 }
 \arguments{
-\item{ras1}{Raster object of categorical values}
+\item{ras1}{Raster object of categorical values (e.g., a species richness map)}
 
-\item{ras1mask}{Raster object of ras1 that has been previously masked}
+\item{ras1mask}{Raster object representing areas of interest (e.g., protected areas)}
+}
+\value{
+A list of two objects. The first is
 }
 \description{
-Compare continuous raster values within and outside of a mask
+Compare raster values within and outside of a mask
+}
+\examples{
+# create raster
+ras1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+raster::values(ras1)<- runif(n = (108*108))
+ras1[ras1 < 0.5] <- NA
+ras1[!is.na(ras1)] <- 1
+# create ras1mask
+ras1mask <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+raster::values(ras1mask)<- runif(n = (108*108))
+ras1mask[ras1mask < 0.15] <- NA
+ras1mask[!is.na(ras1mask)] <- 1
+# complementarity
+complementarity(ras1, ras1mask)
 }

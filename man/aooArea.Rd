@@ -12,6 +12,19 @@ aooArea(r, locs = NULL)
 \item{locs}{(optional) data.frame of occurrence records: Longitude and latitude. If provided, AOO of cells containing occurrence points
 is returned. If NULL, AOO of SDM is returned.}
 }
+\value{
+a list of two objects. The first object is a character showing the AOO of cells with occurrence records.
+The second is a raster object of the resampled AOO
+}
 \description{
 Calculate area of occupancy measured in 2km resolution using a binary SDM
+}
+\examples{
+# create raster
+r1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+raster::values(r1)<- runif(n = (108*108))
+r1[r1 < 0.5] <- NA
+r1[!is.na(r1)] <- 1
+# calculate aooArea
+aooArea(r1)
 }

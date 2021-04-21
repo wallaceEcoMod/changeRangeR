@@ -52,7 +52,6 @@
 # #test
 # t <- ratioOverlap(r, shp, field = field, category = category, subfield= F)
 
-
 ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NULL, subfield = FALSE){
   #setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
   require(sf)

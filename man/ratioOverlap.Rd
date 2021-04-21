@@ -27,10 +27,26 @@ ratioOverlap(
 
 \item{subfield}{boolean. If TRUE, the overlap ratio of all unique categories will be calculated.}
 }
+\value{
+a list of three objects. The first object is a raster object showing the masked range. The second is a character showing the
+percentagse of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
+}
 \description{
 Calculate the proportion of the species' range (e.g., a thresholded SDM) that is contained by landcover categories
 taken from a shapefile. Example shapefile categories include protected areas, threatened areas. ratioOverlap returns a list
 of the masked raster layer and the percent of the total range that lies within the shapefile polygons specified. If shp is a raster
 representing an environmental layer, the proportion of presence within quantiles of the environmental layer and the correlation
 between the layer and the range are returned.
+}
+\examples{
+# create binary raster
+r <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+raster::values(r)<- runif(n = (108*108))
+r[r < 0.5] <- NA
+r[r > 0.5] <- 1
+# create shp
+shp <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+raster::values(shp)<- runif(n = (108*108))
+# ratioOverlap
+ratioOverlap(r = r, shp = shp)
 }

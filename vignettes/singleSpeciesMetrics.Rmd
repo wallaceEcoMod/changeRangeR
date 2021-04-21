@@ -171,7 +171,7 @@ field <- "DESIG_ENG"
 category <- "All"
 ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category, subfield = F)
 # Look at the range that is protected
-plot(ratio.Overlap$maskedRange)
+plot(ratio.Overlap$maskedRange[[1]])
 # The proportion of the range that is protected
 ratio.Overlap$ratio
 ```
@@ -211,12 +211,12 @@ plot(x = years, y = future.ratios[,2], type = "b", main = "Percent of SDM predic
 To see how SDM range size can change with suitable forest cover through time, supply environmental rasters and a suitability threshold as well as a binary SDM. The environmental rasters must be in the same coordinate reference system at the SDM.
 
 ```{r}
-SDM <- raster::raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
+binaryRange <- raster::raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
 rStack <- raster::stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/MODIS"), pattern = "\\.tif$", full.names = T))
-rStack <- raster::projectRaster(rStack, SDM, method = "bilinear")
+rStack <- raster::projectRaster(rStack, binaryRange, method = "bilinear")
 threshold <- 50.086735
 
-SDM.time <- envChange(rStack = rStack, SDM = SDM, threshold = threshold, bound = "lower")
+SDM.time <- envChange(rStack = rStack, binaryRange = binaryRange, threshold = threshold, bound = "lower")
 
 years <- c("2005", "2006", "2008", "2009", "2010")
 

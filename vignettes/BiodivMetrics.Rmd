@@ -270,7 +270,7 @@ colnames(PAs)
 # Pick the field you are interested in
 field <- "DESIG_ENG"
 category <- "All"
-ratio.Overlap <- ratioOverlap(r = SR, shp = PAs, field = field, category = category)
+ratio.Overlap <- ratioOverlap(r = SR, shp = PAs, field = field, category = category, subfield = FALSE)
 print(ratio.Overlap)
 ```
 
