@@ -15,7 +15,7 @@
 #' aooArea(r1)
 #' @export
 
-aooArea <- function (r, locs = NULL){
+AOOarea <- function (r, locs = NULL){
   if (is.null(locs)) {
     if (raster::isLonLat(r)) {
       dummy <- r
