@@ -111,7 +111,7 @@ p <-raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/ol
 locs <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/All_localities_30n.csv"))
 locs <- locs[,1:2]
 p[!is.na(p)] <- 1
-AOOlocs<-aooArea(r = p, locs = locs)
+AOOlocs<-AOOarea(r = p, locs = locs)
 
 print(AOOlocs)
 ```
@@ -121,7 +121,7 @@ print(AOOlocs)
 p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
-AOO<-aooArea(r = p)
+AOO<-AOOarea(r = p)
 print(AOO)
 ```
 
@@ -130,7 +130,7 @@ print(AOO)
 p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
-AOO<-aooArea(r = p)
+AOO<-AOOarea(r = p)
 print(AOO)
 ```
 
