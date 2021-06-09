@@ -4,11 +4,23 @@
 \alias{plotCellInd}
 \title{Map anytng stored in a cellIndexTable}
 \usage{
-plotCellInd(cellInd, colName, envGrid, axis.args = list(cex.axis = 1.1),
-  zlim, ...)
+plotCellInd(
+  cellInd,
+  colName,
+  envGrid,
+  axis.args = list(cex.axis = 1.1),
+  zlim,
+  ...
+)
+}
+\value{
+
 }
 \description{
 Quickly map for checking
+}
+\note{
+
 }
 \author{
 Cory Merow <cory.merow@gmail.com>

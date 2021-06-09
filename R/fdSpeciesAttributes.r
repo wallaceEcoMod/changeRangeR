@@ -34,7 +34,9 @@ speciesAttributeByCell=function(cbsDir,
 																richnessRaster=NULL,
 																verbose=F,
 																mc.cores=mc.cores){
-
+	# for testing 
+	#  cbsDir=sumDirs$cbsDir; scenario=scn;  method='mean'; env=envGrid; verbose=T
+	#  attrTable=perfSpAttr; outDir=perfDir
 	t1=proc.time()
 	message(paste0('starting ',scenario))
 	if(Sys.info()["sysname"]== "Windows") mclapply=parallelsugar::mclapply
@@ -46,17 +48,21 @@ speciesAttributeByCell=function(cbsDir,
 	toss=unlist(mapply(function(x){grep(x,attrNames)}, c('species','index')))
 	if(length(toss) > 0 ) attrNames=attrNames[-toss]
 
+	# to do - should revers the order of loops so we don't have to read in the cbs matrices a bunch of tiems for multilpe attributes
 	out=lapply(seq_along(attrNames),function(y){
 		if(verbose) message(attrNames[y])
+		subsetAttrTable=attrTable[attrNames[y]] %>% na.omit
 		#keep=attrTable$index[attrTable[attrNames[y]]==1]
 		if(method=='mean'){
-			attrByCell=mclapply(seq_along(cbs.f), function(x){
+			attrByCell=lapply(seq_along(cbs.f), function(x){ # mclapply not working...
 				if(verbose) message(x)
 				cbs=readRDS(cbs.f[x])
+				# remove NAs 
+				
 				b=cbs %*% as.matrix(attrTable[attrNames[y]],ncol=1)
 				rich=textTinyR::sparse_Sums(cbs, rowSums = T)
 				data.frame(cellID=as.numeric(rownames(cbs)),thisAttr=as.numeric(b/rich))
-			},mc.cores=mc.cores)
+			})#,mc.cores=mc.cores)
 		} else{
 			stop('sorry, only mean values supported at this point')
 				# Var(X) = Σ ( Xi - X_mean )2 / N

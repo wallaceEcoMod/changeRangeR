@@ -94,14 +94,17 @@ collapseCols=function(inDir,
 #' @param
 # @examples
 # NOT WORKING, JUST THE GIST OF IT
+# targetGrid=raster( '~/Dropbox/Projects/Collaborations/Danillos_ExtremeClades/richness100km.tif')
+# sp.ind=readRDS('~/Documents/SDMs/BIEN42/Summaries/speciesIndexTable.rds')
+# keep.sp=which(sp.ind$species %in% sp.list[,1])
+# env=stack('~/Documents/SDMs/BIEN42/_inputs/Env/AllEnv.tif')
+# rd=rasterDictionary(env,targetGrid) %>% rename(cellID=cellID_r1) %>% dplyr::select(-x,-y)
+# cell.ind=readRDS('~/Documents/SDMs/BIEN42/Summaries/cellIndexTable.rds') %>% left_join(rd,by='cellID')
 # cr=collapseRows(inDir=inDir,outDir=outDir,scenario=scenario,
 # 	cellAttrTable=cell.ind,attrName='cellID_r2',colSubset=keep.sp, type='binary',keepChunks=F,mc.cores=mc.cores,verbose=T)
-# (t2=proc.time()-t1)
 # cell.ind2=cellIndexTable(targetGrid,nCellChunks=1)
-# saveRDS(cell.ind2,file='/Users/ctg/Dropbox/Projects/Collaborations/Danillos_ExtremeClades/cellIndexTable.rds')
 # rich=data.frame(cellID=as.numeric(rownames(aa)), rich=textTinyR::sparse_Sums(aa, rowSums = T))
 # cell.ind2a=cell.ind2 %>% left_join(rich,by='cellID')
-# 
 # rich.r=plotCellInd(cell.ind2a,'rich',targetGrid)
 
 #' @return
