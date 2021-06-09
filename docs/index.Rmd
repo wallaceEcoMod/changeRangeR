@@ -1,0 +1,67 @@
+---
+title: 'changeRangeR: an R package for repeatable and transparent translations of
+  species distributions into meaningful conservation metrics.'
+author: Peter J. Galante, Samuel Chang, Matthew Aiello-Lammens, Beth Gerstner, Bethany
+  Johnson, Jamie M. Kass, Cory Merow, Elkin Noguera-Urbano , Andrea Paz, Gonzalo E.
+  Pinilla-Buitrago, Dan Rosauer, Robert P. Anderson, Mary E. Blair
+date: '`r Sys.Date()`'
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+</br>
+</br>
+<font size = "4">
+*changeRangeR* is an R package that translates species’ current distributions into meaningful conservation metrics in repeatable and transparent ways. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can reduce an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in *maskRangeR*).
+
+*changeRangeR* is able to make several calculations:
+
+  - IUCN metrics regarding area of occupancy (upper bounds of AOO) and extent of occurrence (EOO)
+  
+  - Proportion of a species' range size protected, threatened, or associated with different landcover types
+  
+  - Given past or future model projections or geospatial data for masking, calculate and visualize changes over time
+  
+  - Community metrics can be assessed for regions of interest
+  
+  - Sparse-matrices can be utilized for massive dataset processing 
+
+These change metrics can then inform redlisting and forward-thinking conservation planning. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest such as richness, spatial and temporal turnover, endemism, and phylogenetic diversity, to understand complementarity across space and to further aid planning and decision-making. 		
+
+## Vignette
+changeRangeR has three vignettes:
+
+[Single species metrics]() </br>
+[Community metrics]()</br>
+[Sparse matrices]()</br>
+
+### **Training materials**
+<font size="4">Also in development are training materials and best practices for modeling species' niches and distributions in biodiversity change indicator assessments for the expanded Wallace in both English and Spanish. Materials will be web-based and openly available. They will be available as both guidance text within *Wallace* and also published as part of an open source teaching module for the Center for Biodiversity and Conservation at the American Museum of Natural History ([CBC-AMNH](https://www.amnh.org/our-research/center-for-biodiversity-conservation)) Network of Conservation Educators and Practitioners ([NCEP](https://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/ncep)). NCEP is a global initiative that seeks to improve the availability and quality of conservation education and professional training.</font>
+
+## **BioModelos and *Wallace* integration**
+<font size="4">The Group on Earth Observations Biodiversity Observation Network ([GEO-BON](https://geobon.org/)) works to improve the communication of biodiversity measurements to decision makers and the broader scientific community. To locally serve regional scientific and political communities, GEO-BON has implemented a [BON-in-a-Box](https://geobon.org/bon-in-a-box/) service that delivers customizable online toolkits for enhancing biodiversity observation systems.
+
+[*BioModelos*](http://biomodelos.humboldt.org.co/) is a BON-in-a-box tool for Colombia’s BON. *BioModelos* bridges  modeling and taxonomy experts by facilitating occurrence record curation, model editing, suitable ecological variable identification, and providing a model vetting process. 
+
+The integration of BioModelos and *Wallace* leverages the expert knowledge available in BioModelos with the easy-to-use interface and expert modeling tools of *Wallace*. Registered users are able to import expert-verified occurrence records and range maps, and have the ability to push SDMs and further-refined range maps back to BioModelos.
+
+This synergistic relationship allows conservation practitioners to access important model statistics (indicators of biodiversity and ecosystem services) such as: extent of occurrence, proportion of range under protected status, and projected change in future scenarios.
+</font>
+
+*changeRangeR* package development was funded by the NASA ROSES award No. 80NSSCK0406 to collaboratively improve the utility of the Colombia BON-in-a-Box toolkit as well as build capacity for conservation practitioners and educators. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Aeronautics and Space Administration.
+
+
+<center>
+
+[![](./websiteImages/NASA.png)](https://www.nasa.gov/)[![](./websiteImages/GEOBON.png)](https://geobon.org/)
+
+[![](./websiteImages/Pace.png)](https://www.pace.edu/)[![](./websiteImages/CCNY.png)](https://www.ccny.cuny.edu/)[![](./websiteImages/CUNY.png)](http://www2.cuny.edu/)[![](./websiteImages/UConn.png)](https://uconn.edu/)[![](./websiteImages/Humboldt.png)](http://www.humboldt.org.co/en/)
+[![](./websiteImages/CBC.png)](https://www.amnh.org/our-research/center-for-biodiversity-conservation)
+</center>
+
+
+

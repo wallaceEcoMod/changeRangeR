@@ -4,8 +4,15 @@
 #' @description Generates a minimum convex polygon (MCP; i.e., convex hull) that
 #' is delineated from occurrence locality coordinates.
 #' This function is a wrapper for `chull()` that makes a SpatialPolygons object.
+#' @return a SpatialPolygons object of the minimum convex hull around occurrences.
+#' @examples
+#' # generate occurrences
+#' ras1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(ras1)<- runif(n = (108*108))
+#' occs <- dismo::randomPoints(ras1, 4)
+#' # create mcp
+#' mcp(occs)
 #' @export
-
 
 # make a minimum convex polygon as SpatialPolygons object
 mcp <- function(xy, crs = NULL) {

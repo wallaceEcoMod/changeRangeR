@@ -1,12 +1,38 @@
-#' @title Calculate future overlap of SDMs with shapefile categories
+#' @title Calculate the ratio of future overlap of SDMs with shapefile categories
 #' @description Calculate future overlap of SDMs with shapefile categories
-#' @param r list of Rasters of binary SDMs
+#' @param r list of rasters of binary SDMs
 #' @param r.names list of character values of the names representing each raster in r
 #' @param futures List of SpatialPolygons* objects with same CRS as r
 #' @param futures.names list of character values of the names representing each SpatialPolygons* object in futures.
 #' @param field The shapefile field attribute containing the features to compare (i.e., the column name).
 #' @param category a list of the names of shapefile features to compare. If all features are to be used, input "All".
+#' @return a matrix showing the overlap between raster names and features.
+#' @examples
+#' #create rasters
+#' r1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(r1)<- runif(n = (108*108))
+#' r2 <- r1 >=0.5
+#' r2[r2<1] <- NA
+#' r3 <- r1 >=0.75
+#' r3[r3<1] <- NA
+#' # Create r
+#' r <- list(r2, r3)
+#' # create r.names
+#' r.names <- c('scenario 1', 'scenario 2')
+#' # create futures
+#' coords <- dismo::randomPoints(r1, 3)
+#' future <- sp::Polygon(coords)
+#' future <- sp::SpatialPolygons(list(sp::Polygons(list(future), ID = "a")))
+#' futures <- list(future, future)
+#' futures.names <- list("fut1", "fut2")
+#' # set field and category
+#' field = "a"
+#' category = "All"
+#' # run function
+#' futureOverlap(r, futures, field, category, r.names, futures.names)
 #' @export
+
+
 
 futureOverlap <- function(r, futures, field, category, r.names, futures.names){
   # setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
@@ -48,8 +74,11 @@ futureOverlap <- function(r, futures, field, category, r.names, futures.names){
 
   #ratio <- ncell(maskedRange[!is.na(maskedRange)]) / ncell(r[!is.na(r)]) * 100
   #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
-  ratioValues <- mapply(function(x,y,z){paste0("Overlap between ", x, " and ", y, " is ", z)}, x=r.names, y=futures.names, z=rat.io.s)
+  ratioValues <- mapply(function(x,y,z){paste0("Overlap between ", x, " and ", y, "is", z)}, x=r.names, y=futures.names, z=round(x = rat.io.s, digits = 3))
   ratioValues <- data.frame(strsplit(ratioValues, "is "))
-  return(t(ratioValues))
+  out <- strsplit(t(ratioValues), "is")
+  out<- do.call("rbind", out)
+  colnames(out) <- c("Layer comparisons", "overlap")
+  return(out)
   # out <- new("ratioOverlap", maskedRange = maskedRange, ratio = ratio)
 }

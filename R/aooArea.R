@@ -3,10 +3,20 @@
 #' @param r Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.
 #' @param locs (optional) data.frame of occurrence records: Longitude and latitude. If provided, AOO of cells containing occurrence points
 #' is returned. If NULL, AOO of SDM is returned.
+#' @return a list of three objects. The first object is a character showing the AOO of cells with occurrence records.
+#' The second is a raster object of the resampled AOO. The third object (optional) represents the AOO raster showing pixels in which the localities occur, resampled to 2kmx2km
+#'  (only if locs argument is supplied).
+#' @examples
+#' # create raster
+#' r1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+#' raster::values(r1)<- runif(n = (108*108))
+#' r1[r1 < 0.5] <- NA
+#' r1[!is.na(r1)] <- 1
+#' # calculate aooArea
+#' aooArea(r1)
 #' @export
 
-
-aooArea <- function (r, locs = NULL){
+AOOarea <- function (r, locs = NULL){
   if (is.null(locs)) {
     if (raster::isLonLat(r)) {
       dummy <- r
@@ -23,6 +33,7 @@ aooArea <- function (r, locs = NULL){
         4
       rasArea <- paste0("AOO: ", fc.cells, " km^2")
     }
+    aooPixels = NULL
   }
   else {
     r.2km <- raster::projectRaster(from = r, crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
@@ -33,6 +44,7 @@ aooArea <- function (r, locs = NULL){
     locCells <- raster::extract(r.2km, locs)
     rasArea <- paste0("AOO of cells with occurrence records:",
                       length(locCells) * 4, "km^2")
+    aooPix <- raster::rasterize(locs, r.2km)
   }
-  return(list(area = rasArea, aooRaster = r.2km))
+  return(list(area = rasArea, aooRaster = r.2km, aooPixels = aooPix))
 }

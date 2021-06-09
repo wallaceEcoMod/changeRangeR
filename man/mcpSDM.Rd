@@ -16,6 +16,9 @@ mcpSDM(p, xy, ch.orig, thr)
 \item{thr}{Numeric threshold used to convert the continuous SDM prediction to a binary range map;
 this is then used to delineate the hull}
 }
+\value{
+a list of 5 objects.
+}
 \description{
 Generates a minimum convex polygon (MCP; i.e., convex hull) that is delineated from a thresholded SDM.
 For each increment of 0.01 between a user-specified threshold and the maximum SDM prediction value, the prediction is
@@ -24,4 +27,17 @@ a trial MCP. Each trial MCP is spatially intersected with the original MCP (base
 the original occurrence points. The Jaccard similarity index is calculated to determine geographic similarity between
 the trial and observed MCP. The trial MCP is also spatially intersected with the original occurrence points to determine
 how many were omitted. The "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
+}
+\examples{
+# create continuous raster
+p <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
+raster::values(p)<- runif(n = (108*108))
+# create occurrences
+xy <- dismo::randomPoints(p, 4)
+# create original convex hull
+ch.orig <- mcp(xy)
+# set threshold
+thr <- 0.5
+# mcpSDM
+mcpSDM(p, xy, ch.orig, thr)
 }
