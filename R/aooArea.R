@@ -33,7 +33,7 @@ AOOarea <- function (r, locs = NULL){
         4
       rasArea <- paste0("AOO: ", fc.cells, " km^2")
     }
-    aooPixels = NULL
+    aooPix = NULL
   }
   else {
     r.2km <- raster::projectRaster(from = r, crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
