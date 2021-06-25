@@ -135,7 +135,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
           sumRas[sumRas > 0] <- 1
         }
         #quantRaster <- stack(quantRaster)
-        rat.ios <- lapply(quantRaster, function(x) (raster::ncell(x[!is.na(x)]) / ncell(r[!is.na(shp)])))
+        rat.ios <- lapply(quantRaster, function(x) (raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(shp)])))
         ratio <- as.data.frame(cbind(quantile, as.numeric(rat.ios)))
         colnames(ratio) <- c("value", "ratio")
         ratio$ratio <- round(ratio[,2], 3)
@@ -247,7 +247,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
             sumRas[sumRas > 0] <- 1
           }
           #quantRaster <- stack(quantRaster)
-          rat.ios <- lapply(quantRaster, function(x) (raster::ncell(x[!is.na(x)]) / ncell(r[!is.na(shp)])))
+          rat.ios <- lapply(quantRaster, function(x) (raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(shp)])))
           ratio <- as.data.frame(cbind(quantile, as.numeric(rat.ios)))
           colnames(ratio) <- c("value", "ratio")
           ratio$ratio <- round(ratio[,2], 3)
