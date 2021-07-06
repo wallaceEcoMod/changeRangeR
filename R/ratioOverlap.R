@@ -27,34 +27,35 @@
 #' ratioOverlap(r = r, shp = shp)
 #' @export
 
-# # load r
-r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
-# create random polygon based on r
-mcp <- function (xy) {
-  xy <- as.data.frame(coordinates(xy))
-  coords.t <- chull(xy[, 1], xy[, 2])
-  xy.bord <- xy[coords.t, ]
-  xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
-  return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
-}
-rbuf = gBuffer(mcp(dismo::randomPoints(r, 3)), width = 50000)
-rbuf@proj4string <- crs(r)
-r = rbuf
-# load shp and reproject
-shp = readOGR(paste0(system.file(package="changeRangeR", "/extdata/DemoData/shapefiles")), "WDPA_COL_olinguito")
-shp = spTransform(shp, CRS("+proj=utm +zone=18 +south +datum=WGS84 +units=m +no_defs"))
-# convert shp to raster
-shp = raster::rasterize(shp, r)
-# Define args
-field = "DESIG_ENG"
-#category = "All"
-category = c("National Natural Park", "Regional Natural Parks", "Integrated Management Regional Districts")
-subfield = TRUE
-#test
-t <- ratioOverlap(r, shp, field = field, category = category, subfield= F)
-quantile = c(0.25, 0.87)
+# # # load r
+# r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
+# # create random polygon based on r
+# mcp <- function (xy) {
+#   xy <- as.data.frame(coordinates(xy))
+#   coords.t <- chull(xy[, 1], xy[, 2])
+#   xy.bord <- xy[coords.t, ]
+#   xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
+#   return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
+# }
+# rbuf = gBuffer(mcp(dismo::randomPoints(r, 3)), width = 50000)
+# rbuf@proj4string <- crs(r)
+# r = rbuf
+# # load shp and reproject
+# shp = readOGR(paste0(system.file(package="changeRangeR", "/extdata/DemoData/shapefiles")), "WDPA_COL_olinguito")
+# shp = spTransform(shp, CRS("+proj=utm +zone=18 +south +datum=WGS84 +units=m +no_defs"))
+# # convert shp to raster
+# shp = raster::rasterize(shp, r)
+# # Define args
+# field = "DESIG_ENG"
+# #category = "All"
+# category = c("National Natural Park", "Regional Natural Parks", "Integrated Management Regional Districts")
+# subfield = TRUE
+# #test
+# t <- ratioOverlap(r, shp, field = field, category = category, subfield= F, quant = c(0.5, 0.75))
+# quant = c(0.25, 0.87)
 
-ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NULL, subfield = FALSE, quantile = "quartile"){
+ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NULL, subfield = FALSE, quant = "quartile"){
+
   #setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
   require(sf)
   require(rgdal)
@@ -105,23 +106,25 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
     }
   }else{
     if(class(r) != "RasterLayer" & class(shp) == "RasterLayer"){
-      if(quantile = "quartile"){
+      if(quant[[1]] == "quartile"){
       r <- raster::rasterize(r, shp, method = "ngb")
       maskedRange <- raster::mask(r, shp)
       maskedQuants <- raster::quantile(raster::mask(shp, r))
       q25 <- raster::ncell(shp[shp < maskedQuants[2]])
       q50 <- raster::ncell(shp[shp > maskedQuants[2] & shp < maskedQuants[3]])
       q75 <- raster::ncell(shp[shp > maskedQuants[3] & shp < maskedQuants[4]])
+      q100 <- raster::ncell(shp[shp > maskedQuants[4] & shp < maskedQuants[5]])
       ratq25 <- q25 / raster::ncell(r[!is.na(shp)])
       ratq50 <- q50 / raster::ncell(r[!is.na(shp)])
+      ratq75 <- q75 / raster::ncell(r[!is.na(shp)])
       ratq100 <- q100 / raster::ncell(r[!is.na(shp)])
       ratio <- rbind(paste0("The proportion of the range below 25%: ", round(x = ratq25, digits = 3)), paste0("The proportion of the range between 25% and 50%: ", round(x = ratq50, digits = 3)), paste0("The proportion of the range between 50% and 75%: ", round(x = ratq75, digits = 3)),
                      paste0("The proportion of the range between 75% and 100%: ", round(x = ratq100, digits = 3)))
       } else {
-        quantile = quantile
+        quant = quant
         r <- raster::rasterize(r, shp, method = "ngb")
         maskedRange <- raster::mask(r, shp)
-        maskedQuants <- raster::quantile(raster::mask(shp, r), probs = quantile)
+        maskedQuants <- raster::quantile(raster::mask(shp, r), probs = quant)
         quantList <- lapply(maskedQuants, function(x) shp<x)
 
         sumRas <- quantList[[1]]
@@ -136,9 +139,9 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         }
         #quantRaster <- stack(quantRaster)
         rat.ios <- lapply(quantRaster, function(x) (raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(shp)])))
-        ratio <- as.data.frame(cbind(quantile, as.numeric(rat.ios)))
+        ratio <- as.data.frame(cbind(names(quantList), as.numeric(rat.ios)))
         colnames(ratio) <- c("value", "ratio")
-        ratio$ratio <- round(ratio[,2], 3)
+        #ratio$ratio <- round(ratio$ratio, 3)
       }
 
 
@@ -214,7 +217,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
     }
     if(class(shp) == "RasterLayer"){
-      if(quantile = "quartile"){
+      if(quant[[1]] == "quartile"){
       shp <- raster::crop(shp, r)
       r <- raster::crop(r, shp)
       maskedRange <- raster::mask(r, shp)
@@ -230,10 +233,10 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       ratio <- rbind(paste0("The proportion of the range below 25%: ", round(x = ratq25, digits = 3)), paste0("The proportion of the range between 25% and 50%: ", round(x = ratq50, digits = 3)), paste0("The proportion of the range between 50% and 75%: ", round(x = ratq75, digits = 3)),
                      paste0("The proportion of the range between 75% and 100%: ", round(x = ratq100, digits = 3)))
       } else {
-          quantile = quantile
-          r <- raster::rasterize(r, shp, method = "ngb")
+          quant = quant
+          #r <- raster::rasterize(r, shp, method = "ngb")
           maskedRange <- raster::mask(r, shp)
-          maskedQuants <- raster::quantile(raster::mask(shp, r), probs = quantile)
+          maskedQuants <- raster::quantile(raster::mask(shp, r), probs = quant)
           quantList <- lapply(maskedQuants, function(x) shp<x)
 
           sumRas <- quantList[[1]]
@@ -248,9 +251,9 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
           }
           #quantRaster <- stack(quantRaster)
           rat.ios <- lapply(quantRaster, function(x) (raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(shp)])))
-          ratio <- as.data.frame(cbind(quantile, as.numeric(rat.ios)))
+          ratio <- as.data.frame(cbind(names(quantList), as.numeric(rat.ios)))
           colnames(ratio) <- c("value", "ratio")
-          ratio$ratio <- round(ratio[,2], 3)
+          #ratio$ratio <- round(ratio$ratio, 3)
         }
     }
 
