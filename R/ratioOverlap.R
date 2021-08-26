@@ -27,19 +27,19 @@
 #' ratioOverlap(r = r, shp = shp)
 #' @export
 
-# # # load r
+# # # # load r
 # r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
 # # create random polygon based on r
 # mcp <- function (xy) {
-#   xy <- as.data.frame(coordinates(xy))
-#   coords.t <- chull(xy[, 1], xy[, 2])
-#   xy.bord <- xy[coords.t, ]
-#   xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
-#   return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
+#  xy <- as.data.frame(coordinates(xy))
+#  coords.t <- chull(xy[, 1], xy[, 2])
+#  xy.bord <- xy[coords.t, ]
+#  xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
+#  return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
 # }
 # rbuf = gBuffer(mcp(dismo::randomPoints(r, 3)), width = 50000)
 # rbuf@proj4string <- crs(r)
-# r = rbuf
+# #r = rbuf
 # # load shp and reproject
 # shp = readOGR(paste0(system.file(package="changeRangeR", "/extdata/DemoData/shapefiles")), "WDPA_COL_olinguito")
 # shp = spTransform(shp, CRS("+proj=utm +zone=18 +south +datum=WGS84 +units=m +no_defs"))
@@ -51,7 +51,7 @@
 # category = c("National Natural Park", "Regional Natural Parks", "Integrated Management Regional Districts")
 # subfield = TRUE
 # #test
-# t <- ratioOverlap(r, shp, field = field, category = category, subfield= F, quant = c(0.5, 0.75))
+# t <- ratioOverlap(r, shp, field = field, category = category, subfield= T, quant = c(0.5, 0.75))
 # quant = c(0.25, 0.87)
 
 ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NULL, subfield = FALSE, quant = "quartile"){
@@ -83,7 +83,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       correlation <- NULL
     }
     if(subfield == TRUE){
-      if(category == "All"){
+      if(category[1] == "All"){
         # mask r by shp
         #maskedRange <- sf::st_intersection(r, shp)
         # For each unique category within the field of interest create a list of masks
@@ -159,7 +159,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
   if(class(r)=="RasterLayer"){
     if(class(shp)[1] == "SpatialPolygonsDataFrame" | class(shp)[1] == "sf"){
       if(subfield == FALSE){
-        if (category == "All"){
+        if (category[1] == "All"){
           shp <- sf::st_as_sf(shp)
           r <- raster::projectRaster(r, crs = crs(shp)@projargs, method = 'ngb')
           maskedRange <- raster::mask(r, shp)
@@ -181,7 +181,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         }
       }
       if(subfield == TRUE){
-        if (category == "All"){
+        if (category[1] == "All"){
           shp <- sf::st_as_sf(shp)
           uniqueCategories <- unique(shp[[field]])
           uniqueShapes <- lapply(uniqueCategories, function(x) dplyr::filter(shp, shp[[field]] == x))
@@ -216,7 +216,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       #ratio <- raster::ncell(maskedRange[!is.na(maskedRange)]) / raster::ncell(r[!is.na(r)]) * 100
       #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
     }
-    if(class(shp) == "RasterLayer"){
+    if(class(shp)[1] == "RasterLayer"){
       if(quant[[1]] == "quartile"){
       shp <- raster::crop(shp, r)
       r <- raster::crop(r, shp)
