@@ -1,10 +1,10 @@
 Package: changeRangeR
 Type: Package
-Title: Fast Biodiversity Metrics With Sparse Matrices
+Title: Biodiversity Metrics
 Version: 0.1.0
-Author: c(person('Cory','Merow',email='cory.merow@gmail.com',role=c('aut','cre')),
-    person('Peter J.', 'Galante',email='pgalante@amnh.org',role=c('aut')))
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: c(person('Peter J.', 'Galante',email='pgalante@amnh.org',role=c('aut','cre')),
+    person('Cory','Merow',email='cory.merow@gmail.com',role=c('aut')))
+Maintainer: The package maintainer <pgalante@amnh.org>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
@@ -16,12 +16,9 @@ Depends:
   parallel,
   raster,
   R.utils,
-  textTinyR,
   tools
 Suggests: 
     ape,
-    fastDummies,
-    parallelsugar,
     PhyloMeasures,
     rgdal,
     tictoc,
