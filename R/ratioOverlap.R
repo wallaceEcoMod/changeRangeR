@@ -96,13 +96,21 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         #fc <- do.call("rbind", fc)
         maskedRange <- lapply(fc, function(x) sf::st_intersection(r, x))
         #maskedRange <- sf::st_intersection(r, fc)
+       if(class(maskedRange) != "list"){
+          maskedRange <- list(maskedRange)
+        }
+        ratio <- lapply(maskedRange, function(x) raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(r)]) * 100)
+        ratio <- paste0("Percentage of range within ", paste0(category, collapse =", ") ," is ", round(x = unlist(ratio), digits = 3), "%")
+        correlation <- NULL
       }
+      if(is.null(ratio)){
       if(class(maskedRange) != "list"){
         maskedRange <- list(maskedRange)
       }
       ratio <- lapply(maskedRange, function(x) sum(sf::st_area(x)) / (sf::st_area(r)) * 100)
       ratio <- paste0("Percentage of range within ", category, " is ", round(x = ratio, digits = 3), "%")
       correlation <- NULL
+      }
     }
   }else{
     if(class(r) != "RasterLayer" & class(shp) == "RasterLayer"){
@@ -201,12 +209,19 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
           fc <- lapply(category, function(x) dplyr::filter(shp, shp[[field]]==x))
           maskedRange <- lapply(fc, function(x) raster::mask(r, x))
 
+          if(class(maskedRange) != "list"){
+            maskedRange <- list(maskedRange)
+          }
+          correlation <- NULL
+          ratio <- lapply(maskedRange, function(x) raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(r)]) * 100)
+          ratio <- paste0("Percentage of range within ", paste0(category, collapse =", ") ," is ", round(x = unlist(ratio), digits = 3), "%")
           #fc <- filter(shp, shp[[field]]==category)
           #maskedRange <- raster::mask(r, fc)
           #  }
           #  return(out)
         }
       }
+      if(is.null(ratio)){
       if(class(maskedRange) != "list"){
         maskedRange <- list(maskedRange)
       }
@@ -215,6 +230,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       ratio <- paste0("Percentage of range within ", category, " is ", round(x = unlist(ratio), digits = 3), "%")
       #ratio <- raster::ncell(maskedRange[!is.na(maskedRange)]) / raster::ncell(r[!is.na(r)]) * 100
       #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
+      }
     }
     if(class(shp)[1] == "RasterLayer"){
       if(quant[[1]] == "quartile"){
