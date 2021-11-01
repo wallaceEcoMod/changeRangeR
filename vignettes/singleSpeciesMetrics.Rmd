@@ -162,14 +162,16 @@ The function ratioOverlap allows changeRangeR users to calculate the proportion 
 ## Current 
 
 ```{r, warning = F}
-r <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
+r <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
 shp <- readOGR(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+# set the projections to match
+shp <- spTransform(shp, CRSobj = crs(r))
 # View the fields
 colnames(shp@data)
 # Pick the field you are interested in
 field <- "DESIG_ENG"
 category <- unique(shp$DESIG_ENG)
-ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category, subfield = T)
+ratio.Overlap <- ratioOverlap(r = r, shp = shp, field = field, category = category, subfield = F)
 # Look at the range that is protected
 plot(ratio.Overlap$maskedRange[[1]])
 # The proportion of the range that is protected

@@ -2,7 +2,7 @@
 #' @title Compare raster values within and outside of a mask
 #' @param ras1 Raster object of categorical values (e.g., a species richness map)
 #' @param ras1mask Raster object representing areas of interest (e.g., protected areas)
-#' @return A list of two objects. The first is
+#' @return A list of two objects. The first is the proportion within the mask, and the second is the proportion outside of the mask.
 #' @examples
 #' # create raster
 #' ras1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
