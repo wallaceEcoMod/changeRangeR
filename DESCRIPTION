@@ -23,5 +23,6 @@ Suggests:
     rgdal,
     tictoc,
     tidyverse,
+    rmarkdown,
     testthat
 RoxygenNote: 7.1.1

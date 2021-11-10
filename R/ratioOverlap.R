@@ -10,7 +10,7 @@
 #' @param rasMask (optional) a raster layer to calculate the Pearson correlation with the object r. Only if r or shp is a raster layer
 #' @param field The shapefile field attribute containing the features to compare (i.e., the column name).
 #' @param category a list of the names of shapefile features to compare. If all features are to be used, input "All".
-#' @param subfield boolean. If TRUE, the overlap ratio of all unique categories will be calculated.
+#' @param subfield boolean. If TRUE, the overlap ratio of all unique categories of shp will be calculated.
 #' @param quantile Either the character string "quartile" for the ratio of each quartile, or a concatenation of values to use instead.
 #' @return a list of three objects. The first object is a raster object showing the masked range. The second is a character showing the
 #' percentagse of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
@@ -103,7 +103,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         ratio <- paste0("Percentage of range within ", paste0(category, collapse =", ") ," is ", round(x = unlist(ratio), digits = 3), "%")
         correlation <- NULL
       }
-      if(is.null(ratio)){
+      if(!exists(ratio)){
       if(class(maskedRange) != "list"){
         maskedRange <- list(maskedRange)
       }
@@ -157,7 +157,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         rasMask.resam <- raster::resample(rasMask, r, method = "bilinear")
         rRasmask <- raster::stack(rasMask.resam, r)
         layerCorrs <- raster::layerStats(rRasmask, stat = "pearson")
-        correlation <- layerCorrs$`pearson correlation coefficient`[[2]]
+        correlation <- layerCorrs$`pearson correlation coefficient`[[1]]
       }
     }
   }
@@ -213,21 +213,23 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
             maskedRange <- list(maskedRange)
           }
           correlation <- NULL
-          ratio <- lapply(maskedRange, function(x) raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(r)]) * 100)
-          ratio <- paste0("Percentage of range within ", paste0(category, collapse =", ") ," is ", round(x = unlist(ratio), digits = 3), "%")
+          ratio <- cbind(as.numeric(lapply(maskedRange, function(x) raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(r)]) * 100)))
+          ratio <- round(ratio, 3)
+          rat.tab <- cbind(category, ratio)
+          ratio <- list(paste0("Percent of range within ", rat.tab[,1], " is ", rat.tab[,2], " %"))
           #fc <- filter(shp, shp[[field]]==category)
           #maskedRange <- raster::mask(r, fc)
           #  }
           #  return(out)
         }
       }
-      if(is.null(ratio)){
+      if(!exists("ratio")){
       if(class(maskedRange) != "list"){
         maskedRange <- list(maskedRange)
       }
       correlation <- NULL
       ratio <- lapply(maskedRange, function(x) raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(r)]) * 100)
-      ratio <- paste0("Percentage of range within ", category, " is ", round(x = unlist(ratio), digits = 3), "%")
+      ratio <- paste0("Percentage of range within ", paste0(category, collapse = ", "), " is ", round(x = unlist(ratio), digits = 3), "%")
       #ratio <- raster::ncell(maskedRange[!is.na(maskedRange)]) / raster::ncell(r[!is.na(r)]) * 100
       #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
       }

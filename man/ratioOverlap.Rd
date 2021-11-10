@@ -26,7 +26,7 @@ ratioOverlap(
 
 \item{category}{a list of the names of shapefile features to compare. If all features are to be used, input "All".}
 
-\item{subfield}{boolean. If TRUE, the overlap ratio of all unique categories will be calculated.}
+\item{subfield}{boolean. If TRUE, the overlap ratio of all unique categories of shp will be calculated.}
 
 \item{quantile}{Either the character string "quartile" for the ratio of each quartile, or a concatenation of values to use instead.}
 }

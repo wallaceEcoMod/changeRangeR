@@ -7,12 +7,12 @@
 complementarity(ras1, ras1mask)
 }
 \arguments{
-\item{ras1}{Raster object of categorical values (e.g., a species richness map)}
+\item{ras1}{`raster` object of categorical values (e.g., a species richness map)}
 
-\item{ras1mask}{Raster object representing areas of interest (e.g., protected areas)}
+\item{ras1mask}{`raster` object representing areas of interest (e.g., protected areas)}
 }
 \value{
-A list of two objects. The first is
+A list of two objects. The first is the proportion of the range within the mask, and the second is the proportion of unique values masked.
 }
 \description{
 Compare raster values within and outside of a mask
@@ -29,5 +29,5 @@ raster::values(ras1mask)<- runif(n = (108*108))
 ras1mask[ras1mask < 0.15] <- NA
 ras1mask[!is.na(ras1mask)] <- 1
 # complementarity
-complementarity(ras1, ras1mask)
+complementarity(t, ras1mask)
 }

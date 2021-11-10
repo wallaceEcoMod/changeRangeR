@@ -27,5 +27,5 @@ raster::values(r1)<- runif(n = (108*108))
 r1[r1 < 0.5] <- NA
 r1[!is.na(r1)] <- 1
 # calculate aooArea
-aooArea(r1)
+AOOarea(r = r1)
 }

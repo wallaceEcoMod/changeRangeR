@@ -13,7 +13,7 @@
 #' r1[r1 < 0.5] <- NA
 #' r1[!is.na(r1)] <- 1
 #' # calculate aooArea
-#' aooArea(r1)
+#' AOOarea(r = r1)
 #' @export
 
 AOOarea <- function (r, locs = NULL){
@@ -46,5 +46,6 @@ AOOarea <- function (r, locs = NULL){
                       length(locCells) * 4, "km^2")
     aooPix <- raster::rasterize(locs, r.2km)
   }
+
   return(list(area = rasArea, aooRaster = r.2km, aooPixels = aooPix))
 }

@@ -2,6 +2,7 @@
 
 export(AOOarea)
 export(SE)
+export(buildRMM)
 export(calc_PE)
 export(complementarity)
 export(envChange)
