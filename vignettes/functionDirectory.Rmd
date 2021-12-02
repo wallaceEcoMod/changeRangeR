@@ -1,5 +1,5 @@
 ---
-title: "changeRange Function Directory"
+title: "changeRangeR Function Directory"
 author: "Cory Merow"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

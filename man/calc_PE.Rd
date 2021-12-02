@@ -4,10 +4,10 @@
 \alias{calc_PE}
 \title{Calculate phylogenetic endemism}
 \usage{
-calc_PE(tree, sites_x_tips, presence = NULL)
+calc_PE(phylo.tree, sites_x_tips, presence = NULL)
 }
 \arguments{
-\item{tree}{class phylo object of phylogenetic tree. The names on tree's tip labels need to match the column names on the matrix}
+\item{phylo.tree}{class phylo object of phylogenetic tree. The names on tree's tip labels need to match the column names on the matrix}
 
 \item{sites_x_tips}{class data.frame object. Rows should be locations and columns should be species. The sites should represent equal areas (presumably grid cells). There is no need to include unoccupied grid cells.  One easy way to get this, is to simply round the coordinates to the appropriate grid resolution, and then group occurrences at the same rounded location together using aggregate or dplyr}
 
@@ -16,6 +16,17 @@ presence specifies what the values in the matrix cells mean, and how to calculat
 abundance is an amount (could be number of individuals, proportion of cell occupied etc).  With abundance, PE is equivalent to Caddotte & Davies BED)
 probability is a value from 0 to 1, for example from an SDM.  Probability then propagates to internal branches at the probability that any of the descendent branches are present.  This method is described in a paper of mine in, which is being pending minor revisions.}
 }
+\value{
+dataframe showing the PE at each site
+}
 \description{
 Calculates phylogenetic endemism from a tree and a sites by tips (species) matrix.
+}
+\examples{
+## Convert raster stack to points
+Allxy <- rasterToPoints(stack)
+Drop first 2 columns (lat/long)
+sites <- Allxy[,2:ncol(Allxy)]
+sites[is.na(sites)] <- 0
+calc_PE(tree = tree, sites_x_tips = sites, presence = "presence")
 }

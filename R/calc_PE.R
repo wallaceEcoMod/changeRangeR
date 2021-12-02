@@ -1,14 +1,22 @@
+#' @name calc_PE
 #' @title Calculate phylogenetic endemism
 #' @description Calculates phylogenetic endemism from a tree and a sites by tips (species) matrix.
-#' @param tree class phylo object of phylogenetic tree. The names on tree's tip labels need to match the column names on the matrix
+#' @param phylo.tree class phylo object of phylogenetic tree. The names on tree's tip labels need to match the column names on the matrix
 #' @param sites_x_tips class data.frame object. Rows should be locations and columns should be species. The sites should represent equal areas (presumably grid cells). There is no need to include unoccupied grid cells.  One easy way to get this, is to simply round the coordinates to the appropriate grid resolution, and then group occurrences at the same rounded location together using aggregate or dplyr
 #' @param presence character string of either: "presence", "abundance", or "probability".
 #' presence specifies what the values in the matrix cells mean, and how to calculate PE
 #' abundance is an amount (could be number of individuals, proportion of cell occupied etc).  With abundance, PE is equivalent to Caddotte & Davies BED)
 #' probability is a value from 0 to 1, for example from an SDM.  Probability then propagates to internal branches at the probability that any of the descendent branches are present.  This method is described in a paper of mine in, which is being pending minor revisions.
+#' @import phylobase
+#' @return dataframe showing the PE at each site
+#' @examples
+#'## Convert raster stack to points
+#' Allxy <- rasterToPoints(stack)
+#' Drop first 2 columns (lat/long)
+#' sites <- Allxy[,2:ncol(Allxy)]
+#' sites[is.na(sites)] <- 0
+#' calc_PE(tree = tree, sites_x_tips = sites, presence = "presence")
 #' @export
-#'
-
 
 ##################################################
 ##  A script to calculate phylogenetic endemism ##
@@ -27,24 +35,10 @@
 ##                             abundance is an amount (could be number of individuals, proportion of cell occupied etc).  With abundance, PE is equivalent to Caddotte & Davies BED)
 ##                             probability is a value from 0 to 1, for example from an SDM.  Probability then propagates to internal branches at the probability that any of the descendent branches are present.  This method is described in a paper of mine in, which is being pending minor revisions.
 
+calc_PE <- function(phylo.tree, sites_x_tips, presence=NULL){
+  # c("presence","abundance","probability")
 
-#library(phylobase)
-
-#tree <- names match names in matrix
-
-## Convert raster stack to points
-#Allxy <- rasterToPoints(stack)
-# Drop first 2 columns (lat/long)
-#sites <- Allxy[,2:ncol(Allxy)]
-#sites[is.na(sites)] <- 0
-
-#calc_PE(tree = tree, sites_x_tips = sites, presence = "presence")
-
-
-#####  Source below  #####
-
-calc_PE <- function(tree, sites_x_tips,presence=NULL) {
-# c("presence","abundance","probability")
+  require(phylobase)
 
   parent.prob <- function(probabilities) {
     # probabilities is a vector of values between 0 and 1
@@ -75,14 +69,17 @@ calc_PE <- function(tree, sites_x_tips,presence=NULL) {
 
   # change to a phylobase phylo4 object
   #if (class(tree) == "phylo") {tree <- phylo4(tree)}
-  tree <- phylobase::phylo4(tree)
+  tree <- phylobase::phylo4(phylo.tree)
 
   sites_x_branches <- data.frame(cbind(rep(0,nrow(sites_x_tips))))
 
   for (i in 1:phylobase::nTips(tree)) {
-    sites_x_branches[,i] <- sites_x_tips[,which(labels(tree)[i]==names(sites_x_tips))]
-    names( sites_x_branches)[i] <- labels(tree)[i]
+    sites_x_branches[,i] <- sites_x_tips[,which(phylobase::labels(tree)[i]==names(sites_x_tips))]
+    #names(sites_x_branches)[i] <- phylobase::labels(tree)[i]
+
+    #names(sites_x_branches)[i] <- tree@label[i]
   }
+  colnames(sites_x_branches) <- as.character(tree@label)
 
   rm(sites_x_tips); gc()
   branch.labels <- as.character(labels(tree))

@@ -20,6 +20,7 @@ Depends:
 Suggests: 
     ape,
     PhyloMeasures,
+    phylobase,
     rgdal,
     tictoc,
     tidyverse,

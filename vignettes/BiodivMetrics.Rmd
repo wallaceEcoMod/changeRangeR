@@ -6,7 +6,7 @@ output:
   pdf_document: default
   html_document: default
 vignette: >
-  %\VignetteIndexEntry{changeRanger Biodiversity Metrics}
+  %\VignetteIndexEntry{changeRangeR Biodiversity Metrics}
   %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,6 +22,7 @@ Using multiple species for landscape-level species metrics
 
 Load packages that will be useful for these analyses
 ```{r}
+library(rgdal)
 library(picante)
 library(raster)
 library(phylobase)
@@ -172,16 +173,10 @@ sites <- as.data.frame(Allxy[,1:ncol(Allxy)])
 sites[is.na(sites)] <- 0
 ```
 
-
-First, source the function.
-```{r}
-source("R/calc_PE.R")
-```
-
 Calculate PE
 
 ```{r}
-pEprimates <- calc_PE(tree = primTree[[1]], sites_x_tips = sites, presence = "presence")
+pEprimates <- changeRangeR::calc_PE(phylo.tree = primTree[[1]], sites_x_tips = sites, presence = "presence")
 ```
 
 Next, transform the pixel-wise PE values back into a raster

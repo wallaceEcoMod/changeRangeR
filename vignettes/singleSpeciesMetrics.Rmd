@@ -7,7 +7,7 @@ output:
   html_document: default
   word_document: default
 vignette: >
-  %\VignetteIndexEntry{changeRanger Single Species Metrics}    
+  %\VignetteIndexEntry{changeRangeR Single Species Metrics}    
   %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---
