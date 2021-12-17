@@ -14,13 +14,13 @@ buildRMM(
   complementarity = NULL,
   complementarity.of = NULL,
   complementarity.mask = NULL,
-  enChange = NULL,
+  envChange = NULL,
   envChange.rStack = NULL,
   envChange.binaryRange = NULL,
   envChange.threshold = NULL,
   envChange.bound = NULL,
   envChange.correlation = NULL,
-  futureOVerlap = NULL,
+  futureOverlap = NULL,
   futureOverlap.binRasters = NULL,
   futureOverlap.futures = NULL,
   mcp = NULL,
@@ -51,6 +51,8 @@ buildRMM(
 
 \item{complementarity.mask}{`raster` object representing areas of interest (e.g., protected areas).}
 
+\item{envChange}{The output of the function `envChange`}
+
 \item{envChange.rStack}{`rasterStack` of environmental variable to measure within binary SDM through time.}
 
 \item{envChange.binaryRange}{`raster` object or shapefile of binary range (SDM, AOO, EOO) with same projection as rStack.}
@@ -65,6 +67,8 @@ minimum and maximum temperature).}
 \item{envChange.correlation}{boolean. If FALSE, environmental variable will be converted to a binary map and used as a mask.
 If TRUE, environmental variable is only thresholded by bounds, but left continuous. Then, Pearson's correlation
 coefficient with SDM will be computed for overlapping areas.}
+
+\item{futureOverlap}{The output of the function `futureOverlap`.}
 
 \item{futureOverlap.binRasters}{`list` of rasters of binary SDMs..}
 
@@ -83,10 +87,6 @@ coefficient with SDM will be computed for overlapping areas.}
 \item{SE}{The output of the function `SE`}
 
 \item{SE.ranges}{a `rasterStack` of binary species presences}
-
-\item{envChange}{The output of the function `envChange`}
-
-\item{futureOverlap}{The output of the function `futureOverlap`.}
 }
 \value{
 Populated rmm object

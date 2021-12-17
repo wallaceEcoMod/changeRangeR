@@ -29,5 +29,5 @@ raster::values(ras1mask)<- runif(n = (108*108))
 ras1mask[ras1mask < 0.15] <- NA
 ras1mask[!is.na(ras1mask)] <- 1
 # complementarity
-complementarity(t, ras1mask)
+complementarity(ras1, ras1mask)
 }

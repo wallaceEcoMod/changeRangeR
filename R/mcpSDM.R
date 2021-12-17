@@ -29,8 +29,10 @@
 #'
 
 mcpSDM <- function(p, xy, ch.orig, thr) {
+  #require(raster)
+
   options(warn=-1)
-  vals.p <- getValues(p)
+  vals.p <- raster::getValues(p)
   x <- seq(thr, max(vals.p, na.rm=TRUE), 0.01)
   jsi.vec <- numeric(length(x))
   ov.pts.vec <- numeric(length(x))
@@ -40,10 +42,10 @@ mcpSDM <- function(p, xy, ch.orig, thr) {
     th <- x[i]
     p.i <- p >= th
     p.i[p.i == 0] <- NA
-    p.i.xy <- rasterToPoints(p.i)
+    p.i.xy <- raster::rasterToPoints(p.i)
     if(nrow(p.i.xy) > 1) {
-      ch.i <- mcp(p.i.xy[,1:2], crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-      ov.xy <- rgeos::gIntersection(ch.i, SpatialPoints(xy, proj4string = crs(ch.i)))
+      ch.i <- changeRangeR::mcp(p.i.xy[,1:2], crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+      ov.xy <- rgeos::gIntersection(ch.i, sp::SpatialPoints(xy, proj4string = raster::crs(ch.i)))
       if(!is.null(ov.xy)) ov.pts.vec[i] <- nrow(ov.xy@coords)
       ch.vec[[i]] <- ch.i
       ov <- rgeos::gIntersection(ch.i, ch.orig)

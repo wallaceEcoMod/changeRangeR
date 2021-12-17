@@ -10,7 +10,7 @@ AOOarea(r, locs = NULL)
 \item{r}{Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.}
 
 \item{locs}{(optional) data.frame of occurrence records: Longitude and latitude. If provided, AOO of cells containing occurrence points
-is returned. If NULL, AOO of SDM is returned.}
+is returned. If NULL, AOO of SDM is returned. The projection should match that of r.}
 }
 \value{
 a list of three objects. The first object is a character showing the AOO of cells with occurrence records.

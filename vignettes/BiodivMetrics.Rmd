@@ -23,8 +23,8 @@ Using multiple species for landscape-level species metrics
 Load packages that will be useful for these analyses
 ```{r}
 library(rgdal)
-library(picante)
 library(raster)
+library(picante)
 library(phylobase)
 library(sf)
 library(dplyr)
@@ -176,7 +176,7 @@ sites[is.na(sites)] <- 0
 Calculate PE
 
 ```{r}
-pEprimates <- changeRangeR::calc_PE(phylo.tree = primTree[[1]], sites_x_tips = sites, presence = "presence")
+pEprimates <- calc_PE(phylo.tree = primTree[[1]], sites_x_tips = sites, presence = "presence")
 ```
 
 Next, transform the pixel-wise PE values back into a raster
@@ -215,7 +215,7 @@ primRas <- crop(primRas, e)
 
 Calculate species endemism
 ```{r}
-sp.End <- SE(primRas)
+sp.End <- SpeciesEndemism(primRas)
 plot(sp.End)
 ```
 

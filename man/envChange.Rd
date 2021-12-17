@@ -48,5 +48,5 @@ bound <- "upper"
 envChange(rStack = rStack, binaryRange = binaryRange, threshold = threshold, bound = bound)
 }
 \author{
-
+pgalante@amnh.org
 }

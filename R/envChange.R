@@ -29,7 +29,7 @@
 #' bound <- "upper"
 #' # Run function
 #' envChange(rStack = rStack, binaryRange = binaryRange, threshold = threshold, bound = bound)
-#' @author
+#' @author pgalante@@amnh.org
 #' @export
 
 
@@ -43,8 +43,8 @@
 #test2 <- envChange(rStack, binaryRange, threshold, bound = "lower")
 
 envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
-  require(raster)
-  require(rgdal)
+  #require(raster)
+  #require(rgdal)
 
   # if binaryRange is a shapefile, convert to raster then run like normal
   if(class(binaryRange) != "RasterLayer"){
@@ -87,12 +87,12 @@ envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
   masks <- lapply(raster::unstack(rStack), function(x) raster::mask(x, binaryRange))
   maskStack <- raster::stack(masks)
 
-  if (!isLonLat(maskStack)){
-    areas <- lapply(masks, function(x) res(x)[[1]] *ncell(x[!is.na(x)]))
+  if (!raster::isLonLat(maskStack)){
+    areas <- lapply(masks, function(x) raster::res(x)[[1]] * raster::ncell(x[!is.na(x)]))
   } else {
     area <- lapply(masks, raster::area, na.rm = T)
     areas.1 <- lapply(area, function(x) x[!is.na(x)])
-    areas <- lapply(areas.1, function(x) length(x) * median(x))
+    areas <- lapply(areas.1, function(x) length(x) * stats::median(x))
     #areas <- lapply(masks, raster::area)
   }
   allAreas <- cbind(unlist(areas))

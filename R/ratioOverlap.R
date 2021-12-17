@@ -11,7 +11,7 @@
 #' @param field The shapefile field attribute containing the features to compare (i.e., the column name).
 #' @param category a list of the names of shapefile features to compare. If all features are to be used, input "All".
 #' @param subfield boolean. If TRUE, the overlap ratio of all unique categories of shp will be calculated.
-#' @param quantile Either the character string "quartile" for the ratio of each quartile, or a concatenation of values to use instead.
+#' @param quant Either the character string "quartile" for the ratio of each quartile, or a concatenation of values to use instead.
 #' @return a list of three objects. The first object is a raster object showing the masked range. The second is a character showing the
 #' percentagse of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
 #' @examples
@@ -28,7 +28,7 @@
 #' @export
 
 # # # # load r
-# r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguito/Forest_suitable_projected1.tif"))
+# r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
 # # create random polygon based on r
 # mcp <- function (xy) {
 #  xy <- as.data.frame(coordinates(xy))
@@ -51,20 +51,19 @@
 # category = c("National Natural Park", "Regional Natural Parks", "Integrated Management Regional Districts")
 # subfield = TRUE
 # #test
-# t <- ratioOverlap(r, shp, field = field, category = category, subfield= T, quant = c(0.5, 0.75))
+# t <- ratioOverlap(r, shp, field = field, category = category, subfield= F, quant = c(0.5, 0.75))
 # quant = c(0.25, 0.87)
 
 ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NULL, subfield = FALSE, quant = "quartile"){
 
   #setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
-  require(sf)
-  require(rgdal)
-  require(raster)
-  require(rgeos)
-  require(dplyr)
+  #require(sf)
+  #require(raster)
+  #require(rgeos)
+  #require(dplyr)
 
   ## if r is a shapefile
-  if(class(r) != "RasterLayer" & class(shp) != "RasterLayer"){
+  if(class(r)[1] != "RasterLayer" & class(shp)[1] != "RasterLayer"){
     r <- rgeos::gBuffer(r, byid = T, width = 0)
     shp <- rgeos::gBuffer(shp, byid = T, width = 0)
     r <- sf::st_as_sf(r)
@@ -103,7 +102,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         ratio <- paste0("Percentage of range within ", paste0(category, collapse =", ") ," is ", round(x = unlist(ratio), digits = 3), "%")
         correlation <- NULL
       }
-      if(!exists(ratio)){
+      if(!exists("ratio")){
       if(class(maskedRange) != "list"){
         maskedRange <- list(maskedRange)
       }
@@ -113,7 +112,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       }
     }
   }else{
-    if(class(r) != "RasterLayer" & class(shp) == "RasterLayer"){
+    if(class(r)[1] != "RasterLayer" & class(shp)[1] == "RasterLayer"){
       if(quant[[1]] == "quartile"){
       r <- raster::rasterize(r, shp, method = "ngb")
       maskedRange <- raster::mask(r, shp)
@@ -164,12 +163,12 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
 
 
   ## if r is a raster
-  if(class(r)=="RasterLayer"){
+  if(class(r)[1] == "RasterLayer"){
     if(class(shp)[1] == "SpatialPolygonsDataFrame" | class(shp)[1] == "sf"){
       if(subfield == FALSE){
         if (category[1] == "All"){
           shp <- sf::st_as_sf(shp)
-          r <- raster::projectRaster(r, crs = crs(shp)@projargs, method = 'ngb')
+          r <- raster::projectRaster(r, crs = raster::crs(shp)@projargs, method = 'ngb')
           maskedRange <- raster::mask(r, shp)
           maskedRange <- list(maskedRange)
         }
@@ -179,7 +178,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
           #   fc <- filter(shp, grepl(category, field))
           #   out<- mask(r, fc)
           # } else {
-          r <- raster::projectRaster(r, crs = crs(shp))
+          r <- raster::projectRaster(r, crs = raster::crs(shp))
           fc <- lapply(category, function(x) dplyr::filter(shp, shp[[field]]==x))
           fc <- do.call("rbind", fc)
           #fc <- filter(shp, shp[[field]]==category)
@@ -205,7 +204,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
           #   fc <- filter(shp, grepl(category, field))
           #   out<- mask(r, fc)
           # } else {
-          r <- raster::projectRaster(r, crs = crs(shp))
+          r <- raster::projectRaster(r, crs = raster::crs(shp))
           fc <- lapply(category, function(x) dplyr::filter(shp, shp[[field]]==x))
           maskedRange <- lapply(fc, function(x) raster::mask(r, x))
 

@@ -43,16 +43,19 @@
 
 buildRMM <- function(binaryRange = NULL, rmm=NULL, locs = NULL, AOOarea=NULL, PE = NULL, PhyloTree = NULL,
                      complementarity = NULL, complementarity.of = NULL, complementarity.mask = NULL,
-                     enChange = NULL, envChange.rStack = NULL, envChange.binaryRange = NULL, envChange.threshold=NULL,
-                     envChange.bound = NULL, envChange.correlation = NULL, futureOVerlap = NULL, futureOverlap.binRasters = NULL,
+                     envChange = NULL, envChange.rStack = NULL, envChange.binaryRange = NULL, envChange.threshold=NULL,
+                     envChange.bound = NULL, envChange.correlation = NULL, futureOverlap = NULL, futureOverlap.binRasters = NULL,
                      futureOverlap.futures = NULL, mcp = NULL, mcpSDM = NULL, ratioOverlap = NULL, ratioOverlap.shape = NULL,
                      ratioOverlap.field = NULL, SE = NULL, SE.ranges = NULL){
+
+  #require(rangeModelMetadata)
+
   if(is.null(rmm)) {
     rmm <- rangeModelMetadata::rmmTemplate()
   }
 
   # AOOarea
-  rmm$postprocess$inputs$binarySDM <- r
+  rmm$postprocess$inputs$binarySDM <- binaryRange
   rmm$postprocess$inputs$occurrences <- locs
   rmm$postprocess$AOO$Area <- AOOarea$area
   rmm$postprocess$AOO$raster <- AOOarea$aooRaster

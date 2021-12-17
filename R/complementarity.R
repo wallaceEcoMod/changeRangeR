@@ -15,13 +15,14 @@
 #' ras1mask[ras1mask < 0.15] <- NA
 #' ras1mask[!is.na(ras1mask)] <- 1
 #' # complementarity
-#' complementarity(t, ras1mask)
+#' complementarity(ras1, ras1mask)
 #' @export
 #'
 
 complementarity <- function(ras1, ras1mask){
+  #library(raster)
   ## calculate percentage of values protected
-  rasMask <- mask(ras1, ras1mask)
+  rasMask <- raster::mask(ras1, ras1mask)
   prop <- raster::cellStats(rasMask, stat = "sum", na.rm = T) / raster::cellStats(ras1, stat = "sum", na.rm = T) * 100
   ## Get percentage of values that fall in mask
   SRdf <- as.data.frame(table(raster::values(ras1)))

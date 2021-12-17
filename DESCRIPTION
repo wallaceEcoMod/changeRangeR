@@ -7,23 +7,29 @@ Author: c(person('Peter J.', 'Galante',email='pgalante@amnh.org',role=c('aut','c
 Maintainer: The package maintainer <pgalante@amnh.org>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: GPL-3
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
 Depends:
-  Matrix.utils,
-  parallel,
-  raster,
-  R.utils,
-  tools
+    R (>= 4.0)
+Imports: 
+    phylobase,
+    raster,
+    R.utils,
+    tools,
+    dplyr,
+    rangeModelMetadata,
+    rgeos,
+    sf,
+    sp, 
+    dismo
 Suggests: 
     ape,
-    PhyloMeasures,
-    phylobase,
     rgdal,
-    tictoc,
     tidyverse,
     rmarkdown,
-    testthat
+    testthat,
+    knitr,
+    picante
 RoxygenNote: 7.1.1

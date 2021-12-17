@@ -28,7 +28,7 @@ ratioOverlap(
 
 \item{subfield}{boolean. If TRUE, the overlap ratio of all unique categories of shp will be calculated.}
 
-\item{quantile}{Either the character string "quartile" for the ratio of each quartile, or a concatenation of values to use instead.}
+\item{quant}{Either the character string "quartile" for the ratio of each quartile, or a concatenation of values to use instead.}
 }
 \value{
 a list of three objects. The first object is a raster object showing the masked range. The second is a character showing the

@@ -4,7 +4,7 @@ author: "Cory Merow"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{changeRanger Function Directory}
+  %\VignetteIndexEntry{changeRangeR Function Directory}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
