@@ -278,7 +278,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
     if(!is.null(rasMask)){
       rasMask.resam <- raster::resample(rasMask, r, method = "bilinear")
       rRasmask <- raster::stack(rasMask.resam, r)
-      layerCorrs <- raster::layerStats(rRasmask, stat = "pearson")
+      layerCorrs <- raster::layerStats(rRasmask, stat = "pearson" )
       correlation <- layerCorrs$`pearson correlation coefficient`[[2]]
     }
   }
