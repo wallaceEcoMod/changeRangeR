@@ -5,8 +5,8 @@
 \title{Create metadata objects from changeRangeR}
 \usage{
 buildRMM(
-  binaryRange = NULL,
   rmm = NULL,
+  binaryRange = NULL,
   locs = NULL,
   AOOarea = NULL,
   PE = NULL,
@@ -33,9 +33,9 @@ buildRMM(
 )
 }
 \arguments{
-\item{binaryRange}{Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.}
-
 \item{rmm}{A `rangemodelmetadata` object.}
+
+\item{binaryRange}{Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.}
 
 \item{locs}{`data.frame` of occurrence records: Longitude and latitude.}
 

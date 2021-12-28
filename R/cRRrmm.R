@@ -2,6 +2,7 @@
 #' @description Creates and populates a \code{rangeModelMetadata} object from the output of \code{changeRangeR}.
 #' See Merow \emph{et al.} (2019) for more details on the nature of the metadata and the \code{rangeModelMetadata} package.
 #' To improve reproducibility of the study, this metadata object can be used as supplemental information for a manuscript, shared with collaborators, etc.
+#' @param rmm rangeModelMetadata object: if included, fields are appended to this RMM object as opposed to returning a new RMM object
 #' @param binaryRange Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.
 #' @param rmm A `rangemodelmetadata` object.
 #' @param locs `data.frame` of occurrence records: Longitude and latitude.
@@ -41,7 +42,7 @@
 #'
 
 
-buildRMM <- function(binaryRange = NULL, rmm=NULL, locs = NULL, AOOarea=NULL, PE = NULL, PhyloTree = NULL,
+buildRMM <- function(rmm = NULL, binaryRange = NULL, locs = NULL, AOOarea=NULL, PE = NULL, PhyloTree = NULL,
                      complementarity = NULL, complementarity.of = NULL, complementarity.mask = NULL,
                      envChange = NULL, envChange.rStack = NULL, envChange.binaryRange = NULL, envChange.threshold=NULL,
                      envChange.bound = NULL, envChange.correlation = NULL, futureOverlap = NULL, futureOverlap.binRasters = NULL,
@@ -93,5 +94,7 @@ buildRMM <- function(binaryRange = NULL, rmm=NULL, locs = NULL, AOOarea=NULL, PE
   #Species endemism
   rmm$multispecies$inputs$ranges <- SE.ranges
   rmm$multispecies$SE <- SE
+
+  return(rmm)
 }
 
