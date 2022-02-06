@@ -5,14 +5,19 @@
 #' @param ch.orig SpatialPolygons object of original minimum convex hull based on occurrence locality coordinates
 #' @param thr Numeric threshold used to convert the continuous SDM prediction to a binary range map;
 #' this is then used to delineate the hull
-#' @description Generates a minimum convex polygon (MCP; i.e., convex hull) that is delineated from a thresholded SDM.
-#' For each increment of 0.01 between a user-specified threshold and the maximum SDM prediction value, the prediction is
-#' thresholded to this value to make a binary raster. This raster is then converted to points, which are used to delineate
-#' a trial MCP. Each trial MCP is spatially intersected with the original MCP (based on the occurrence coordinates) and
-#' the original occurrence points. The Jaccard similarity index is calculated to determine geographic similarity between
-#' the trial and observed MCP. The trial MCP is also spatially intersected with the original occurrence points to determine
-#' how many were omitted. The "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
+#' @description Implements the technique to estimate IUCN's extent of occurrence (EOO) geographic range estimate of species
+#' threat level by delineating a minimum convex polygon (i.e., convex hull) around a thresholded SDM prediction, first
+#' described by Syfert et al. (2014). For each increment of 0.01 between a user-specified threshold and the maximum SDM
+#' prediction value, the prediction is thresholded to this value to make a binary raster. This raster is then converted
+#' to points, which are used to delineate a trial MCP. Each trial MCP is spatially intersected with the original
+#' MCP (based on the occurrence coordinates) and the original occurrence points. The Jaccard similarity index is calculated
+#' to determine geographic similarity between the trial and observed MCP. The trial MCP is also spatially intersected with the
+#' original occurrence points to determine how many were omitted. The "best" MCP is the one that has the highest JSI and also
+#' omits the least original occurrence points.
+#' @note Thresholds for SDM predictions greater than the minimum suitability across all occurrence localities will result in
+#' some occurrences being excluded from the EOO, which does not match the definition from IUCN.
 #' @return a list of 5 objects.
+#' @references Syfert, M. M., Joppa, L., Smith, M. J., Coomes, D. A., Bachman, S. P., & Brummitt, N. A. (2014). Using species distribution models to inform IUCN Red List assessments. Biological Conservation, 177, 174–184. https://doi.org/10.1016/j.biocon.2014.06.012
 #' @examples
 #' # create continuous raster
 #' p <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
