@@ -33,7 +33,8 @@ library(ape)
 ```
 
 ## Species Richness
-[Here will be an introduction and specific definitions of richness, PD, PE, SE used below]
+
+Here we measure species richness as the number species predicted to be present in each pixel. 
 
 ### Load and manage spatial data
 Loading the SDM data and ensuring the names match the phylogeny, and removing some resolved species. NOTE: For calculating species richness, named rasters are not strictly necessary.
@@ -61,7 +62,7 @@ plot(SR)
 ```
 
 ## Phylogenetic diversity
-Phylogenetic diversity can be calculated from binary range-maps, or as here, thresholded SDMs. We combine these maps with phylogenetic trees to calculate this measure of diversity.
+Phylogenetic diversity can be calculated from binary range-maps, or as here, thresholded SDMs. We combine these maps with phylogenetic trees to calculate this measure of diversity. Here, we calculate phylogenetic diversity as the sum of branch lengths using Faith's PD (Faith, 1992). 
 
 It is important to note that species-experts can edit binary SDMs, such as is done in the R package [*maskRangeR*](https://cmerow.github.io/maskRangeR/) to add or remove areas.
 
