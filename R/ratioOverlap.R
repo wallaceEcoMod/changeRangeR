@@ -168,7 +168,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       if(subfield == FALSE){
         if (category[1] == "All"){
           shp <- sf::st_as_sf(shp)
-          r <- raster::projectRaster(r, crs = raster::crs(shp)@projargs, method = 'ngb')
+          r <- raster::projectRaster(r, crs = raster::crs(shp), method = 'ngb')
           maskedRange <- raster::mask(r, shp)
           maskedRange <- list(maskedRange)
         }
