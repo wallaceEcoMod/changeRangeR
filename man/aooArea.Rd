@@ -7,7 +7,9 @@
 AOOarea(r, locs = NULL)
 }
 \arguments{
-\item{r}{Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.}
+\item{r}{Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in an equal area projection (see IUCN guidelines) measured in meters.
+Unprojected rasters will result in an estimate while those projected in an equal area projection will be more accurate.
+Raster values must be either NA indicating absence, or 1, indicating presence.}
 
 \item{locs}{(optional) data.frame of occurrence records: Longitude and latitude. If provided, AOO of cells containing occurrence points
 is returned. If NULL, AOO of SDM is returned. The projection should match that of r.}

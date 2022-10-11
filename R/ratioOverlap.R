@@ -5,9 +5,9 @@
 #' of the masked raster layer and the percent of the total range that lies within the shapefile polygons specified. If shp is a raster
 #' representing an environmental layer, the proportion of presence within quantiles of the environmental layer and the correlation
 #' between the layer and the range are returned.
-#' @param r either raster or shapefile object representing a binary range.
+#' @param r either categorical raster or shapefile object representing a binary range.
 #' @param shp either 1) a shapefile of land cover features or 2) a continuous raster. Must be in same projection as r parameter. If shp is a raster, then the number of cells within each quantile are calculated.
-#' @param rasMask (optional) a raster layer to calculate the Pearson correlation with the object r. Only if r or shp is a raster layer
+#' @param rasMask (optional) a raster layer to calculate the Pearson correlation with the object r. Only if r or shp is a raster layer.
 #' @param field The shapefile field attribute containing the features to compare (i.e., the column name).
 #' @param category a list of the names of shapefile features to compare. If all features are to be used, input "All".
 #' @param subfield boolean. If TRUE, the overlap ratio of all unique categories of shp will be calculated.

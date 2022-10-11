@@ -97,7 +97,7 @@ paste0(aeoosdm, " meters ^2")
 # AOO
 
 Within the calculated EOO area above, users can calculate the sum of 2x2 km grid cells to calculate the upper bounds of IUCN’s area of occupancy or AOO. AOO is intended to account for unsuitable or unoccupied habitats that may be included in the EOO calculations. AOO should be calculated with a standard grid cell size of 2 km (a cell area of 4 km2) in order to ensure consistency and comparability of results in IUCN assessments.
-In changeRanger, users can calculate AOO either 1) with occurrence points, 2) from the pre-masked thresholded SDM, and 3) from the masked thresholded SDM. It is suggested that users reproject ranges to UTM or another equal area projection for more accurate area-based calculations.
+In changeRanger, users can calculate AOO either 1) with occurrence points, 2) from the pre-masked thresholded SDM, and 3) from the masked thresholded SDM. It is suggested that users reproject ranges to an equal area projection for more accurate area-based calculations.
 
 Calculating the areas of occupancy measured in gridcells where the resolution is 2km
 

@@ -16,11 +16,11 @@ ratioOverlap(
 )
 }
 \arguments{
-\item{r}{either raster or shapefile object representing a binary range.}
+\item{r}{either categorical raster or shapefile object representing a binary range.}
 
 \item{shp}{either 1) a shapefile of land cover features or 2) a continuous raster. Must be in same projection as r parameter. If shp is a raster, then the number of cells within each quantile are calculated.}
 
-\item{rasMask}{(optional) a raster layer to calculate the Pearson correlation with the object r. Only if r or shp is a raster layer}
+\item{rasMask}{(optional) a raster layer to calculate the Pearson correlation with the object r. Only if r or shp is a raster layer.}
 
 \item{field}{The shapefile field attribute containing the features to compare (i.e., the column name).}
 
