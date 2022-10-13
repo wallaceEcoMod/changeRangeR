@@ -44,7 +44,7 @@ Calculating range size is as simple as multiplying the number of cells in a bina
 This method is useful when your raster is projected. For unprojected rasters, see ?raster::area
 
 ```{r}
-p <-raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
 # Check that your raster is projected in meters
 crs(p)
 # find the number of cells that are not NA
@@ -106,12 +106,12 @@ Calculating the areas of occupancy measured in gridcells where the resolution is
 Calculate the area of occupancy that contains occurrence records
 
 ```{r}
-p <-raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected1.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected1.tif"))
 # Using unfiltered records
 locs <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/All_localities_30n.csv"))
 locs <- locs[,1:2]
 p[!is.na(p)] <- 1
-AOOlocs<-AOOarea(r = p, locs = locs)
+AOOlocs <- AOOarea(r = p, locs = locs)
 
 print(AOOlocs)
 ```
@@ -121,7 +121,7 @@ print(AOOlocs)
 p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
-AOO<-AOOarea(r = p)
+AOO <- AOOarea(r = p)
 print(AOO)
 ```
 
@@ -130,7 +130,7 @@ print(AOO)
 p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
-AOO<-AOOarea(r = p)
+AOO <- AOOarea(r = p)
 print(AOO)
 ```
 

@@ -9,7 +9,7 @@ out <- AOOarea(r = r1)
 ## TESTS
 test_that("output type checks", {
   expect_type(out, "list")
-  expect_is(out$area, c("matrix", "array"))
+  expect_is(out$area, "data.frame")
   expect_is(out$aooRaster, "RasterLayer")
   if(!is.null(out$aooPixels)){
     expect_is(out$aooPixels, "RasterLayer")

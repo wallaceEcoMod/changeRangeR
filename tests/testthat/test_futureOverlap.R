@@ -10,7 +10,7 @@ r <- list(r2, r3)
 # create r.names
 r.names <- c('scenario 1', 'scenario 2')
 # create futures
-coords <- dismo::randomPoints(r1, 3)
+coords <- dismo::randomPoints(r1, 4)
 future <- sp::Polygon(coords)
 future <- sp::SpatialPolygons(list(sp::Polygons(list(future), ID = "a")))
 futures <- list(future, future)
@@ -24,5 +24,5 @@ out <- futureOverlap(r, futures, field, category, r.names, futures.names)
 
 ## TESTS
 test_that("output type checks", {
-  expect_is(out, c("matrix", "array"))
+  expect_is(out, "data.frame")
 })

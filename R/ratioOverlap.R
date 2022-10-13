@@ -63,7 +63,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
   #require(dplyr)
 
   ## if r is a shapefile
-  if(class(r)[1] != "RasterLayer" & class(shp)[1] != "RasterLayer"){
+  if(!("RasterLayer" %in% class(r)) & !("RasterLayer" %in% class(shp))){
     r <- rgeos::gBuffer(r, byid = T, width = 0)
     shp <- rgeos::gBuffer(shp, byid = T, width = 0)
     r <- sf::st_as_sf(r)
@@ -95,7 +95,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         #fc <- do.call("rbind", fc)
         maskedRange <- lapply(fc, function(x) sf::st_intersection(r, x))
         #maskedRange <- sf::st_intersection(r, fc)
-       if(class(maskedRange) != "list"){
+       if(!("list" %in% class(maskedRange))){
           maskedRange <- list(maskedRange)
         }
         ratio <- lapply(maskedRange, function(x) raster::ncell(x[!is.na(x)]) / raster::ncell(r[!is.na(r)]) * 100)
@@ -103,7 +103,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         correlation <- NULL
       }
       if(!exists("ratio")){
-      if(class(maskedRange) != "list"){
+      if(!("list" %in% class(maskedRange))){
         maskedRange <- list(maskedRange)
       }
       ratio <- lapply(maskedRange, function(x) sum(sf::st_area(x)) / (sf::st_area(r)) * 100)
@@ -112,7 +112,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       }
     }
   }else{
-    if(class(r)[1] != "RasterLayer" & class(shp)[1] == "RasterLayer"){
+    if(!("RasterLayer" %in% class(r)) & ("RasterLayer" %in% class(shp))){
       if(quant[[1]] == "quartile"){
       r <- raster::rasterize(r, shp, method = "ngb")
       maskedRange <- raster::mask(r, shp)
@@ -163,8 +163,8 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
 
 
   ## if r is a raster
-  if(class(r)[1] == "RasterLayer"){
-    if(class(shp)[1] == "SpatialPolygonsDataFrame" | class(shp)[1] == "sf"){
+  if(("RasterLayer" %in% class(r))){
+    if(("SpatialPolygonsDataFrame" %in% class(shp)) | ("sf" %in% class(shp))){
       if(subfield == FALSE){
         if (category[1] == "All"){
           shp <- sf::st_as_sf(shp)
@@ -208,7 +208,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
           fc <- lapply(category, function(x) dplyr::filter(shp, shp[[field]]==x))
           maskedRange <- lapply(fc, function(x) raster::mask(r, x))
 
-          if(class(maskedRange) != "list"){
+          if(!("list" %in% class(maskedRange))){
             maskedRange <- list(maskedRange)
           }
           correlation <- NULL
@@ -223,7 +223,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
         }
       }
       if(!exists("ratio")){
-      if(class(maskedRange) != "list"){
+      if(!("list" %in% class(maskedRange))){
         maskedRange <- list(maskedRange)
       }
       correlation <- NULL
@@ -233,7 +233,7 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
       #ratio <- paste0("Percentage of range within shape is ", ratio, "%")
       }
     }
-    if(class(shp)[1] == "RasterLayer"){
+    if(("RasterLayer" %in% class(shp))){
       if(quant[[1]] == "quartile"){
       shp <- raster::crop(shp, r)
       r <- raster::crop(r, shp)

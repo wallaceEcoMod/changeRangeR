@@ -47,7 +47,7 @@ envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
   #require(rgdal)
 
   # if binaryRange is a shapefile, convert to raster then run like normal
-  if(class(binaryRange) != "RasterLayer"){
+  if(!("RasterLayer" %in% class(binaryRange))){
     binaryRange <- raster::rasterize(binaryRange, rStack)
   }
 

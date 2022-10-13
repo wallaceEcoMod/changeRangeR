@@ -79,6 +79,8 @@ futureOverlap <- function(r, futures, field, category, r.names, futures.names){
   out <- strsplit(t(ratioValues), "is")
   out<- do.call("rbind", out)
   colnames(out) <- c("Layer comparisons", "overlap")
+  out <- as.data.frame(out)
+  out$overlap <- as.numeric(out$overlap)
   return(out)
   # out <- new("ratioOverlap", maskedRange = maskedRange, ratio = ratio)
 }
