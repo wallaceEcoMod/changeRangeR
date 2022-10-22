@@ -33,8 +33,8 @@
 #' @export
 
 
-#SDM <- raster::raster("inst/extdata/DemoData/SDM/olinguito/olinguitoSDM.tif")
-#binaryRange <- raster::raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected1.tif")
+#SDM <- raster::raster("inst/extdata/DemoData/SDM/olinguito/olinguitoSDM_coarse.tif")
+#binaryRange <- raster::raster("inst/extdata/DemoData/SDM/olinguito/Climatically_suitable_projected_coarse.tif")
 #binaryRange <- raster::projectRaster(binaryRange, SDM, method = "bilinear")
 #rStack <- raster::stack(list.files(path = "inst/extdata/DemoData/MODIS", pattern = "\\.tif$", full.names = T))
 #rStack <- raster::projectRaster(rStack, SDM, method = 'bilinear')

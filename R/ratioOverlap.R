@@ -28,7 +28,7 @@
 #' @export
 
 # # # # load r
-# r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
+# r = raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected_coarse.tif"))
 # # create random polygon based on r
 # mcp <- function (xy) {
 #  xy <- as.data.frame(coordinates(xy))
