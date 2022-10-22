@@ -41,7 +41,7 @@
 # rbuf@proj4string <- crs(r)
 # #r = rbuf
 # # load shp and reproject
-# shp = readOGR(paste0(system.file(package="changeRangeR", "/extdata/DemoData/shapefiles")), "WDPA_COL_olinguito")
+# shp = readOGR(paste0(system.file(package="changeRangeR", "/extdata/DemoData/shapefiles")), "WDPA_COL_olinguito_simp")
 # shp = spTransform(shp, CRS("+proj=utm +zone=18 +south +datum=WGS84 +units=m +no_defs"))
 # # convert shp to raster
 # shp = raster::rasterize(shp, r)

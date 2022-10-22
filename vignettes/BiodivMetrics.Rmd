@@ -260,7 +260,7 @@ Users can then calculate the overlap of this new raster with a shapefile. For ex
 
 Load protected areas in Colombia and calculate the ratio of overlap
 ```{r}
-PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in
@@ -280,7 +280,7 @@ SR[SR == 0] <- NA
 
 Load protected areas in Colombia and calculate what percentage of species richness is currently protected.
 ```{r}
-PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in
