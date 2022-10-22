@@ -7,8 +7,10 @@ output:
   html_document: default
 vignette: >
   %\VignetteIndexEntry{changeRangeR Biodiversity Metrics}
-  %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown} 
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -139,7 +141,7 @@ To begin, load and manage the spatial data to make sure the names match those in
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -198,7 +200,7 @@ Load and manage spatial data
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -229,7 +231,7 @@ Loading the SDM data and ensuring the names match the phylogeny
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -260,7 +262,7 @@ Users can then calculate the overlap of this new raster with a shapefile. For ex
 
 Load protected areas in Colombia and calculate the ratio of overlap
 ```{r}
-PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
+PAs <- rgdal::readOGR(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in
@@ -280,14 +282,14 @@ SR[SR == 0] <- NA
 
 Load protected areas in Colombia and calculate what percentage of species richness is currently protected.
 ```{r}
-PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
+PAs <- rgdal::readOGR(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in
 field <- "DESIG_ENG"
 category <- "All"
 # Mask species richness by protected areas to find richness within protected areas
-rmask <- mask(SR, PAs)
+rmask <- raster::mask(SR, PAs)
 # Take a look
 plot(SR)
 plot(PAs, add = T)
