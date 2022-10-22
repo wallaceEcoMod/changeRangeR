@@ -45,7 +45,7 @@ Data are from: Henao-Díaz, F. et al. (2020). Atlas de la biodiversidad de Colom
 # Load binary maps/SDMs
 primRas <- raster::stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -72,7 +72,7 @@ Loading the SDM data and ensuring the names match the phylogeny
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)

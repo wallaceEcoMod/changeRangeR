@@ -185,7 +185,7 @@ For users that have information on past environmental conditions or future scena
 
 ```{r}
 # Load shapefile
-PA <- st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs_simp")
+PA <- rgdal::readOGR(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs_simp")
 # load raster
 r <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/franLang"), pattern = "\\.tif$", full.names = T))
 # Assume PA's will not change, so make list of current protectes areas
