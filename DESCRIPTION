@@ -25,14 +25,11 @@ Depends:
 Imports: 
     phylobase,
     raster,
-    R.utils,
-    tools,
     dplyr,
     rangeModelMetadata,
     rgeos,
     sf,
-    sp, 
-    dismo
+    sp
 Suggests: 
     ape,
     rgdal,
@@ -42,5 +39,8 @@ Suggests:
     tinytex,
     knitr,
     picante,
-    wallace
+    wallace,
+    R.utils,
+    tools,
+    dismo
 RoxygenNote: 7.2.0
