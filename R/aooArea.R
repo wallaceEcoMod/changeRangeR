@@ -10,8 +10,8 @@
 #'  (only if locs argument is supplied).
 #' @examples
 #' # create raster
-#' r1 <- raster::raster(nrows=10, ncols=10, xmn=-10, xmx=10, ymn=-10, ymx=10)
-#' raster::values(r1)<- runif(n = (10*10))
+#' r1 <- raster::raster(nrows=5, ncols=5, xmn=-5, xmx=5, ymn=-5, ymx=5)
+#' raster::values(r1)<- runif(n = (5*5))
 #' r1[r1 < 0.5] <- NA
 #' r1[!is.na(r1)] <- 1
 #' # calculate aooArea
