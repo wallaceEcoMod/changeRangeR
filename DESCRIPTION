@@ -2,20 +2,19 @@ Package: changeRangeR
 Type: Package
 Title: Change Metrics for Species Geographic Ranges
 Version: 1.0.0
-Author: c(person('Peter J.', 'Galante',email='pgalante@amnh.org',role=c('aut','cre')),
-    person('Samuel','Chang',email='changalfsam@gmail.com',role=c('aut'))
-    person('Andrea','Paz',email='paz.andreita@gmail.com',role=c('aut'))
-    person('Jamie M.','Kass',email='jamie.kass@oist.jp',role=c('aut'))
-    person('Matthew','Aiello-Lammens',email='maiellolammens@pace.edu',role=c('aut'))
-    person('Beth','Gerstner',email='gerstn11@msu.edu',role=c('aut'))
-    person('Bethany','Johnson',email='bjohnso005@citymail.cuny.edu',role=c('aut'))
-    person('Cory','Merow',email='cory.merow@gmail.com',role=c('aut'))
-    person('Elkin','Noguera-Urbano',email='enoguera@humboldt.org.co',role=c('aut'))
-    person('Gonzalo E.','Pinilla-Buitrago',email='gpinillabuitrago@gradcenter.cuny.edu',role=c('aut'))
-    person('Dan','Rosauer',email='dan.rosauer@anu.edu.au',role=c('aut'))
-    person('Mary E.','Blair',email='mblair1@amnh.org',role=c('aut')))
-Maintainer: The package maintainer <mblair1@amnh.org>
-Description: Facilitates workflows to reproducibly transform estimates of species’ distributions into metrics relevant for conservation. For example, combining predictions from species distribution models with other maps of environmental data to characterize the proportion of a species’ range that is under protection, calculating metrics used under the IUCN Criteria A and B guidelines (Area of Occupancy and Extent of Occurrence), and calculating more general metrics such as taxonomic and phylogenetic diversity, as well as endemism. Also facilitates temporal comparisons among biodiversity metrics to inform efforts towards complementarity and consideration of future scenarios in conservation decisions. changeRangeR also provides tools to determine the effects of modeling decisions through sensitivity tests.
+Authors@R: c(person('Peter J.', 'Galante',email='pgalante@amnh.org',role=c('aut')),
+    person('Samuel','Chang',email='changalfsam@gmail.com',role=c('aut')),
+    person('Andrea','Paz',email='paz.andreita@gmail.com',role=c('aut')),
+    person('Jamie M.','Kass',email='jamie.kass@oist.jp',role=c('aut')),
+    person('Matthew','Aiello-Lammens',email='maiellolammens@pace.edu',role=c('aut')),
+    person('Beth','Gerstner',email='gerstn11@msu.edu',role=c('aut')),
+    person('Bethany','Johnson',email='bjohnso005@citymail.cuny.edu',role=c('aut')),
+    person('Cory','Merow',email='cory.merow@gmail.com',role=c('aut')),
+    person('Elkin','Noguera-Urbano',email='enoguera@humboldt.org.co',role=c('aut')),
+    person('Gonzalo E.','Pinilla-Buitrago',email='gpinillabuitrago@gradcenter.cuny.edu',role=c('aut')),
+    person('Dan','Rosauer',email='dan.rosauer@anu.edu.au',role=c('aut')),
+    person('Mary E.','Blair',email='mblair1@amnh.org',role=c('aut','cre')))
+Description: Facilitates workflows to reproducibly transform estimates of species’ distributions into metrics relevant for conservation. For example, combining predictions from species distribution models with other maps of environmental data to characterize the proportion of a species’ range that is under protection, calculating metrics used under the IUCN Criteria A and B guidelines (Area of Occupancy and Extent of Occurrence), and calculating more general metrics such as taxonomic and phylogenetic diversity, as well as endemism. Also facilitates temporal comparisons among biodiversity metrics to inform efforts towards complementarity and consideration of future scenarios in conservation decisions. 'changeRangeR' also provides tools to determine the effects of modeling decisions through sensitivity tests.
 License: GPL-3
 VignetteBuilder: knitr
 Encoding: UTF-8

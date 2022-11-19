@@ -36,13 +36,13 @@
 #SDM <- raster::raster("inst/extdata/DemoData/SDM/olinguitoSDM_coarse.tif")
 #binaryRange <- raster::raster("inst/extdata/DemoData/SDM/Climatically_suitable_projected_coarse.tif")
 #binaryRange <- raster::projectRaster(binaryRange, SDM, method = "bilinear")
-#rStack <- raster::stack(list.files(path = "inst/extdata/DemoData/MODIS", pattern = "\\.tif$", full.names = T))
+#rStack <- raster::stack(list.files(path = "inst/extdata/DemoData/MODIS", pattern = "\\.tif$", full.names = TRUE))
 #rStack <- raster::projectRaster(rStack, SDM, method = 'bilinear')
 #threshold <- 50.086735
 #test <- envChange(rStack, binaryRange, threshold, bound = "upper")
 #test2 <- envChange(rStack, binaryRange, threshold, bound = "lower")
 
-envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
+envChange <- function(rStack, binaryRange, threshold, bound, correlation = FALSE){
   #require(raster)
   #require(rgdal)
 
@@ -52,7 +52,7 @@ envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
   }
 
   if(bound == "lower"){
-    #    if(correlation = FALSE){
+    #    if(correlation == FALSE){
     rStack[rStack < threshold] <- NA
     rStack[rStack > threshold] <- 1
     #    } else {
@@ -90,7 +90,7 @@ envChange <- function(rStack, binaryRange, threshold, bound, correlation = F){
   if (!raster::isLonLat(maskStack)){
     areas <- lapply(masks, function(x) raster::res(x)[[1]] * raster::ncell(x[!is.na(x)]))
   } else {
-    area <- lapply(masks, raster::area, na.rm = T)
+    area <- lapply(masks, raster::area, na.rm = TRUE)
     areas.1 <- lapply(area, function(x) x[!is.na(x)])
     areas <- lapply(areas.1, function(x) length(x) * stats::median(x))
     #areas <- lapply(masks, raster::area)

@@ -4,7 +4,7 @@
 \alias{envChange}
 \title{Calculate change in suitable SDM area through time}
 \usage{
-envChange(rStack, binaryRange, threshold, bound, correlation = F)
+envChange(rStack, binaryRange, threshold, bound, correlation = FALSE)
 }
 \arguments{
 \item{rStack}{rasterStack of environmental variable to measure within binary SDM through time}

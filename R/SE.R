@@ -2,7 +2,7 @@
 #' @title Calculate species endemism
 #' @description Calculate species endemism as the number of species in a place divided by the total number of places in which those species are found.
 #' @param rStack a rasterStack of binary species presences
-#' @return raster object showing species endemism.
+#' @return Raster object showing species endemism.
 #' @author pgalante@@amnh.org
 #' @examples
 #' # create binary raster

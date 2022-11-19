@@ -51,10 +51,10 @@
 # category = c("National Natural Park", "Regional Natural Parks", "Integrated Management Regional Districts")
 # subfield = TRUE
 # #test
-# t <- ratioOverlap(r, shp, field = field, category = category, subfield= F, quant = c(0.5, 0.75))
+# t <- ratioOverlap(r, shp, field = field, category = category, subfield = FALSE, quant = c(0.5, 0.75))
 # quant = c(0.25, 0.87)
 
-ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NULL, subfield = FALSE, quant = "quartile"){
+ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field = NULL, category = NULL, subfield = FALSE, quant = "quartile"){
 
   #setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
   #require(sf)
