@@ -262,7 +262,7 @@ Users can then calculate the overlap of this new raster with a shapefile. For ex
 
 Load protected areas in Colombia and calculate the ratio of overlap
 ```{r}
-PAs <- rgdal::readOGR(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
+PAs <- readRDS(file.path(system.file(package="changeRangeR"), "extdata/DemoData/shapefiles", "WDPA_COL_olinguito_simp.rds"))
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in
@@ -282,7 +282,7 @@ SR[SR == 0] <- NA
 
 Load protected areas in Colombia and calculate what percentage of species richness is currently protected.
 ```{r}
-PAs <- rgdal::readOGR(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp")
+PAs <- readRDS(file.path(system.file(package="changeRangeR"), "extdata/DemoData/shapefiles", "WDPA_COL_olinguito_simp.rds"))
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in

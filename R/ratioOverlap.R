@@ -37,19 +37,19 @@
 #  xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
 #  return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
 # }
-# rbuf = gBuffer(mcp(dismo::randomPoints(r, 3)), width = 50000)
+# rbuf <- gBuffer(mcp(dismo::randomPoints(r, 3)), width = 50000)
 # rbuf@proj4string <- crs(r)
-# #r = rbuf
+# #r <- rbuf
 # # load shp and reproject
-# shp = readOGR(paste0(system.file(package="changeRangeR", "/extdata/DemoData/shapefiles")), "WDPA_COL_olinguito_simp")
-# shp = spTransform(shp, CRS("+proj=utm +zone=18 +south +datum=WGS84 +units=m +no_defs"))
+# shp <- readRDS(file.path(system.file(package="changeRangeR", "extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp.rds"))
+# shp <- spTransform(shp, CRS("+proj=utm +zone=18 +south +datum=WGS84 +units=m +no_defs"))
 # # convert shp to raster
-# shp = raster::rasterize(shp, r)
+# shp <- raster::rasterize(shp, r)
 # # Define args
-# field = "DESIG_ENG"
-# #category = "All"
-# category = c("National Natural Park", "Regional Natural Parks", "Integrated Management Regional Districts")
-# subfield = TRUE
+# field <- "DESIG_ENG"
+# #category <- "All"
+# category <- c("National Natural Park", "Regional Natural Parks", "Integrated Management Regional Districts")
+# subfield <- TRUE
 # #test
 # t <- ratioOverlap(r, shp, field = field, category = category, subfield = FALSE, quant = c(0.5, 0.75))
 # quant = c(0.25, 0.87)
