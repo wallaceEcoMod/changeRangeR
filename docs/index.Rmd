@@ -27,20 +27,18 @@ knitr::opts_chunk$set(echo = TRUE)
   - Given past or future model projections or geospatial data for masking, calculate and visualize changes over time
   
   - Community metrics can be assessed for regions of interest
-  
-  - Sparse-matrices can be utilized for massive dataset processing 
 
 These change metrics can then inform redlisting and forward-thinking conservation planning. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest such as richness, spatial and temporal turnover, endemism, and phylogenetic diversity, to understand complementarity across space and to further aid planning and decision-making. 		
 
 ## Vignette
-changeRangeR has three vignettes:
+changeRangeR has two vignettes:
 
-[Single species metrics]() </br>
-[Community metrics]()</br>
-[Sparse matrices]()</br>
+[Single species analyses](./singleSpeciesMetrics.html) </br>
+[Biodiversity metrics](./BiodivMetrics.html)</br>
+
 
 ### **Training materials**
-<font size="4">Also in development are training materials and best practices for modeling species' niches and distributions in biodiversity change indicator assessments for the expanded Wallace in both English and Spanish. Materials will be web-based and openly available. They will be available as both guidance text within *Wallace* and also published as part of an open source teaching module for the Center for Biodiversity and Conservation at the American Museum of Natural History ([CBC-AMNH](https://www.amnh.org/our-research/center-for-biodiversity-conservation)) Network of Conservation Educators and Practitioners ([NCEP](https://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/ncep)). NCEP is a global initiative that seeks to improve the availability and quality of conservation education and professional training.</font>
+<font size="4">Also in development are training materials and best practices for modeling species' niches and distributions in biodiversity change indicator assessments for the expanded [*Wallace*] (https://wallaceecomod.github.io/) in both English and Spanish. Materials will be web-based and openly available. They will be available as both guidance text within [*Wallace*] (https://wallaceecomod.github.io/) and also published as part of an open source teaching module for the Center for Biodiversity and Conservation at the American Museum of Natural History ([CBC-AMNH](https://www.amnh.org/our-research/center-for-biodiversity-conservation)) Network of Conservation Educators and Practitioners ([NCEP](https://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/ncep)). NCEP is a global initiative that seeks to improve the availability and quality of conservation education and professional training.</font>
 
 ## **BioModelos and *Wallace* integration**
 <font size="4">The Group on Earth Observations Biodiversity Observation Network ([GEO-BON](https://geobon.org/)) works to improve the communication of biodiversity measurements to decision makers and the broader scientific community. To locally serve regional scientific and political communities, GEO-BON has implemented a [BON-in-a-Box](https://geobon.org/bon-in-a-box/) service that delivers customizable online toolkits for enhancing biodiversity observation systems.
