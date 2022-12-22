@@ -11,11 +11,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---
-<!-- CM: Need to add this text into the header above so that devtools::buildvignettes() will work -->
-<!-- vignette: > -->
-<!--   %\VignetteIndexEntry{changeRanger Single Species Examples} -->
-<!--   %\VignetteEngine{knitr::rmarkdown} -->
-<!--   %\VignetteEncoding{UTF-8} -->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
 ```
@@ -24,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
 
 Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in [https://cmerow.github.io/maskRangeR/](maskRangeR). From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information [1]. In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing and forward-thinking conservation planning. We provide an example below to calculate these metrics for the olinguito [2] using the changeRangeR package. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest to learn more about this see our multi-species vignettes (see Biodiversity metrics vignette).
 
-[1]   IUCN Standards and Petitions Committee. 2019. Guidelines for Using the IUCN Red List Categories and Criteria. Version 14. Prepared by the Standards and Petitions Committee.
+[1]   IUCN Standards and Petitions Committee. 2022. Guidelines for Using the IUCN Red List Categories and Criteria. Version 15.1. Prepared by the Standards and Petitions Committee. Available from: http://www.iucnredlist.org/resources/RedListGuidelines
 
 [2]   Helgen, K.M., Miguel Pinto, C., Kays, R., Helgen, L.E., Tsuchiya, M. T. N., Quinn, A., Wilson, D.E., Maldonado, J.E. (2013) Taxonomic revision of the olingos (Bassaricyon), with description of a new species, the Olinguito. Zookeys, 324, 1-83. https://doi.org/10.3897/zookeys.324.5827.
 
@@ -61,7 +57,7 @@ paste0("area = ", area[1], " km^2")
 
 ## EOO Occurrences
 
-IUCN’s EOO is defined as the area contained within the shortest imaginary (continuous) boundary drawn to encompass all the known (current) occurrences of a taxon, excluding vagrant localities. This measure may exclude discontinuities or disjunctions within the overall distribution of a taxon (e.g., large areas of unsuitable habitat, but see AOO below). The EOO is typically measured by drawing a minimum convex polygon (MCP, also called a convex hull) around occurrence localities, but this may include many large areas of obviously unsuitable or unoccupied habitat, making a convex hull around a thresholded SDM more appropriate (cite Jamie’s paper?). It is important to follow the guidelines of the relevant IUCN SSC SG when contributing EOO or AOO measurements to enable consistency across assessments. You can read more about IUCN definitions [here](https://www.iucnredlist.org/resources/categories-and-criteria).
+IUCN’s EOO is defined as the area contained within the shortest imaginary (continuous) boundary drawn to encompass all the known (current) occurrences of a taxon, excluding vagrant localities. This measure may exclude discontinuities or disjunctions within the overall distribution of a taxon (e.g., large areas of unsuitable habitat, but see AOO below). The EOO is typically measured by drawing a minimum convex polygon (MCP, also called a convex hull) around occurrence localities, but this may include many large areas of obviously unsuitable or unoccupied habitat, making a convex hull around a thresholded SDM more appropriate. It is important to follow the guidelines of the relevant IUCN SSC SG when contributing EOO or AOO measurements to enable consistency across assessments. You can read more about IUCN definitions [here](https://www.iucnredlist.org/resources/categories-and-criteria).
 In changeRangeR, users can calculate IUCN’s EOO via two options 1) MCP/convex hull around occurrence localities, 2) MCP/convex hull area of thresholded (MTP) SDM. 
 
 Calculate the extent of occupancy around occurrence localities
