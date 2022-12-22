@@ -1,7 +1,7 @@
 Package: changeRangeR
 Type: Package
 Title: Change Metrics for Species Geographic Ranges
-Version: 1.0.0
+Version: 1.0.2
 Authors@R: c(person('Peter J.', 'Galante',email='pgalante@amnh.org',role=c('aut')),
     person('Samuel','Chang',email='changalfsam@gmail.com',role=c('aut')),
     person('Andrea','Paz',email='paz.andreita@gmail.com',role=c('aut')),
@@ -43,3 +43,4 @@ Suggests:
     tools,
     dismo
 RoxygenNote: 7.2.2
+
