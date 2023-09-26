@@ -1,7 +1,7 @@
 ---
 title: 'changeRangeR: an R package for repeatable and transparent translations of
   species distributions into meaningful conservation metrics.'
-author: Peter J. Galante, Samuel Chang, Matthew Aiello-Lammens, Beth Gerstner, Bethany
+author: Peter J. Galante, Samuel Chang, Matthew Aiello-Lammens, Beth Gerstner, Bethany A.
   Johnson, Jamie M. Kass, Cory Merow, Elkin Noguera-Urbano , Andrea Paz, Gonzalo E.
   Pinilla-Buitrago, Dan Rosauer, Robert P. Anderson, Mary E. Blair
 date: '`r Sys.Date()`'
