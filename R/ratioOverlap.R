@@ -13,7 +13,7 @@
 #' @param subfield boolean. If TRUE, the overlap ratio of all unique categories of shp will be calculated.
 #' @param quant Either the character string "quartile" for the ratio of each quartile, or a concatenation of values to use instead.
 #' @return a list of three objects. The first object is a raster object showing the masked range. The second is a character showing the
-#' percentagse of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
+#' percentage of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
 #' @examples
 #' # create binary raster
 #' r <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
@@ -64,11 +64,6 @@ ratioOverlap <- function(r, shp = NULL, rasMask = NULL, field=NULL, category=NUL
 
   ## if r is a shapefile
   if(!("RasterLayer" %in% class(r)) & !("RasterLayer" %in% class(shp))){
-    r <- rgeos::gBuffer(r, byid = T, width = 0)
-    shp <- rgeos::gBuffer(shp, byid = T, width = 0)
-    r <- sf::st_as_sf(r)
-    shp <- sf::st_as_sf(shp)
-
     if(subfield == FALSE){
       if(category == "All"){
         maskedRange <- sf::st_intersection(r, shp)
