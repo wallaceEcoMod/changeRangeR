@@ -37,7 +37,6 @@
 futureOverlap <- function(r, futures, field, category, r.names, futures.names){
   # setClass("ratioOverlap", slots = list(maskedRange = "RasterLayer", ratio = "character"))
   #require(sf)
-  #require(rgdal)
   #require(raster)
   #require(dplyr)
   #require(sp)
