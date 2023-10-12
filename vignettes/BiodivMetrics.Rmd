@@ -1,28 +1,27 @@
 ---
 title: "Biodiversity Metrics"
 author: "P Galante, A Paz"
-date: "`r Sys.Date()`"
+date: "updated 12 October 2023"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 vignette: >
   %\VignetteIndexEntry{changeRangeR Biodiversity Metrics}
-  %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = F)
 ```
 
-To aid conservation planning and decision-making, for example by understanding species’ representativeness and complementarity across conservation areas, we can combine species’ range estimates across multiple species groups to calculate community-level metrics of conservation interest that reflect different dimensions of biological diversity such as species richness, spatial and temporal turnover, endemism, and phylogenetic diversity. We provide an example below to calculate these metrics for a dataset of Colombian primates (Henao-Díaz et al. 2020) using the changeRangeR package. For information on single species range change metrics, see changeRangeR's single-species [vignette]() .
+To aid conservation planning and decision-making, for example by understanding species’ representativeness and complementarity across conservation areas, we can combine species’ range estimates across multiple species groups to calculate community-level metrics of conservation interest that reflect different dimensions of biological diversity such as species richness, spatial and temporal turnover, endemism, and phylogenetic diversity. We provide an example below to calculate these metrics for a dataset of Colombian primates (Henao-Díaz et al. 2020) using the changeRangeR package. For information on single species range change metrics, see changeRangeR's single-species [vignette](https://wallaceecomod.github.io/changeRangeR/singleSpeciesMetrics.html).
 
 # Biodiversity metrics
 Using multiple species for landscape-level species metrics
 
 Load packages that will be useful for these analyses
-```{r}
-library(rgdal)
+```{r, results='hide'}
 library(raster)
 library(picante)
 library(phylobase)
@@ -64,7 +63,7 @@ plot(SR)
 ## Phylogenetic diversity
 Phylogenetic diversity can be calculated from binary range-maps, or as here, thresholded SDMs. We combine these maps with phylogenetic trees to calculate this measure of diversity. Here, we calculate phylogenetic diversity as the sum of branch lengths using Faith's PD (Faith, 1992). 
 
-It is important to note that species-experts can edit binary SDMs, such as is done in the R package [*maskRangeR*](https://cmerow.github.io/maskRangeR/) to add or remove areas.
+It is important to note that species-experts can edit binary SDMs, such as is done in the R package [*maskRangeR*](https://wallaceecomod.github.io/maskRangeR/) to add or remove areas.
 
 ### Load and manage spatial data
 Loading the SDM data and ensuring the names match the phylogeny
@@ -89,7 +88,7 @@ primRas <- crop(primRas, e)
 ```
 
 ### Load phylogenetic tree
-THIS NEEDS A CITATION (ANDREA?)
+
 ```{r}
 primTree <- read.nexus(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/phyloTree/output.nex"))
 ```
@@ -129,6 +128,7 @@ pd_ras[!is.na(pd_ras)] <- commDat$pd
 pd_ras[pd_ras == 0] <- NA
 plot(pd_ras)
 ```
+
 ## Phylogenetic endemism
 Phylogenetic endemism combines phylogenetic trees with spatial data. PE is calculated by dividing each branch length over the total number of locations where the species that descend from that branch are found (Rosauer et al., 2009).
 

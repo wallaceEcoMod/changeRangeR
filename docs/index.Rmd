@@ -4,7 +4,7 @@ title: 'changeRangeR: an R package for repeatable and transparent translations o
 author: Peter J. Galante, Samuel Chang, Matthew Aiello-Lammens, Beth Gerstner, Bethany A.
   Johnson, Jamie M. Kass, Cory Merow, Elkin Noguera-Urbano , Andrea Paz, Gonzalo E.
   Pinilla-Buitrago, Dan Rosauer, Robert P. Anderson, Mary E. Blair
-date: '`r Sys.Date()`'
+date: 'updated 12 October 2023'
 output:
   word_document: default
   html_document: default
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </br>
 </br>
 <font size = "4">
-*changeRangeR* is an R package that translates species’ current distributions into meaningful conservation metrics in repeatable and transparent ways. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can reduce an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in *maskRangeR*).
+*changeRangeR* is an R package that translates species’ current distributions into meaningful conservation metrics in repeatable and transparent ways. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can reduce an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in <a href="https://wallaceecomod.github.io/maskRangeR/" target="_blank">`maskRangeR`</a>).
 
 *changeRangeR* is able to make several calculations:
 
@@ -33,17 +33,17 @@ These change metrics can then inform redlisting and forward-thinking conservatio
 ## Vignette
 changeRangeR has two vignettes:
 
-[Single species analyses](./singleSpeciesMetrics.html) </br>
+[Single species analyses](./singleSpeciesMetrics.html)</br>
 [Biodiversity metrics](./BiodivMetrics.html)</br>
 
 
 ### **Training materials**
-<font size="4">Also in development are training materials and best practices for modeling species' niches and distributions in biodiversity change indicator assessments for the expanded [*Wallace*] (https://wallaceecomod.github.io/) in both English and Spanish. Materials will be web-based and openly available. They will be available as both guidance text within [*Wallace*] (https://wallaceecomod.github.io/) and also published as part of an open source teaching module for the Center for Biodiversity and Conservation at the American Museum of Natural History ([CBC-AMNH](https://www.amnh.org/our-research/center-for-biodiversity-conservation)) Network of Conservation Educators and Practitioners ([NCEP](https://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/ncep)). NCEP is a global initiative that seeks to improve the availability and quality of conservation education and professional training.</font>
+<font size="4">Also in development are training materials and best practices for modeling species' niches and distributions in biodiversity change indicator assessments for the expanded <a href="https://wallaceecomod.github.io/" target="_blank">Wallace</a> in both English and Spanish. Materials will be web-based and openly available. They will be available as both guidance text within <a href="https://wallaceecomod.github.io/" target="_blank">`Wallace`</a> and also published as part of an open source teaching module for the Center for Biodiversity and Conservation at the American Museum of Natural History (<a href="https://www.amnh.org/our-research/center-for-biodiversity-conservation" target="_blank">CBC-AMNH</a>) Network of Conservation Educators and Practitioners (<a href="https://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/ncep" target="_blank">NCEP</a>). NCEP is a global initiative that seeks to improve the availability and quality of conservation education and professional training.</font>
 
 ## **BioModelos and *Wallace* integration**
-<font size="4">The Group on Earth Observations Biodiversity Observation Network ([GEO-BON](https://geobon.org/)) works to improve the communication of biodiversity measurements to decision makers and the broader scientific community. To locally serve regional scientific and political communities, GEO-BON has implemented a [BON-in-a-Box](https://geobon.org/bon-in-a-box/) service that delivers customizable online toolkits for enhancing biodiversity observation systems.
+<font size="4">The Group on Earth Observations Biodiversity Observation Network (<a href="https://geobon.org/" target="_blank">GEO-BON</a>) works to improve the communication of biodiversity measurements to decision makers and the broader scientific community. To locally serve regional scientific and political communities, GEO-BON has implemented a <a href="https://geobon.org/bon-in-a-box/" target="_blank">BON-in-a-Box</a> service that delivers customizable online toolkits for enhancing biodiversity observation systems.
 
-[*BioModelos*](http://biomodelos.humboldt.org.co/) is a BON-in-a-box tool for Colombia’s BON. *BioModelos* bridges  modeling and taxonomy experts by facilitating occurrence record curation, model editing, suitable ecological variable identification, and providing a model vetting process. 
+<a href="http://biomodelos.humboldt.org.co/" target="_blank">*BioModelos*</a> is a BON-in-a-box tool for Colombia’s BON. *BioModelos* bridges  modeling and taxonomy experts by facilitating occurrence record curation, model editing, suitable ecological variable identification, and providing a model vetting process. 
 
 The integration of BioModelos and *Wallace* leverages the expert knowledge available in BioModelos with the easy-to-use interface and expert modeling tools of *Wallace*. Registered users are able to import expert-verified occurrence records and range maps, and have the ability to push SDMs and further-refined range maps back to BioModelos.
 

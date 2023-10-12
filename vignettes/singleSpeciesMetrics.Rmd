@@ -1,15 +1,15 @@
 ---
 title: "Single Species Vignette"
 author: "P Galante"
-date: "`r Sys.Date()`"
+date: "updated 12 October 2023"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
   word_document: default
 vignette: >
   %\VignetteIndexEntry{changeRangeR Single Species Metrics}    
-  %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown} 
 ---
 
 ```{r setup, include=FALSE}
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
 
 ## Single species range change metrics
 
-Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in [https://cmerow.github.io/maskRangeR/](maskRangeR). From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information [1]. In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing and forward-thinking conservation planning. We provide an example below to calculate these metrics for the olinguito [2] using the changeRangeR package. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest to learn more about this see our multi-species vignettes (see Biodiversity metrics vignette).
+Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current range (e.g., in <a href="https://wallaceEcoMod.github.io/maskRangeR/" target="_blank">maskRangeR</a>. From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information [1]. In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking  are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing and forward-thinking conservation planning. We provide an example below to calculate these metrics for the olinguito [2] using the changeRangeR package. Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest to learn more about this see our multi-species vignettes (see Biodiversity metrics vignette).
 
 [1]   IUCN Standards and Petitions Committee. 2022. Guidelines for Using the IUCN Red List Categories and Criteria. Version 15.1. Prepared by the Standards and Petitions Committee. Available from: http://www.iucnredlist.org/resources/RedListGuidelines
 
@@ -28,8 +28,6 @@ Load the packages you'll need
 ```{r, message = F, warning = F}
 library(changeRangeR)
 library(raster)
-library(rgeos)
-library(rgdal)
 library(sf)
 library(dplyr)
 ```
@@ -95,7 +93,7 @@ paste0(aeoosdm, " meters ^2")
 Within the calculated EOO area above, users can calculate the sum of 2x2 km grid cells to calculate the upper bounds of IUCN’s area of occupancy or AOO. AOO is intended to account for unsuitable or unoccupied habitats that may be included in the EOO calculations. AOO should be calculated with a standard grid cell size of 2 km (a cell area of 4 km2) in order to ensure consistency and comparability of results in IUCN assessments.
 In changeRanger, users can calculate AOO either 1) with occurrence points, 2) from the pre-masked thresholded SDM, and 3) from the masked thresholded SDM. It is suggested that users reproject ranges to an equal area projection for more accurate area-based calculations.
 
-Calculating the areas of occupancy measured in gridcells where the resolution is 2km
+Calculating the areas of occupancy measured in grid cells where the resolution is 2km
 
 ## AOO occurrence points
 
@@ -159,7 +157,8 @@ The function ratioOverlap allows changeRangeR users to calculate the proportion 
 
 ```{r, warning = F}
 r <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
-shp <- readOGR(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+shp <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+shp <- sf::as_Spatial(shp)
 # set the projections to match
 shp <- spTransform(shp, CRSobj = crs(r))
 # View the fields
@@ -181,7 +180,7 @@ For users that have information on past environmental conditions or future scena
 
 ```{r}
 # Load shapefile
-PA <- st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs")
+PA <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs")
 # load raster
 r <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/franLang"), pattern = "\\.tif$", full.names = T))
 # Assume PA's will not change, so make list of current protectes areas
