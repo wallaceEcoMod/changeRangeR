@@ -50,14 +50,22 @@ mcpSDM <- function(p, xy, ch.orig, thr) {
     p.i.xy <- raster::rasterToPoints(p.i)
     if(nrow(p.i.xy) > 1) {
       ch.i <- changeRangeR::mcp(p.i.xy[,1:2], crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-      ov.xy <- rgeos::gIntersection(ch.i, sp::SpatialPoints(xy, proj4string = raster::crs(ch.i)))
-      if(!is.null(ov.xy)) ov.pts.vec[i] <- nrow(ov.xy@coords)
+      ch.i.sf <- sf::st_as_sf(ch.i)
+      xy.sf <- sf::st_as_sf(sp::SpatialPoints(xy, proj4string = raster::crs(ch.i)))
+      ov.xy <- sf::st_intersection(ch.i.sf, xy.sf)
+      if(nrow(ov.xy) > 0) {
+        ov.xy.sp <- sf::as_Spatial(ov.xy)
+        ov.pts.vec[i] <- nrow(ov.xy.sp@coords)
+        }
       ch.vec[[i]] <- ch.i
-      ov <- rgeos::gIntersection(ch.i, ch.orig)
-      if(!is.null(ov)) {
+      if(sf::st_crs(ch.i.sf) != sf::st_crs(ch.orig)) {
+        sf::st_crs(ch.i.sf) <- sf::st_crs(ch.orig)
+      }
+      ov.sf <- sf::st_intersection(ch.i.sf, sf::st_as_sf(ch.orig))
+      if(nrow(ov.sf) > 0) {
         A <- raster::area(ch.i)
         B <- raster::area(ch.orig)
-        C <- raster::area(ov)
+        C <- raster::area(sf::as_Spatial(ov.sf))
         jsi.vec[i] <- C / (A + B - C)
       }
     }
