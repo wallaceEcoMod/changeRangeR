@@ -38,7 +38,7 @@ Calculating range size is as simple as multiplying the number of cells in a bina
 This method is useful when your raster is projected. For unprojected rasters, see ?raster::area
 
 ```{r}
-p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected_coarse.tif"))
 # Check that your raster is projected in meters
 crs(p)
 # find the number of cells that are not NA
@@ -78,7 +78,7 @@ paste0(area, " km ^2")
 Calculate the extent of occupancy from a thresholded SDM
 
 ```{r}
-p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected1.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected_coarse.tif"))
 # Threshold of the minimum training presence
 thr <- min(values(p), na.rm=T)
 p[p<thr] <- NA
@@ -100,7 +100,7 @@ Calculating the areas of occupancy measured in grid cells where the resolution i
 Calculate the area of occupancy that contains occurrence records
 
 ```{r}
-p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected1.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected_coarse.tif"))
 # Using unfiltered records
 locs <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/All_localities_30n.csv"))
 locs <- locs[,1:2]
@@ -112,7 +112,7 @@ print(AOOlocs)
 
 ## AOO pre-masked SDM
 ```{r}
-p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected1.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected_coarse.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO <- AOOarea(r = p)
@@ -121,7 +121,7 @@ print(AOO)
 
 ## AOO masked SDM
 ```{r}
-p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected_coarse.tif"))
 # Convert to binary
 p[!is.na(p)] <- 1
 AOO <- AOOarea(r = p)
@@ -140,7 +140,7 @@ observed MCP. The trial MCP is also spatially intersected with the original occu
 "best" MCP is the one that has the highest JSI and also omits the least original occurrence points.
 
 ```{r}
-p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguitoSDM.tif"))
+p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/olinguitoSDM_coarse.tif"))
 xy <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/10KM_thin_2017.csv"))
 ch.orig <- mcp(xy[,1:2])
 thr <- 0.3380209
@@ -156,8 +156,8 @@ The function ratioOverlap allows changeRangeR users to calculate the proportion 
 ## Current 
 
 ```{r, warning = F}
-r <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected1.tif"))
-shp <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+r <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected_coarse.tif"))
+shp <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp.rds")
 shp <- sf::as_Spatial(shp)
 # set the projections to match
 shp <- spTransform(shp, CRSobj = crs(r))
@@ -180,7 +180,7 @@ For users that have information on past environmental conditions or future scena
 
 ```{r}
 # Load shapefile
-PA <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs")
+PA <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs_simp.rds")
 # load raster
 r <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/franLang"), pattern = "\\.tif$", full.names = T))
 # Assume PA's will not change, so make list of current protectes areas
@@ -208,7 +208,7 @@ plot(x = years, y = future.ratios[,2], type = "b", main = "Percent of SDM predic
 To see how SDM range size can change with suitable forest cover through time, supply environmental rasters and a suitability threshold as well as a binary SDM. The environmental rasters must be in the same coordinate reference system at the SDM.
 
 ```{r}
-binaryRange <- raster::raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected1.tif"))
+binaryRange <- raster::raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Climatically_suitable_projected_coarse.tif"))
 rStack <- raster::stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/MODIS"), pattern = "\\.tif$", full.names = T))
 rStack <- raster::projectRaster(rStack, binaryRange, method = "bilinear")
 threshold <- 50.086735

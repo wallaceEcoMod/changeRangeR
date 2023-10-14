@@ -8,14 +8,16 @@ output:
 vignette: >
   %\VignetteIndexEntry{changeRangeR Biodiversity Metrics}
   %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown} 
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = F)
 ```
 
-To aid conservation planning and decision-making, for example by understanding species’ representativeness and complementarity across conservation areas, we can combine species’ range estimates across multiple species groups to calculate community-level metrics of conservation interest that reflect different dimensions of biological diversity such as species richness, spatial and temporal turnover, endemism, and phylogenetic diversity. We provide an example below to calculate these metrics for a dataset of Colombian primates (Henao-Díaz et al. 2020) using the changeRangeR package. For information on single species range change metrics, see changeRangeR's single-species [vignette](https://wallaceecomod.github.io/changeRangeR/singleSpeciesMetrics.html).
+To aid conservation planning and decision-making, for example by understanding species’ representativeness and complementarity across conservation areas, we can combine species’ range estimates across multiple species groups to calculate community-level metrics of conservation interest that reflect different dimensions of biological diversity such as species richness, spatial and temporal turnover, endemism, and phylogenetic diversity. We provide an example below to calculate these metrics for a dataset of Colombian primates (Henao-Díaz et al. 2020) using the 'changeRangeR' package. For information on single species range change metrics, see the single-species [vignette](https://wallaceecomod.github.io/changeRangeR/singleSpeciesMetrics.html).
 
 # Biodiversity metrics
 Using multiple species for landscape-level species metrics
@@ -33,7 +35,7 @@ library(ape)
 
 ## Species Richness
 
-Here we measure species richness as the number species predicted to be present in each pixel. 
+Here we measure species richness as the number of species predicted to be present in each pixel. 
 
 ### Load and manage spatial data
 Loading the SDM data and ensuring the names match the phylogeny, and removing some resolved species. NOTE: For calculating species richness, named rasters are not strictly necessary.
@@ -44,7 +46,7 @@ Data are from: Henao-Díaz, F. et al. (2020). Atlas de la biodiversidad de Colom
 # Load binary maps/SDMs
 primRas <- raster::stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -71,7 +73,7 @@ Loading the SDM data and ensuring the names match the phylogeny
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -139,7 +141,7 @@ To begin, load and manage the spatial data to make sure the names match those in
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -198,7 +200,7 @@ Load and manage spatial data
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -229,7 +231,7 @@ Loading the SDM data and ensuring the names match the phylogeny
 # Load binary maps/SDMs
 primRas <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/colPrimates_binary"), pattern = "\\.tif$", full.names = T))
 # Because of species' name resolutions in the phylogeny we use here, we need to rename some of the species in this rasterStack
-names(primRas) <- gsub("*_veg", "", names(primRas))
+names(primRas) <- gsub("*_veg_coarse", "", names(primRas))
 # Drop models that are resolved into one group; Cebus_albifrons
 primRas <- dropLayer(primRas, c("Cebus_versicolor", "Cebus_leucocephalus", "Cebus_malitiosus", "Cebus_albifrons"))
 oldnames <- names(primRas)
@@ -260,7 +262,7 @@ Users can then calculate the overlap of this new raster with a shapefile. For ex
 
 Load protected areas in Colombia and calculate the ratio of overlap
 ```{r}
-PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+PAs <- readRDS(file.path(system.file(package="changeRangeR"), "extdata/DemoData/shapefiles", "WDPA_COL_olinguito_simp.rds"))
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in
@@ -280,14 +282,14 @@ SR[SR == 0] <- NA
 
 Load protected areas in Colombia and calculate what percentage of species richness is currently protected.
 ```{r}
-PAs <- st_read(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito")
+PAs <- readRDS(file.path(system.file(package="changeRangeR"), "extdata/DemoData/shapefiles", "WDPA_COL_olinguito_simp.rds"))
 # View the fields
 colnames(PAs)
 # Pick the field you are interested in
 field <- "DESIG_ENG"
 category <- "All"
 # Mask species richness by protected areas to find richness within protected areas
-rmask <- mask(SR, PAs)
+rmask <- raster::mask(SR, PAs)
 # Take a look
 plot(SR)
 plot(PAs, add = T)

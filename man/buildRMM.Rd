@@ -2,7 +2,7 @@
 % Please edit documentation in R/cRRrmm.R
 \name{buildRMM}
 \alias{buildRMM}
-\title{Create metadata objects from changeRangeR}
+\title{Create metadata objects from 'changeRangeR'}
 \usage{
 buildRMM(
   rmm = NULL,
@@ -92,8 +92,8 @@ coefficient with SDM will be computed for overlapping areas.}
 Populated rmm object
 }
 \description{
-Creates and populates a \code{rangeModelMetadata} object from the output of \code{changeRangeR}.
-See Merow \emph{et al.} (2019) for more details on the nature of the metadata and the \code{rangeModelMetadata} package.
+Creates and populates a 'rangeModelMetadata' object from the output of 'changeRangeR'.
+See Merow et al. (2019) <doi:10.1111/geb.12993> for more details on the nature of the metadata and the 'rangeModelMetadata' package.
 To improve reproducibility of the study, this metadata object can be used as supplemental information for a manuscript, shared with collaborators, etc.
 }
 \examples{

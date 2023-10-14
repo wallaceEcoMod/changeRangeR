@@ -22,7 +22,7 @@ a list of 5 objects.
 \description{
 Implements the technique to estimate IUCN's extent of occurrence (EOO) geographic range estimate of species
 threat level by delineating a minimum convex polygon (i.e., convex hull) around a thresholded SDM prediction, first
-described by Syfert et al. (2014). For each increment of 0.01 between a user-specified threshold and the maximum SDM
+described by Syfert et al. (2014) <doi:10.1016/j.biocon.2014.06.012>. For each increment of 0.01 between a user-specified threshold and the maximum SDM
 prediction value, the prediction is thresholded to this value to make a binary raster. This raster is then converted
 to points, which are used to delineate a trial MCP. Each trial MCP is spatially intersected with the original
 MCP (based on the occurrence coordinates) and the original occurrence points. The Jaccard similarity index is calculated

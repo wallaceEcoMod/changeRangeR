@@ -7,7 +7,7 @@
 #' this is then used to delineate the hull
 #' @description Implements the technique to estimate IUCN's extent of occurrence (EOO) geographic range estimate of species
 #' threat level by delineating a minimum convex polygon (i.e., convex hull) around a thresholded SDM prediction, first
-#' described by Syfert et al. (2014). For each increment of 0.01 between a user-specified threshold and the maximum SDM
+#' described by Syfert et al. (2014) <doi:10.1016/j.biocon.2014.06.012>. For each increment of 0.01 between a user-specified threshold and the maximum SDM
 #' prediction value, the prediction is thresholded to this value to make a binary raster. This raster is then converted
 #' to points, which are used to delineate a trial MCP. Each trial MCP is spatially intersected with the original
 #' MCP (based on the occurrence coordinates) and the original occurrence points. The Jaccard similarity index is calculated
@@ -36,7 +36,6 @@
 mcpSDM <- function(p, xy, ch.orig, thr) {
   #require(raster)
 
-  options(warn=-1)
   vals.p <- raster::getValues(p)
   x <- seq(thr, max(vals.p, na.rm=TRUE), 0.01)
   jsi.vec <- numeric(length(x))
@@ -75,6 +74,5 @@ mcpSDM <- function(p, xy, ch.orig, thr) {
   i.bestfit <- which(jsi.vec.allPts == max(jsi.vec.allPts))
   ch.bestfit <- ch.vec[[i.bestfit]]
 
-  options(warn=0)
   return(list(jsi = jsi.vec, thr = x, ov.pts = ov.pts.vec, best.fit = ch.bestfit, best.fit.ind = i.bestfit))
 }
