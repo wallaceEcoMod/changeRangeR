@@ -3,8 +3,8 @@ title: "Single Species Vignette"
 author: "P Galante"
 date: "updated 12 October 2023"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 vignette: >
   %\VignetteIndexEntry{changeRangeR Single Species Metrics}    
@@ -144,6 +144,7 @@ p <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/o
 xy <- read.csv(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/locs/10KM_thin_2017.csv"))
 ch.orig <- mcp(xy[,1:2])
 thr <- 0.3380209
+sf_use_s2(FALSE)
 SDMeoo <- mcpSDM(p = p, xy = xy[,1:2], ch.orig = ch.orig, thr = thr)
 # Check the output
 SDMeoo
@@ -157,8 +158,7 @@ The function ratioOverlap allows changeRangeR users to calculate the proportion 
 
 ```{r, warning = F}
 r <- raster(paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/Forest_suitable_projected_coarse.tif"))
-shp <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles"), "WDPA_COL_olinguito_simp.rds")
-shp <- sf::as_Spatial(shp)
+shp <- readRDS(file.path(system.file(package="changeRangeR"), "extdata/DemoData/shapefiles", "WDPA_COL_olinguito_simp.rds"))
 # set the projections to match
 shp <- spTransform(shp, CRSobj = crs(r))
 # View the fields
@@ -180,7 +180,7 @@ For users that have information on past environmental conditions or future scena
 
 ```{r}
 # Load shapefile
-PA <- sf::st_read(dsn = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/shapefiles/vn"), "VN_NRs_simp.rds")
+PA <- readRDS(file.path(system.file(package="changeRangeR"), "extdata/DemoData/shapefiles/vn", "VN_NRs_simp.rds"))
 # load raster
 r <- stack(list.files(path = paste0(system.file(package="changeRangeR"), "/extdata/DemoData/SDM/franLang"), pattern = "\\.tif$", full.names = T))
 # Assume PA's will not change, so make list of current protectes areas

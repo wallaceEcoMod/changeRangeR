@@ -3,8 +3,8 @@ title: "Biodiversity Metrics"
 author: "P Galante, A Paz"
 date: "updated 12 October 2023"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 vignette: >
   %\VignetteIndexEntry{changeRangeR Biodiversity Metrics}
   %\VignetteEncoding{UTF-8}

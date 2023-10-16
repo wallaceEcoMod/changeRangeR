@@ -40,4 +40,4 @@ Suggests:
     R.utils,
     tools,
     dismo
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3

@@ -32,7 +32,7 @@ ratioOverlap(
 }
 \value{
 a list of three objects. The first object is a raster object showing the masked range. The second is a character showing the
-percentagse of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
+percentage of range within the category of interest. The third shows the correlation with rasMask if it is supplied.
 }
 \description{
 Calculate the proportion of the species' range (e.g., a thresholded SDM) that is contained by landcover categories
