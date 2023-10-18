@@ -22,7 +22,7 @@ a list of 5 objects.
 \description{
 Implements the technique to estimate IUCN's extent of occurrence (EOO) geographic range estimate of species
 threat level by delineating a minimum convex polygon (i.e., convex hull) around a thresholded SDM prediction, first
-described by Syfert et al. (2014). For each increment of 0.01 between a user-specified threshold and the maximum SDM
+described by Syfert et al. (2014) <doi:10.1016/j.biocon.2014.06.012>. For each increment of 0.01 between a user-specified threshold and the maximum SDM
 prediction value, the prediction is thresholded to this value to make a binary raster. This raster is then converted
 to points, which are used to delineate a trial MCP. Each trial MCP is spatially intersected with the original
 MCP (based on the occurrence coordinates) and the original occurrence points. The Jaccard similarity index is calculated
@@ -38,10 +38,11 @@ some occurrences being excluded from the EOO, which does not match the definitio
 # create continuous raster
 p <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
 raster::values(p)<- runif(n = (108*108))
+raster::crs(p) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 # create occurrences
 xy <- dismo::randomPoints(p, 4)
 # create original convex hull
-ch.orig <- mcp(xy)
+ch.orig <- mcp(xy, crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 # set threshold
 thr <- 0.5
 # mcpSDM

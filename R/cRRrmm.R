@@ -1,8 +1,8 @@
-#' @title Create metadata objects from changeRangeR
-#' @description Creates and populates a \code{rangeModelMetadata} object from the output of \code{changeRangeR}.
-#' See Merow \emph{et al.} (2019) for more details on the nature of the metadata and the \code{rangeModelMetadata} package.
+#' @title Create metadata objects from 'changeRangeR'
+#' @description Creates and populates a 'rangeModelMetadata' object from the output of 'changeRangeR'.
+#' See Merow et al. (2019) <doi:10.1111/geb.12993> for more details on the nature of the metadata and the 'rangeModelMetadata' package.
 #' To improve reproducibility of the study, this metadata object can be used as supplemental information for a manuscript, shared with collaborators, etc.
-#' @param rmm rangeModelMetadata object: if included, fields are appended to this RMM object as opposed to returning a new RMM object
+#' @param rmm 'rangeModelMetadata' object: if included, fields are appended to this RMM object as opposed to returning a new RMM object
 #' @param binaryRange Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in a UTM projection measured in meters.
 #' @param rmm A `rangemodelmetadata` object.
 #' @param locs `data.frame` of occurrence records: Longitude and latitude.

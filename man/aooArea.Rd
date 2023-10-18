@@ -24,8 +24,8 @@ Calculate area of occupancy measured in 2km resolution using a binary SDM
 }
 \examples{
 # create raster
-r1 <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
-raster::values(r1)<- runif(n = (108*108))
+r1 <- raster::raster(nrows=5, ncols=5, xmn=-5, xmx=5, ymn=-5, ymx=5)
+raster::values(r1)<- runif(n = (5*5))
 r1[r1 < 0.5] <- NA
 r1[!is.na(r1)] <- 1
 # calculate aooArea

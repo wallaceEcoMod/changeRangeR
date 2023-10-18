@@ -11,7 +11,7 @@ SpeciesEndemism(rStack)
 \item{rStack}{a rasterStack of binary species presences}
 }
 \value{
-raster object showing species endemism.
+Raster object showing species endemism.
 }
 \description{
 Calculate species endemism as the number of species in a place divided by the total number of places in which those species are found.
