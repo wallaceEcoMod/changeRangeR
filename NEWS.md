@@ -1,8 +1,9 @@
 changeRangeR 1.1.0
 =============
-- Removed expiring packages (maptools, rgeos, rgdal)
-- Updated vignettes, website, & links
-- Moved repo to `wallaceEcoMod`
+- Removed expiring packages (maptools, rgeos, rgdal).
+- Updated vignettes, website, & links.
+- Moved repo to `wallaceEcoMod`.
+- Updated licensing.
 
 changeRangeR 1.0.2
 =============

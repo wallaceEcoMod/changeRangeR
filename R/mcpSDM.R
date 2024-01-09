@@ -41,6 +41,7 @@
 #' @return a list of 5 objects.
 #' @references Syfert, M. M., Joppa, L., Smith, M. J., Coomes, D. A., Bachman, S. P., & Brummitt, N. A. (2014). Using species distribution models to inform IUCN Red List assessments. Biological Conservation, 177, 174–184. https://doi.org/10.1016/j.biocon.2014.06.012
 #' @examples
+#' \donttest{
 #' # create continuous raster
 #' p <- raster::raster(nrows=108, ncols=108, xmn=-50, xmx=50)
 #' raster::values(p)<- runif(n = (108*108))
@@ -53,6 +54,7 @@
 #' thr <- 0.5
 #' # mcpSDM
 #' mcpSDM(p, xy, ch.orig, thr)
+#' }
 #' @export
 #'
 
