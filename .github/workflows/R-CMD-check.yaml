@@ -43,6 +43,12 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - uses: r-lib/actions/setup-tinytex@master
+        env: 
+          TINYTEX_INSTALLER: TinyTeX
+          
+      - name: Install additional LaTeX packages
+        run: |
+          tlmgr install biblatex-apa biblatex babel-english csquotes preprint mathtools caption biber
+
       - uses: r-lib/actions/check-r-package@v2
-        with:
-          upload-snapshots: true
