@@ -1,3 +1,25 @@
+# changeRangeR: An R package for reproducible biodiversity change metrics
+# from species distribution estimates.
+#
+# envChange.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the changeRangeR R package.
+#
+# changeRangeR is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# changeRangeR is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with changeRangeR. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 #' @title Calculate change in suitable SDM area through time
 #' @description Calculate SDM area after masking for environmental variables through time
 #' @param binaryRange raster object or shapefile of binary range (SDM, AOO, EOO) with same projection as rStack

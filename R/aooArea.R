@@ -1,3 +1,25 @@
+# changeRangeR: An R package for reproducible biodiversity change metrics
+# from species distribution estimates.
+#
+# aooArea.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the changeRangeR R package.
+#
+# changeRangeR is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# changeRangeR is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with changeRangeR. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 #' @title Calculate AOO
 #' @description Calculate area of occupancy measured in 2km resolution using a binary SDM
 #' @param r Raster layer of a binary SDM. Must be either unprojected in the WGS84 datum, or projected in an equal area projection (see IUCN guidelines) measured in meters.

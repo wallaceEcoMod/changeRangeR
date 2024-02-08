@@ -14,7 +14,19 @@ Authors@R: c(person('Peter J.', 'Galante',email='pgalante@amnh.org',role=c('aut'
     person('Gonzalo E.','Pinilla-Buitrago',email='gpinillabuitrago@gradcenter.cuny.edu',role=c('aut')),
     person('Dan','Rosauer',email='dan.rosauer@anu.edu.au',role=c('aut')),
     person('Mary E.','Blair',email='mblair1@amnh.org',role=c('aut','cre')))
-Description: Facilitates workflows to reproducibly transform estimates of species’ distributions into metrics relevant for conservation. For example, combining predictions from species distribution models with other maps of environmental data to characterize the proportion of a species’ range that is under protection, calculating metrics used under the IUCN Criteria A and B guidelines (Area of Occupancy and Extent of Occurrence), and calculating more general metrics such as taxonomic and phylogenetic diversity, as well as endemism. Also facilitates temporal comparisons among biodiversity metrics to inform efforts towards complementarity and consideration of future scenarios in conservation decisions. 'changeRangeR' also provides tools to determine the effects of modeling decisions through sensitivity tests.
+Description: Facilitates workflows to reproducibly transform estimates of
+    species’ distributions into metrics relevant for conservation. For
+    example, combining predictions from species distribution models with other
+    maps of environmental data to characterize the proportion of a species’
+    range that is under protection, calculating metrics used under the
+    International Union for Conservation of Nature (IUCN) Criteria A and B
+    guidelines (Area of Occupancy and Extent of Occurrence), and calculating
+    more general metrics such as taxonomic and phylogenetic diversity, as well
+    as endemism. Also facilitates temporal comparisons among biodiversity
+    metrics to inform efforts towards complementarity and consideration of
+    future scenarios in conservation decisions. 'changeRangeR' also provides
+    tools to determine the effects of modeling decisions through sensitivity
+    tests.
 License: GPL-3
 VignetteBuilder: knitr
 Encoding: UTF-8
