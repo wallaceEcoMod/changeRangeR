@@ -3,7 +3,7 @@
 # changeRangeR (v1.1.0)
 R package for calculating metrics of species distributions
 
-To install this development version, use: devtools::install_github('walllaceEcoMod/changeRangeR')
+To install this development version, use: `devtools::install_github('wallaceEcoMod/changeRangeR')`
 
 Please note that demo data used in the vignettes are available for download at <a href= "https://github.com/wallaceEcoMod/changeRangeR/tree/master/inst/extdata/DemoData" target="_blank">Demo Data</a>.
 
